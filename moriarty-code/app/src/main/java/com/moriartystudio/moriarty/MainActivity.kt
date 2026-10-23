@@ -15,7 +15,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MoriartyTheme {
-                Surface(modifier = Modifier.fillMaxSize()) {}
+                Surface(modifier = Modifier.fillMaxSize()) {
+
+                }
             }
         }
     }
