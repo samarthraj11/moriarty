@@ -6,6 +6,10 @@ import org.orbitmvi.orbit.OrbitContainerHost
 import org.orbitmvi.orbit.viewmodel.orbitContainer
 
 class ProfileViewModel(repository: GameRepository) : ViewModel(), OrbitContainerHost<ProfileState, ProfileState, ProfileSideEffect> {
-    override val container = orbitContainer<ProfileState, ProfileSideEffect>(ProfileState(repository.profile()))
+    private val profile = repository.profile()
+    override val container = orbitContainer<ProfileState, ProfileSideEffect>(ProfileState(
+        profile = profile,
+        recentAchievements = if (profile.solved > 0) listOf("First insight") else emptyList(),
+    ))
     fun settings() = intent { postSideEffect(ProfileSideEffect.OpenSettings) }
 }

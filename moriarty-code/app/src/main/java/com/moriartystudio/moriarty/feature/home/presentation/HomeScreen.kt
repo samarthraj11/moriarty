@@ -37,24 +37,29 @@ fun HomeScreen(viewModel: HomeViewModel, onOpenPuzzle: (Int) -> Unit, onOpenAllL
         HomeSideEffect.OpenDaily -> onRoot(RootDestination.Daily)
         HomeSideEffect.OpenProfile -> onProfile()
     } }
-    HomeContent(state, viewModel::continuePuzzle, viewModel::openAllLevels, viewModel::openDaily, viewModel::openProfile, onRoot)
+    HomeContent(state, viewModel::continuePuzzle, viewModel::openLevel, viewModel::openAllLevels, viewModel::openDaily, viewModel::openProfile, onRoot)
 }
 
 @Composable
-internal fun HomeContent(state: HomeState, onContinue: () -> Unit, onAllLevels: () -> Unit, onDaily: () -> Unit, onProfile: () -> Unit, onRoot: (RootDestination) -> Unit) {
+internal fun HomeContent(state: HomeState, onContinue: () -> Unit, onLevel: (Int) -> Unit, onAllLevels: () -> Unit, onDaily: () -> Unit, onProfile: () -> Unit, onRoot: (RootDestination) -> Unit) {
     Scaffold(modifier = Modifier.statusBarsPadding(), containerColor = Ivory, bottomBar = { MoriartyBottomBar(RootDestination.Levels, onRoot) }) { padding ->
         Column(Modifier.fillMaxSize().padding(padding).verticalScroll(rememberScrollState()).padding(horizontal = 22.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
             Row(Modifier.fillMaxWidth().padding(top = 14.dp), verticalAlignment = Alignment.CenterVertically) {
                 Column(Modifier.weight(1f)) { Text("Moriarty", style = MaterialTheme.typography.headlineLarge); Text("See what others miss.", style = MaterialTheme.typography.bodyMedium, color = InkMuted) }
-                Row(verticalAlignment = Alignment.CenterVertically) { Icon(Icons.Outlined.LocalFireDepartment, null, tint = Color(0xFFFF9818)); Text("${state.streak} day streak", color = InkMuted, style = MaterialTheme.typography.labelLarge) }
+                Row(verticalAlignment = Alignment.CenterVertically) { Icon(Icons.Outlined.LocalFireDepartment, null, tint = Color(0xFFFF9818)); Text(if (state.streak == 0) "Start your streak" else "${state.streak} day streak", color = InkMuted, style = MaterialTheme.typography.labelLarge) }
                 Spacer(Modifier.width(10.dp)); IconCircle(Icons.Outlined.PersonOutline, onProfile, "Profile")
             }
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("Level ${state.currentLevel?.number ?: 7}", style = MaterialTheme.typography.headlineLarge)
+                Text("Level ${state.currentLevel?.number ?: 1}", style = MaterialTheme.typography.headlineLarge)
                 DifficultyPill(state.currentLevel?.difficulty?.name ?: "Easy")
-                GeometricMirrorHero(Modifier.fillMaxWidth().height(260.dp))
+                state.currentPuzzle?.let { puzzle ->
+                    PuzzleContentRenderer(puzzle.content, Modifier.fillMaxWidth().height(230.dp))
+                }
                 Text("${state.solvedCount} of ${state.totalLevels} solved", style = MaterialTheme.typography.labelLarge, color = InkMuted)
-                LinearProgressIndicator(progress = { state.solvedCount / state.totalLevels.toFloat() }, modifier = Modifier.fillMaxWidth().height(7.dp).clip(CircleShape), color = Color(0xFFFFA918), trackColor = Line)
+                Box(Modifier.fillMaxWidth().height(7.dp).clip(CircleShape).background(Line)) {
+                    val progress = if (state.totalLevels == 0) 0f else state.solvedCount / state.totalLevels.toFloat()
+                    Box(Modifier.fillMaxWidth(progress).height(7.dp).background(Color(0xFFFFA918), CircleShape))
+                }
                 MoriartyPrimaryButton("Continue", onContinue, trailing = { Icon(Icons.AutoMirrored.Outlined.ArrowForward, null) })
             }
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -64,8 +69,8 @@ internal fun HomeContent(state: HomeState, onContinue: () -> Unit, onAllLevels: 
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                         state.nearbyLevels.forEach { level ->
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Box(Modifier.size(44.dp).background(if (level.number == 7) Emerald else if (level.isSolved) Mint else Color(0xFFE9EBE8), CircleShape), contentAlignment = Alignment.Center) {
-                                    Text(level.number.toString(), color = if (level.number == 7) Color.White else if (level.isSolved) Emerald else InkMuted, fontWeight = FontWeight.Bold)
+                                Box(Modifier.size(44.dp).background(if (level.number == state.currentLevel?.number) Emerald else if (level.isSolved) Mint else Color(0xFFE9EBE8), CircleShape).clickable(enabled = level.isUnlocked) { onLevel(level.number) }, contentAlignment = Alignment.Center) {
+                                    Text(level.number.toString(), color = if (level.number == state.currentLevel?.number) Color.White else if (level.isSolved) Emerald else InkMuted, fontWeight = FontWeight.Bold)
                                     if (level.isSolved) Icon(Icons.Outlined.Check, null, tint = Emerald, modifier = Modifier.align(Alignment.TopEnd).size(15.dp).background(Mint, CircleShape))
                                 }
                                 if (!level.isUnlocked) Icon(Icons.Outlined.Lock, null, tint = InkMuted, modifier = Modifier.size(16.dp).padding(top = 3.dp)) else Spacer(Modifier.height(16.dp))

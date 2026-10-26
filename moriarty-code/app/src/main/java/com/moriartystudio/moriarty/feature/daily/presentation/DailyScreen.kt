@@ -29,12 +29,13 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 @Composable
 fun DailyScreen(viewModel: DailyViewModel, onStart: () -> Unit, onRoot: (RootDestination) -> Unit) {
     val state by viewModel.collectAsState(); viewModel.collectSideEffect { onStart() }
+    val puzzle = state.puzzle ?: return
     Scaffold(modifier = Modifier.statusBarsPadding(), containerColor = Ivory, bottomBar = { MoriartyBottomBar(RootDestination.Daily, onRoot) }) { padding ->
         Column(Modifier.fillMaxSize().padding(padding).verticalScroll(rememberScrollState()).padding(horizontal = 22.dp, vertical = 14.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-            Row(verticalAlignment = Alignment.Top) { Column(Modifier.weight(1f)) { Text("Daily challenge", style = MaterialTheme.typography.headlineLarge); Text("23 October", style = MaterialTheme.typography.bodyLarge, color = InkMuted) }; Icon(Icons.Outlined.LocalFireDepartment, null, tint = Color(0xFFFF9818)); Text(" ${state.streak} day streak", color = InkMuted, style = MaterialTheme.typography.labelLarge) }
-            SignalIllustration(Modifier.fillMaxWidth().height(260.dp))
-            Text("The Alternating Signal", style = MaterialTheme.typography.headlineMedium)
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) { DifficultyPill("Connect"); DifficultyPill("Patterns", SoftPeach, Ink); DifficultyPill("One ranked attempt", Mist, Ink) }
+            Row(verticalAlignment = Alignment.Top) { Column(Modifier.weight(1f)) { Text("Daily challenge", style = MaterialTheme.typography.headlineLarge); Text(state.dateLabel, style = MaterialTheme.typography.bodyLarge, color = InkMuted) }; Icon(Icons.Outlined.LocalFireDepartment, null, tint = Color(0xFFFF9818)); Text(if (state.streak == 0) " New streak" else " ${state.streak} day streak", color = InkMuted, style = MaterialTheme.typography.labelLarge) }
+            PuzzleContentRenderer(puzzle.content, Modifier.fillMaxWidth().height(240.dp))
+            Text(puzzle.title, style = MaterialTheme.typography.headlineMedium)
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) { DifficultyPill(puzzle.difficulty.name); DifficultyPill(puzzle.category.label, SoftPeach, Ink); DifficultyPill("One ranked attempt", Mist, Ink) }
             Text("Estimated time: 1–3 min", style = MaterialTheme.typography.bodyLarge, color = InkMuted)
             Column(Modifier.fillMaxWidth().background(Paper, RoundedCornerShape(22.dp)).padding(horizontal = 16.dp)) {
                 PenaltyRow(Icons.Outlined.Close, "Wrong answer", "+10 sec", SoftPeach, ErrorCoral)

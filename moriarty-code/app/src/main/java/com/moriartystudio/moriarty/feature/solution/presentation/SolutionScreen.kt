@@ -26,20 +26,23 @@ import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
-fun SolutionScreen(viewModel: SolutionViewModel, onNext: (Int) -> Unit, onLeaderboard: () -> Unit) {
+fun SolutionScreen(viewModel: SolutionViewModel, onNext: (Int) -> Unit, onComplete: () -> Unit, onLeaderboard: () -> Unit) {
     val state by viewModel.collectAsState(); val context = LocalContext.current
-    viewModel.collectSideEffect { effect -> when (effect) { is SolutionSideEffect.NextLevel -> onNext(effect.level); SolutionSideEffect.OpenLeaderboard -> onLeaderboard(); SolutionSideEffect.Share -> context.startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply { type = "text/plain"; putExtra(Intent.EXTRA_TEXT, "I solved Moriarty level ${state.level} in ${state.seconds} seconds. Can you spot the answer?") }, "Share result")) } }
+    viewModel.collectSideEffect { effect -> when (effect) { is SolutionSideEffect.NextLevel -> onNext(effect.level); SolutionSideEffect.FinishJourney -> onComplete(); SolutionSideEffect.OpenLeaderboard -> onLeaderboard(); SolutionSideEffect.Share -> context.startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply { type = "text/plain"; putExtra(Intent.EXTRA_TEXT, "I solved Moriarty level ${state.level} in ${state.seconds} seconds. Can you spot the answer?") }, "Share result")) } }
+    val puzzle = state.puzzle ?: return
     Scaffold(modifier = Modifier.statusBarsPadding(), containerColor = Ivory) { padding ->
         Column(Modifier.fillMaxSize().padding(padding).verticalScroll(rememberScrollState()).padding(horizontal = 22.dp, vertical = 24.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(18.dp)) {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) { Box(Modifier.size(52.dp).background(Emerald, CircleShape), contentAlignment = Alignment.Center) { Icon(Icons.Outlined.Check, null, tint = Color.White, modifier = Modifier.size(30.dp)) }; Spacer(Modifier.width(12.dp)); Text("Solved", style = MaterialTheme.typography.headlineMedium, color = Emerald) }
-            Text("Through the Looking Glass", style = MaterialTheme.typography.headlineLarge, modifier = Modifier.fillMaxWidth())
-            MirrorClockIllustration(Modifier.fillMaxWidth().height(280.dp))
-            Text("12:00 − 08:20 = 03:40", style = MaterialTheme.typography.headlineMedium, modifier = Modifier.fillMaxWidth().background(Paper, RoundedCornerShape(18.dp)).padding(16.dp), textAlign = TextAlign.Center)
-            Text("The mirror reverses the hand positions across the vertical axis. The actual time is 03:40.", style = MaterialTheme.typography.bodyLarge, color = InkMuted, textAlign = TextAlign.Center)
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) { MetricCard("Solving time", "01:34", Modifier.weight(1f)); MetricCard("Wrong answers", "1", Modifier.weight(1f)) }
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) { MetricCard("Penalty", "+10 sec", Modifier.weight(1f)); MetricCard("Ranked time", "01:44", Modifier.weight(1f)) }
-            MetricCard("Global rank", "#428", Modifier.fillMaxWidth())
-            MoriartyPrimaryButton("Next level", viewModel::next, trailing = { Icon(Icons.AutoMirrored.Outlined.ArrowForward, null) })
+            Text(puzzle.title, style = MaterialTheme.typography.headlineLarge, modifier = Modifier.fillMaxWidth())
+            PuzzleContentRenderer(puzzle.content, Modifier.fillMaxWidth().height(220.dp), compact = true)
+            Column(Modifier.fillMaxWidth().background(Mint, RoundedCornerShape(18.dp)).padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                Text("Correct answer", color = InkMuted, style = MaterialTheme.typography.labelLarge)
+                Text(puzzle.correctOption, style = MaterialTheme.typography.headlineMedium, color = Emerald)
+            }
+            Text("Why it works", style = MaterialTheme.typography.titleLarge, modifier = Modifier.fillMaxWidth())
+            Text(puzzle.explanation, style = MaterialTheme.typography.bodyLarge, color = InkMuted, modifier = Modifier.fillMaxWidth())
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) { MetricCard("Level", state.level.toString(), Modifier.weight(1f)); MetricCard("Ranked time", "%02d:%02d".format(state.seconds / 60, state.seconds % 60), Modifier.weight(1f)) }
+            MoriartyPrimaryButton(if (state.hasNextLevel) "Next level" else "Back to levels", viewModel::next, trailing = { Icon(Icons.AutoMirrored.Outlined.ArrowForward, null) })
             MoriartySecondaryButton("View leaderboard", viewModel::leaderboard)
             TextButton(onClick = viewModel::share) { Icon(Icons.Outlined.Share, null, tint = Emerald); Spacer(Modifier.width(7.dp)); Text("Share result", color = Emerald) }
         }

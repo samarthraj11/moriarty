@@ -31,8 +31,11 @@ fun PuzzleScreen(viewModel: PuzzleViewModel, onBack: () -> Unit, onSolved: (Int,
     val puzzle = state.puzzle ?: return
     Scaffold(modifier = Modifier.statusBarsPadding(), containerColor = Ivory, topBar = { TopBar("Level ${puzzle.level}", null, leading = { IconCircle(Icons.AutoMirrored.Outlined.ArrowBack, viewModel::goBack, "Back") }, trailing = { Row(Modifier.background(if (state.status == AnswerStatus.Incorrect) SoftAmber else Mint, RoundedCornerShape(50)).padding(horizontal = 14.dp, vertical = 10.dp), verticalAlignment = Alignment.CenterVertically) { Icon(Icons.Outlined.Timer, null, tint = Ink, modifier = Modifier.size(20.dp)); Spacer(Modifier.width(7.dp)); Text("%02d:%02d".format(state.elapsedSeconds / 60, state.elapsedSeconds % 60), style = MaterialTheme.typography.titleMedium) } }) }) { padding ->
         Column(Modifier.fillMaxSize().padding(padding).verticalScroll(rememberScrollState()).padding(horizontal = 22.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-            DifficultyPill("Notice")
-            MirrorClockIllustration(Modifier.fillMaxWidth().height(320.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                DifficultyPill(puzzle.category.label)
+                DifficultyPill(puzzle.difficulty.name, if (puzzle.difficulty.name == "Hard") SoftPeach else if (puzzle.difficulty.name == "Medium") SoftAmber else Mint, Ink)
+            }
+            PuzzleContentRenderer(puzzle.content, Modifier.fillMaxWidth().height(280.dp))
             Text(puzzle.prompt, style = MaterialTheme.typography.headlineLarge)
             puzzle.options.chunked(2).forEach { row ->
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {

@@ -8,6 +8,7 @@ import com.moriartystudio.moriarty.core.model.Puzzle
 interface GameRepository {
     fun levels(): List<Level>
     fun puzzle(level: Int): Puzzle
+    fun completeLevel(level: Int, rankedSeconds: Int)
     fun leaderboard(): List<LeaderboardEntry>
     fun profile(): PlayerProfile
 }
