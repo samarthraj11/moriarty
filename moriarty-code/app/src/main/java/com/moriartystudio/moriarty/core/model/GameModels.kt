@@ -17,6 +17,11 @@ data class VisualToken(
     val accentIndex: Int = 0,
 )
 
+sealed interface PuzzleAnswerVisual {
+    data class Token(val token: VisualToken) : PuzzleAnswerVisual
+    data class TokenGroup(val tokens: List<VisualToken>) : PuzzleAnswerVisual
+}
+
 sealed interface PuzzleContent {
     data class ShapeSequence(val tokens: List<VisualToken?>) : PuzzleContent
     data class NumberSequence(val values: List<String>) : PuzzleContent
@@ -57,6 +62,7 @@ data class Puzzle(
     val correctOption: String,
     val hint: String,
     val explanation: String,
+    val optionVisuals: Map<String, PuzzleAnswerVisual> = emptyMap(),
 )
 
 data class LeaderboardEntry(

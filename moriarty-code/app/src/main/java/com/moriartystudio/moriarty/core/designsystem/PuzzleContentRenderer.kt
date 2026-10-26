@@ -35,6 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.moriartystudio.moriarty.core.model.PuzzleContent
+import com.moriartystudio.moriarty.core.model.PuzzleAnswerVisual
 import com.moriartystudio.moriarty.core.model.ShapeKind
 import com.moriartystudio.moriarty.core.model.VisualToken
 import com.moriartystudio.moriarty.ui.theme.Amber
@@ -80,6 +81,23 @@ fun PuzzleContentRenderer(
                 is PuzzleContent.RouteGrid -> RouteGrid(content)
                 is PuzzleContent.Statements -> ClueList(content.statements, compact, showLetters = true)
             }
+        }
+    }
+}
+
+@Composable
+fun PuzzleAnswerVisualRenderer(
+    visual: PuzzleAnswerVisual,
+    modifier: Modifier = Modifier,
+) {
+    when (visual) {
+        is PuzzleAnswerVisual.Token -> ShapeGlyph(visual.token, modifier)
+        is PuzzleAnswerVisual.TokenGroup -> Row(
+            modifier = modifier,
+            horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            visual.tokens.forEach { token -> ShapeGlyph(token, Modifier.size(30.dp)) }
         }
     }
 }

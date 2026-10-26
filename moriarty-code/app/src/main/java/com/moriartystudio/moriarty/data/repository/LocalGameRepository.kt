@@ -6,6 +6,7 @@ import com.moriartystudio.moriarty.core.model.LeaderboardEntry
 import com.moriartystudio.moriarty.core.model.Level
 import com.moriartystudio.moriarty.core.model.PlayerProfile
 import com.moriartystudio.moriarty.core.model.Puzzle
+import com.moriartystudio.moriarty.core.model.PuzzleAnswerVisual
 import com.moriartystudio.moriarty.core.model.PuzzleCategory
 import com.moriartystudio.moriarty.core.model.PuzzleContent
 import com.moriartystudio.moriarty.core.model.ShapeKind
@@ -28,6 +29,7 @@ class LocalGameRepository(context: Context) : GameRepository {
             correctOption = "Circle",
             hint = "Compare positions one, three and five.",
             explanation = "The sequence alternates circle, triangle, circle, triangle. The next item is a circle.",
+            optionVisuals = shapeOptions(),
         ),
         Puzzle(
             2, "Growing numbers", "What number completes the sequence?", PuzzleCategory.Pattern, Difficulty.Easy,
@@ -46,6 +48,7 @@ class LocalGameRepository(context: Context) : GameRepository {
             listOf("Circle", "Triangle", "Square", "Diamond"), "Triangle",
             "Each row contains one of every shape.",
             "Every row and column contains one circle, one triangle and one square. The missing shape is a triangle.",
+            optionVisuals = shapeOptions(),
         ),
         Puzzle(
             4, "Quarter turn", "Which rotation comes next?", PuzzleCategory.Spatial, Difficulty.Medium,
@@ -53,6 +56,12 @@ class LocalGameRepository(context: Context) : GameRepository {
             listOf("0°", "90°", "180°", "270°"), "270°",
             "The arrow turns by the same amount each time.",
             "The arrow rotates 90 degrees clockwise at every step, so the fourth position is 270 degrees.",
+            optionVisuals = mapOf(
+                "0°" to arrowOption(0f),
+                "90°" to arrowOption(90f),
+                "180°" to arrowOption(180f),
+                "270°" to arrowOption(270f),
+            ),
         ),
         Puzzle(
             5, "First in line", "Who must be first?", PuzzleCategory.Deduction, Difficulty.Medium,
@@ -79,6 +88,12 @@ class LocalGameRepository(context: Context) : GameRepository {
             listOf("A", "B", "C", "D"), "D",
             "Count how many times each kind of shape appears in a group.",
             "Groups A, B and C each contain one circle, one triangle and one square. Group D repeats the square.",
+            optionVisuals = mapOf(
+                "A" to groupOption(ShapeKind.Circle, ShapeKind.Triangle, ShapeKind.Square),
+                "B" to groupOption(ShapeKind.Triangle, ShapeKind.Square, ShapeKind.Circle),
+                "C" to groupOption(ShapeKind.Square, ShapeKind.Circle, ShapeKind.Triangle),
+                "D" to groupOption(ShapeKind.Circle, ShapeKind.Square, ShapeKind.Square),
+            ),
         ),
         Puzzle(
             8, "Shortest route", "What is the fewest number of moves to reach the goal?", PuzzleCategory.Spatial, Difficulty.Hard,
@@ -104,6 +119,12 @@ class LocalGameRepository(context: Context) : GameRepository {
             listOf("Up", "Right", "Down", "Left"), "Up",
             "Moving right or down applies the same quarter turn.",
             "Every step right or down rotates the arrow 90 degrees clockwise. The missing arrow points up.",
+            optionVisuals = mapOf(
+                "Up" to arrowOption(0f),
+                "Right" to arrowOption(90f),
+                "Down" to arrowOption(180f),
+                "Left" to arrowOption(270f),
+            ),
         ),
     )
 
@@ -159,5 +180,18 @@ class LocalGameRepository(context: Context) : GameRepository {
         const val SOLVED_LEVELS = "solved_levels"
 
         fun token(shape: ShapeKind, rotation: Float = 0f, accent: Int = 0) = VisualToken(shape, rotation, accent)
+
+        fun shapeOptions() = mapOf(
+            "Circle" to PuzzleAnswerVisual.Token(token(ShapeKind.Circle)),
+            "Triangle" to PuzzleAnswerVisual.Token(token(ShapeKind.Triangle, accent = 1)),
+            "Square" to PuzzleAnswerVisual.Token(token(ShapeKind.Square, accent = 2)),
+            "Diamond" to PuzzleAnswerVisual.Token(token(ShapeKind.Diamond, accent = 3)),
+        )
+
+        fun arrowOption(rotation: Float) = PuzzleAnswerVisual.Token(token(ShapeKind.Arrow, rotation))
+
+        fun groupOption(vararg shapes: ShapeKind) = PuzzleAnswerVisual.TokenGroup(
+            shapes.mapIndexed { index, shape -> token(shape, accent = index) },
+        )
     }
 }
