@@ -18,6 +18,7 @@ class MainActivity : ComponentActivity() {
             MoriartyTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
                     MoriartyApp()
+
                 }
             }
         }
