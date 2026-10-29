@@ -66,10 +66,19 @@ fun MoriartyApp() {
             }
             entry<SolutionRoute> { route ->
                 val vm = viewModel(key = "solution-${route.level}-${route.seconds}") { SolutionViewModel(route.level, route.seconds, AppContainer.gameRepository) }
-                SolutionScreen(vm, { next -> backStack.clear(); backStack.add(PuzzleRoute(next)) }, { openRoot(RootDestination.Leaderboard) })
+                SolutionScreen(
+                    vm,
+                    onNext = { next ->
+                        backStack.clear()
+                        backStack.add(HomeRoute)
+                        backStack.add(PuzzleRoute(next))
+                    },
+                    onComplete = { openRoot(RootDestination.Levels) },
+                    onLeaderboard = { openRoot(RootDestination.Leaderboard) },
+                )
             }
             entry<DailyRoute> {
-                val vm = viewModel { DailyViewModel() }
+                val vm = viewModel { DailyViewModel(AppContainer.gameRepository) }
                 DailyScreen(vm, { open(PuzzleRoute(1)) }, ::openRoot)
             }
             entry<LeaderboardRoute> {

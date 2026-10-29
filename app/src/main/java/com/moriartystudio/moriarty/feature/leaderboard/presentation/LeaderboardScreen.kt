@@ -31,7 +31,7 @@ fun LeaderboardScreen(viewModel: LeaderboardViewModel, onRoot: (RootDestination)
         Column(Modifier.fillMaxSize().padding(padding)) {
             TopBar("Leaderboard")
             Text("Level 1⌄", modifier = Modifier.padding(horizontal = 22.dp).background(Mint, RoundedCornerShape(18.dp)).padding(horizontal = 22.dp, vertical = 12.dp), style = MaterialTheme.typography.titleMedium)
-            Text("Through the Looking Glass", modifier = Modifier.padding(horizontal = 22.dp, vertical = 18.dp), style = MaterialTheme.typography.headlineMedium)
+            Text(state.puzzleTitle, modifier = Modifier.padding(horizontal = 22.dp, vertical = 18.dp), style = MaterialTheme.typography.headlineMedium)
             Row(Modifier.fillMaxWidth().padding(horizontal = 22.dp).background(Paper, RoundedCornerShape(18.dp)).padding(4.dp)) {
                 LeaderboardPeriod.entries.forEach { period -> val selected = period == state.selectedPeriod; Text(when (period) { LeaderboardPeriod.Today -> "Global"; LeaderboardPeriod.Week -> "Country"; LeaderboardPeriod.AllTime -> "Friends" }, modifier = Modifier.weight(1f).background(if (selected) Emerald else Color.Transparent, RoundedCornerShape(14.dp)).clickable { viewModel.selectPeriod(period) }.padding(vertical = 11.dp), color = if (selected) Color.White else InkMuted, textAlign = androidx.compose.ui.text.style.TextAlign.Center, fontWeight = FontWeight.SemiBold) }
             }
