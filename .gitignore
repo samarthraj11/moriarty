@@ -12,3 +12,7 @@ captures/
 app/build/
 *.jks
 *.keystore
+
+# Local product references; keep these on the developer machine only.
+/design-reference/
+/product-docs/
