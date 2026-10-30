@@ -1,0 +1,272 @@
+{
+  "schemaVersion": 1,
+  "puzzles": [
+    {
+      "level": 1,
+      "title": "Alternating shapes",
+      "prompt": "Which shape comes next?",
+      "category": "Pattern",
+      "difficulty": "Easy",
+      "content": {
+        "type": "shapeSequence",
+        "tokens": [
+          { "shape": "Circle" },
+          { "shape": "Triangle", "accentIndex": 1 },
+          { "shape": "Circle" },
+          { "shape": "Triangle", "accentIndex": 1 },
+          null
+        ]
+      },
+      "options": ["Circle", "Triangle", "Square", "Diamond"],
+      "correctOption": "Circle",
+      "hint": "Compare positions one, three and five.",
+      "explanation": "The sequence alternates circle, triangle, circle, triangle. The next item is a circle.",
+      "optionVisuals": {
+        "Circle": { "type": "token", "token": { "shape": "Circle" } },
+        "Triangle": { "type": "token", "token": { "shape": "Triangle", "accentIndex": 1 } },
+        "Square": { "type": "token", "token": { "shape": "Square", "accentIndex": 2 } },
+        "Diamond": { "type": "token", "token": { "shape": "Diamond", "accentIndex": 3 } }
+      }
+    },
+    {
+      "level": 2,
+      "title": "Growing numbers",
+      "prompt": "What number completes the sequence?",
+      "category": "Pattern",
+      "difficulty": "Easy",
+      "content": {
+        "type": "numberSequence",
+        "values": ["2", "4", "8", "16", "?"]
+      },
+      "options": ["18", "24", "30", "32"],
+      "correctOption": "32",
+      "hint": "Each number is created from the number immediately before it.",
+      "explanation": "Every value doubles: 2, 4, 8, 16, then 32."
+    },
+    {
+      "level": 3,
+      "title": "Missing grid",
+      "prompt": "Which shape belongs in the empty cell?",
+      "category": "Pattern",
+      "difficulty": "Easy",
+      "content": {
+        "type": "matrix",
+        "rows": 3,
+        "columns": 3,
+        "tokens": [
+          { "shape": "Circle" },
+          { "shape": "Triangle", "accentIndex": 1 },
+          { "shape": "Square", "accentIndex": 2 },
+          { "shape": "Triangle", "accentIndex": 1 },
+          { "shape": "Square", "accentIndex": 2 },
+          { "shape": "Circle" },
+          { "shape": "Square", "accentIndex": 2 },
+          { "shape": "Circle" },
+          null
+        ]
+      },
+      "options": ["Circle", "Triangle", "Square", "Diamond"],
+      "correctOption": "Triangle",
+      "hint": "Each row contains one of every shape.",
+      "explanation": "Every row and column contains one circle, one triangle and one square. The missing shape is a triangle.",
+      "optionVisuals": {
+        "Circle": { "type": "token", "token": { "shape": "Circle" } },
+        "Triangle": { "type": "token", "token": { "shape": "Triangle", "accentIndex": 1 } },
+        "Square": { "type": "token", "token": { "shape": "Square", "accentIndex": 2 } },
+        "Diamond": { "type": "token", "token": { "shape": "Diamond", "accentIndex": 3 } }
+      }
+    },
+    {
+      "level": 4,
+      "title": "Quarter turn",
+      "prompt": "Which rotation comes next?",
+      "category": "Spatial",
+      "difficulty": "Medium",
+      "content": {
+        "type": "rotationSequence",
+        "rotations": [0, 90, 180, null]
+      },
+      "options": ["0°", "90°", "180°", "270°"],
+      "correctOption": "270°",
+      "hint": "The arrow turns by the same amount each time.",
+      "explanation": "The arrow rotates 90 degrees clockwise at every step, so the fourth position is 270 degrees.",
+      "optionVisuals": {
+        "0°": { "type": "token", "token": { "shape": "Arrow", "rotationDegrees": 0 } },
+        "90°": { "type": "token", "token": { "shape": "Arrow", "rotationDegrees": 90 } },
+        "180°": { "type": "token", "token": { "shape": "Arrow", "rotationDegrees": 180 } },
+        "270°": { "type": "token", "token": { "shape": "Arrow", "rotationDegrees": 270 } }
+      }
+    },
+    {
+      "level": 5,
+      "title": "First in line",
+      "prompt": "Who must be first?",
+      "category": "Deduction",
+      "difficulty": "Medium",
+      "content": {
+        "type": "clueList",
+        "clues": ["Leo is before Kai.", "Kai is before Mira.", "Noor is after Mira."]
+      },
+      "options": ["Leo", "Kai", "Mira", "Noor"],
+      "correctOption": "Leo",
+      "hint": "Connect the clues into one ordered chain.",
+      "explanation": "The clues form Leo → Kai → Mira → Noor. Leo must be first."
+    },
+    {
+      "level": 6,
+      "title": "Shape values",
+      "prompt": "What is the value of the triangle?",
+      "category": "Deduction",
+      "difficulty": "Medium",
+      "content": {
+        "type": "equations",
+        "rows": ["● + ● = 8", "● + ▲ = 11", "▲ = ?"]
+      },
+      "options": ["3", "4", "7", "8"],
+      "correctOption": "7",
+      "hint": "Find the circle value before solving for the triangle.",
+      "explanation": "Two circles equal 8, so each circle is 4. Therefore the triangle is 11 − 4 = 7."
+    },
+    {
+      "level": 7,
+      "title": "Broken group",
+      "prompt": "Which group breaks the rule?",
+      "category": "Pattern",
+      "difficulty": "Medium",
+      "content": {
+        "type": "oddOneOut",
+        "groups": [
+          [
+            { "shape": "Circle" },
+            { "shape": "Triangle", "accentIndex": 1 },
+            { "shape": "Square", "accentIndex": 2 }
+          ],
+          [
+            { "shape": "Triangle", "accentIndex": 1 },
+            { "shape": "Square", "accentIndex": 2 },
+            { "shape": "Circle" }
+          ],
+          [
+            { "shape": "Square", "accentIndex": 2 },
+            { "shape": "Circle" },
+            { "shape": "Triangle", "accentIndex": 1 }
+          ],
+          [
+            { "shape": "Circle" },
+            { "shape": "Square", "accentIndex": 2 },
+            { "shape": "Square", "accentIndex": 2 }
+          ]
+        ]
+      },
+      "options": ["A", "B", "C", "D"],
+      "correctOption": "D",
+      "hint": "Count how many times each kind of shape appears in a group.",
+      "explanation": "Groups A, B and C each contain one circle, one triangle and one square. Group D repeats the square.",
+      "optionVisuals": {
+        "A": {
+          "type": "tokenGroup",
+          "tokens": [
+            { "shape": "Circle", "accentIndex": 0 },
+            { "shape": "Triangle", "accentIndex": 1 },
+            { "shape": "Square", "accentIndex": 2 }
+          ]
+        },
+        "B": {
+          "type": "tokenGroup",
+          "tokens": [
+            { "shape": "Triangle", "accentIndex": 0 },
+            { "shape": "Square", "accentIndex": 1 },
+            { "shape": "Circle", "accentIndex": 2 }
+          ]
+        },
+        "C": {
+          "type": "tokenGroup",
+          "tokens": [
+            { "shape": "Square", "accentIndex": 0 },
+            { "shape": "Circle", "accentIndex": 1 },
+            { "shape": "Triangle", "accentIndex": 2 }
+          ]
+        },
+        "D": {
+          "type": "tokenGroup",
+          "tokens": [
+            { "shape": "Circle", "accentIndex": 0 },
+            { "shape": "Square", "accentIndex": 1 },
+            { "shape": "Square", "accentIndex": 2 }
+          ]
+        }
+      }
+    },
+    {
+      "level": 8,
+      "title": "Shortest route",
+      "prompt": "What is the fewest number of moves to reach the goal?",
+      "category": "Spatial",
+      "difficulty": "Hard",
+      "content": {
+        "type": "routeGrid",
+        "rows": 4,
+        "columns": 4,
+        "blockedCells": [5, 6, 9],
+        "startCell": 12,
+        "endCell": 3
+      },
+      "options": ["5", "6", "7", "8"],
+      "correctOption": "6",
+      "hint": "A move can go one cell up, down, left or right.",
+      "explanation": "The shortest open route travels three cells up and three cells right, for 6 moves."
+    },
+    {
+      "level": 9,
+      "title": "Only one truth",
+      "prompt": "Exactly one statement is true. Which one?",
+      "category": "Logic",
+      "difficulty": "Hard",
+      "content": {
+        "type": "statements",
+        "statements": [
+          "A says: The answer is C.",
+          "B says: The answer is not A.",
+          "C says: B is false."
+        ]
+      },
+      "options": ["A", "B", "C", "Impossible"],
+      "correctOption": "B",
+      "hint": "Test each option and count how many statements become true.",
+      "explanation": "If B is the answer, A is false, B is true and C is false. That is the only case with exactly one truth."
+    },
+    {
+      "level": 10,
+      "title": "Turning matrix",
+      "prompt": "Which direction completes the matrix?",
+      "category": "Logic",
+      "difficulty": "Hard",
+      "content": {
+        "type": "matrix",
+        "rows": 3,
+        "columns": 3,
+        "tokens": [
+          { "shape": "Arrow", "rotationDegrees": 0 },
+          { "shape": "Arrow", "rotationDegrees": 90 },
+          { "shape": "Arrow", "rotationDegrees": 180 },
+          { "shape": "Arrow", "rotationDegrees": 90 },
+          { "shape": "Arrow", "rotationDegrees": 180 },
+          { "shape": "Arrow", "rotationDegrees": 270 },
+          { "shape": "Arrow", "rotationDegrees": 180 },
+          { "shape": "Arrow", "rotationDegrees": 270 },
+          null
+        ]
+      },
+      "options": ["Up", "Right", "Down", "Left"],
+      "correctOption": "Up",
+      "hint": "Moving right or down applies the same quarter turn.",
+      "explanation": "Every step right or down rotates the arrow 90 degrees clockwise. The missing arrow points up.",
+      "optionVisuals": {
+        "Up": { "type": "token", "token": { "shape": "Arrow", "rotationDegrees": 0 } },
+        "Right": { "type": "token", "token": { "shape": "Arrow", "rotationDegrees": 90 } },
+        "Down": { "type": "token", "token": { "shape": "Arrow", "rotationDegrees": 180 } },
+        "Left": { "type": "token", "token": { "shape": "Arrow", "rotationDegrees": 270 } }
+      }
+    }
+  ]
+}

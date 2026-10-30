@@ -51,6 +51,7 @@ dependencies {
     implementation(libs.orbit.viewmodel)
 
     testImplementation(libs.junit)
+    testImplementation(libs.json)
 
     debugImplementation(libs.androidx.compose.ui.tooling)
     screenshotTestImplementation(libs.androidx.compose.ui.tooling)
