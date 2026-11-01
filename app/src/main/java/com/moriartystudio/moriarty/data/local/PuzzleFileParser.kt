@@ -28,6 +28,7 @@ class PuzzleFileParser {
     private fun parsePuzzle(json: JSONObject): Puzzle {
         val options = json.getJSONArray("options").strings()
         val correctOption = json.getString("correctOption")
+        val difficultyRating = json.getInt("difficultyRating")
         val optionVisuals = json.optJSONObject("optionVisuals")
             ?.keys()
             ?.asSequence()
@@ -39,6 +40,9 @@ class PuzzleFileParser {
         }
         require(optionVisuals.keys.all(options::contains)) {
             "Level ${json.getInt("level")} has visuals for unknown answer options."
+        }
+        require(difficultyRating in 1..10) {
+            "Level ${json.getInt("level")} must have a difficulty rating from 1 to 10."
         }
 
         return Puzzle(
@@ -53,6 +57,7 @@ class PuzzleFileParser {
             hint = json.getString("hint"),
             explanation = json.getString("explanation"),
             optionVisuals = optionVisuals,
+            difficultyRating = difficultyRating,
         )
     }
 

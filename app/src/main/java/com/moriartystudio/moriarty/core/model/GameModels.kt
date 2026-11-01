@@ -63,6 +63,7 @@ data class Puzzle(
     val hint: String,
     val explanation: String,
     val optionVisuals: Map<String, PuzzleAnswerVisual> = emptyMap(),
+    val difficultyRating: Int = 1,
 )
 
 data class LeaderboardEntry(

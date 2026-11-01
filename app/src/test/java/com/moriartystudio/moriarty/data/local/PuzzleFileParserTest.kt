@@ -13,14 +13,21 @@ class PuzzleFileParserTest {
     private val catalogueJson = puzzleFile().readText()
 
     @Test
-    fun `catalogue contains ten sequential valid puzzles`() {
+    fun `catalogue contains fifty sequential valid puzzles`() {
         val puzzles = parser.parse(catalogueJson)
 
-        assertEquals((1..10).toList(), puzzles.map { it.level })
+        assertEquals((1..50).toList(), puzzles.map { it.level })
         assertTrue(puzzles.all { it.correctOption in it.options })
         assertTrue(puzzles[0].content is PuzzleContent.ShapeSequence)
         assertTrue(puzzles[7].content is PuzzleContent.RouteGrid)
         assertTrue(puzzles[9].content is PuzzleContent.Matrix)
+    }
+
+    @Test
+    fun `catalogue has five puzzles at every difficulty rating`() {
+        val ratingCounts = parser.parse(catalogueJson).groupingBy { it.difficultyRating }.eachCount()
+
+        assertEquals((1..10).associateWith { 5 }, ratingCounts)
     }
 
     @Test
