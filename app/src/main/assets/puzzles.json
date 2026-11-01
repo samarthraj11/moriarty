@@ -125,7 +125,7 @@
       "options": ["3", "4", "7", "8"],
       "correctOption": "7",
       "hint": "Find the circle value before solving for the triangle.",
-      "explanation": "Two circles equal 8, so each circle is 4. Therefore the triangle is 11 − 4 = 7."
+      "explanation": "Two circles equal 8, so each circle is 4. Therefore the triangle is 11 − 4 = 7"
     },
     {
       "level": 7,
