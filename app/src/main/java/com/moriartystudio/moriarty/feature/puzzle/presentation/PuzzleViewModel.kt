@@ -1,5 +1,6 @@
 package com.moriartystudio.moriarty.feature.puzzle.presentation
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.moriartystudio.moriarty.domain.repository.GameRepository
@@ -22,15 +23,18 @@ class PuzzleViewModel(level: Int, private val repository: GameRepository) : View
         }
     }
 
-    fun select(answer: String) = intent { reduce { state.copy(selectedAnswer = answer, status = AnswerStatus.Selected) } }
-    fun check() = intent {
+    fun select(answer: String) = intent {
         val puzzle = state.puzzle ?: return@intent
-        if (state.selectedAnswer == puzzle.correctOption) {
-            repository.completeLevel(puzzle.level, state.elapsedSeconds)
-            reduce { state.copy(status = AnswerStatus.Correct) }
-            postSideEffect(PuzzleSideEffect.OpenSolution(puzzle.level, state.elapsedSeconds))
+        if (state.status == AnswerStatus.Correct || answer in state.wrongOptions) return@intent
+        if (answer == puzzle.correctOption) {
+            val seconds = state.elapsedSeconds
+            Log.d(TAG, "Level ${puzzle.level} solved in ${seconds}s")
+            repository.completeLevel(puzzle.level, seconds)
+            reduce { state.copy(status = AnswerStatus.Correct, correctAnswer = answer) }
+            delay(SUCCESS_DELAY_MS)
+            postSideEffect(if (puzzle.level < repository.levels().size) PuzzleSideEffect.NextLevel(puzzle.level + 1) else PuzzleSideEffect.FinishJourney)
         } else {
-            reduce { state.copy(status = AnswerStatus.Incorrect, elapsedSeconds = state.elapsedSeconds + 10, wrongAnswers = state.wrongAnswers + 1) }
+            reduce { state.copy(status = AnswerStatus.Incorrect, elapsedSeconds = state.elapsedSeconds + 10, wrongOptions = state.wrongOptions + answer) }
         }
     }
     fun toggleHint() = intent {
@@ -38,4 +42,9 @@ class PuzzleViewModel(level: Int, private val repository: GameRepository) : View
         reduce { state.copy(showHint = !state.showHint, hintUsed = state.hintUsed || firstUse, elapsedSeconds = state.elapsedSeconds + if (firstUse) 20 else 0) }
     }
     fun goBack() = intent { postSideEffect(PuzzleSideEffect.GoBack) }
+
+    private companion object {
+        const val TAG = "Puzzle"
+        const val SUCCESS_DELAY_MS = 800L
+    }
 }

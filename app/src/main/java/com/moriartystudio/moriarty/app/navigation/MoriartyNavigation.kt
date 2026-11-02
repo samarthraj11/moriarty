@@ -62,7 +62,16 @@ fun MoriartyApp() {
             }
             entry<PuzzleRoute> { route ->
                 val vm = viewModel(key = "puzzle-${route.level}") { PuzzleViewModel(route.level, AppContainer.gameRepository) }
-                PuzzleScreen(vm, ::back) { level, seconds -> open(SolutionRoute(level, seconds)) }
+                PuzzleScreen(
+                    vm,
+                    onBack = ::back,
+                    onNext = { next ->
+                        backStack.clear()
+                        backStack.add(HomeRoute)
+                        backStack.add(PuzzleRoute(next))
+                    },
+                    onFinish = { openRoot(RootDestination.Levels) },
+                )
             }
             entry<SolutionRoute> { route ->
                 val vm = viewModel(key = "solution-${route.level}-${route.seconds}") { SolutionViewModel(route.level, route.seconds, AppContainer.gameRepository) }
