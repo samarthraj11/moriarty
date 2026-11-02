@@ -1,6 +1,17 @@
 package com.moriartystudio.moriarty.app.navigation
 
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
+import androidx.activity.compose.BackHandler
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -40,11 +51,29 @@ private data class SolutionRoute(val level: Int, val seconds: Int)
 @Composable
 fun MoriartyApp() {
     val backStack = remember { mutableStateListOf<Any>(HomeRoute) }
+    var showExitDialog by remember { mutableStateOf(false) }
+    val activity = LocalContext.current.findActivity()
     fun back() { if (backStack.size > 1) backStack.removeAt(backStack.lastIndex) }
     fun open(route: Any) { backStack.add(route) }
     fun openRoot(destination: RootDestination) {
         val route = when (destination) { RootDestination.Levels -> HomeRoute; RootDestination.Daily -> DailyRoute; RootDestination.Leaderboard -> LeaderboardRoute; RootDestination.Profile -> ProfileRoute }
         backStack.clear(); backStack.add(route)
+    }
+
+    // Bottom-nav roots sit alone on the stack: back goes to Home, and back on Home asks to exit.
+    BackHandler {
+        if (backStack.size > 1) back()
+        else if (backStack.last() == HomeRoute) showExitDialog = true
+        else openRoot(RootDestination.Levels)
+    }
+    if (showExitDialog) {
+        AlertDialog(
+            onDismissRequest = { showExitDialog = false },
+            title = { Text("Close Moriarty?") },
+            text = { Text("Your progress is saved.") },
+            confirmButton = { TextButton(onClick = { showExitDialog = false; activity?.finish() }) { Text("Close") } },
+            dismissButton = { TextButton(onClick = { showExitDialog = false }) { Text("Stay") } },
+        )
     }
 
     NavDisplay(
@@ -104,4 +133,10 @@ fun MoriartyApp() {
             }
         },
     )
+}
+
+private tailrec fun Context.findActivity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> baseContext.findActivity()
+    else -> null
 }
