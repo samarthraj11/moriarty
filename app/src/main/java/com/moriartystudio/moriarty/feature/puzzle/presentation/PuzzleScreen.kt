@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.outlined.Lightbulb
 import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material3.*
@@ -28,9 +29,9 @@ import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
-fun PuzzleScreen(viewModel: PuzzleViewModel, onBack: () -> Unit, onSolved: (Int, Int) -> Unit) {
+fun PuzzleScreen(viewModel: PuzzleViewModel, onBack: () -> Unit, onNext: (Int) -> Unit, onFinish: () -> Unit) {
     val state by viewModel.collectAsState()
-    viewModel.collectSideEffect { when (it) { PuzzleSideEffect.GoBack -> onBack(); is PuzzleSideEffect.OpenSolution -> onSolved(it.level, it.seconds) } }
+    viewModel.collectSideEffect { when (it) { PuzzleSideEffect.GoBack -> onBack(); is PuzzleSideEffect.NextLevel -> onNext(it.level); PuzzleSideEffect.FinishJourney -> onFinish() } }
     val puzzle = state.puzzle ?: return
     Scaffold(modifier = Modifier.statusBarsPadding(), containerColor = Ivory, topBar = { TopBar("Level ${puzzle.level}", null, leading = { IconCircle(Icons.AutoMirrored.Outlined.ArrowBack, viewModel::goBack, "Back") }, trailing = { Row(Modifier.background(if (state.status == AnswerStatus.Incorrect) SoftAmber else Mint, RoundedCornerShape(50)).padding(horizontal = 14.dp, vertical = 10.dp), verticalAlignment = Alignment.CenterVertically) { Icon(Icons.Outlined.Timer, null, tint = Ink, modifier = Modifier.size(20.dp)); Spacer(Modifier.width(7.dp)); Text("%02d:%02d".format(state.elapsedSeconds / 60, state.elapsedSeconds % 60), style = MaterialTheme.typography.titleMedium) } }) }) { padding ->
         Column(Modifier.fillMaxSize().padding(padding).verticalScroll(rememberScrollState()).padding(horizontal = 22.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
@@ -46,8 +47,8 @@ fun PuzzleScreen(viewModel: PuzzleViewModel, onBack: () -> Unit, onSolved: (Int,
                         AnswerOption(
                             text = answer,
                             visual = puzzle.optionVisuals[answer],
-                            selected = state.selectedAnswer == answer,
-                            incorrect = state.status == AnswerStatus.Incorrect && state.selectedAnswer == answer,
+                            correct = state.correctAnswer == answer,
+                            incorrect = answer in state.wrongOptions,
                             onClick = { viewModel.select(answer) },
                             modifier = Modifier.weight(1f),
                         )
@@ -61,7 +62,6 @@ fun PuzzleScreen(viewModel: PuzzleViewModel, onBack: () -> Unit, onSolved: (Int,
                 Text("That choice does not fit the rule. Compare the clues and try again.", style = MaterialTheme.typography.bodyMedium, color = InkMuted)
             }
             if (state.showHint) Text(puzzle.hint, modifier = Modifier.fillMaxWidth().background(SoftAmber, RoundedCornerShape(18.dp)).padding(16.dp), style = MaterialTheme.typography.bodyMedium, color = Ink)
-            MoriartyPrimaryButton("Check answer", viewModel::check, enabled = state.selectedAnswer != null)
             TextButton(onClick = viewModel::toggleHint, modifier = Modifier.align(Alignment.CenterHorizontally)) { Icon(Icons.Outlined.Lightbulb, null, tint = Amber); Spacer(Modifier.width(6.dp)); Text(if (state.showHint) "Hide hint" else "Need a hint?", color = Emerald, fontWeight = FontWeight.SemiBold) }
             Spacer(Modifier.height(10.dp))
         }
@@ -72,13 +72,13 @@ fun PuzzleScreen(viewModel: PuzzleViewModel, onBack: () -> Unit, onSolved: (Int,
 private fun AnswerOption(
     text: String,
     visual: PuzzleAnswerVisual?,
-    selected: Boolean,
+    correct: Boolean,
     incorrect: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val border = when { incorrect -> ErrorCoral; selected -> Emerald; else -> Line }
-    val background = when { incorrect -> SoftPeach; selected -> Mint; else -> Paper }
+    val border = when { incorrect -> ErrorCoral; correct -> Emerald; else -> Line }
+    val background = when { incorrect -> SoftPeach; correct -> Mint; else -> Paper }
     Surface(
         modifier = modifier
             .height(if (visual == null) 62.dp else 88.dp)
@@ -86,7 +86,7 @@ private fun AnswerOption(
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(18.dp),
         color = background,
-        border = BorderStroke(if (selected || incorrect) 2.dp else 1.dp, border),
+        border = BorderStroke(if (correct || incorrect) 2.dp else 1.dp, border),
     ) {
         Box(contentAlignment = Alignment.Center) {
             if (visual == null) {
@@ -98,6 +98,7 @@ private fun AnswerOption(
                 }
                 PuzzleAnswerVisualRenderer(visual, visualModifier)
             }
+            if (correct) Icon(Icons.Filled.CheckCircle, "Correct", tint = Emerald, modifier = Modifier.align(Alignment.TopEnd).padding(6.dp).size(24.dp))
         }
     }
 }

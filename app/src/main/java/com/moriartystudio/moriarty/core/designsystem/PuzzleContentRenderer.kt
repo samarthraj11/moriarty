@@ -115,19 +115,37 @@ private fun ShapeSequence(content: PuzzleContent.ShapeSequence, compact: Boolean
 
 @Composable
 private fun NumberSequence(content: PuzzleContent.NumberSequence, compact: Boolean) {
+    val isLongSequence = content.values.size >= 6
+    val tileSize = when {
+        compact && isLongSequence -> 32.dp
+        compact -> 43.dp
+        isLongSequence -> 38.dp
+        else -> 54.dp
+    }
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(if (compact) 6.dp else 9.dp, Alignment.CenterHorizontally),
+        horizontalArrangement = Arrangement.spacedBy(
+            if (isLongSequence) 2.dp else if (compact) 6.dp else 9.dp,
+            Alignment.CenterHorizontally,
+        ),
     ) {
         content.values.forEachIndexed { index, value ->
             Box(
                 modifier = Modifier
-                    .size(if (compact) 43.dp else 54.dp)
+                    .size(tileSize)
                     .background(if (value == "?") Mint else Ivory, RoundedCornerShape(14.dp))
                     .border(1.dp, if (value == "?") Emerald else Line, RoundedCornerShape(14.dp)),
                 contentAlignment = Alignment.Center,
             ) {
-                Text(value, style = if (compact) MaterialTheme.typography.titleMedium else MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                Text(
+                    value,
+                    style = when {
+                        isLongSequence -> MaterialTheme.typography.bodyMedium
+                        compact -> MaterialTheme.typography.titleMedium
+                        else -> MaterialTheme.typography.titleLarge
+                    },
+                    fontWeight = FontWeight.Bold,
+                )
             }
             if (index < content.values.lastIndex) Text("·", color = InkMuted, modifier = Modifier.align(Alignment.CenterVertically))
         }
