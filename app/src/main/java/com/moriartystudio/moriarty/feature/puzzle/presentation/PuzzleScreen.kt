@@ -101,7 +101,6 @@ fun PuzzleScreen(
             PuzzleCard(
                 prompt = puzzle.prompt,
                 category = puzzle.category.label,
-                difficultyRating = puzzle.difficultyRating,
                 content = {
                     PuzzleContentRenderer(
                         content = puzzle.content,
@@ -179,7 +178,6 @@ private fun PuzzleTimer(seconds: Int, penalized: Boolean) {
 private fun PuzzleCard(
     prompt: String,
     category: String,
-    difficultyRating: Int,
     content: @Composable () -> Unit,
 ) {
     Surface(
@@ -195,14 +193,7 @@ private fun PuzzleCard(
                 modifier = Modifier.padding(17.dp),
                 verticalArrangement = Arrangement.spacedBy(14.dp),
             ) {
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    DifficultyPill(category)
-                    DifficultyPill(
-                        text = "Difficulty $difficultyRating/10",
-                        color = SoftAmber,
-                        contentColor = Ink,
-                    )
-                }
+                DifficultyPill(category)
                 Text(prompt, style = MaterialTheme.typography.headlineMedium, color = Ink)
                 content()
             }
