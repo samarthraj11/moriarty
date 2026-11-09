@@ -16,6 +16,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
@@ -66,16 +70,31 @@ fun TopBar(title: String, subtitle: String? = null, leading: (@Composable () -> 
 @Composable
 fun MoriartyBottomBar(selected: RootDestination, onSelect: (RootDestination) -> Unit) {
     val items = listOf(
-        Triple(RootDestination.Levels, "Levels", Icons.Outlined.Home),
+        Triple(RootDestination.Levels, "Home", Icons.Outlined.Home),
         Triple(RootDestination.Daily, "Daily", Icons.Outlined.CalendarToday),
         Triple(RootDestination.Leaderboard, "Leaderboard", Icons.Outlined.EmojiEvents),
         Triple(RootDestination.Profile, "Profile", Icons.Outlined.PersonOutline),
     )
-    Column(Modifier.background(Paper).navigationBarsPadding()) {
-        HorizontalDivider(color = Line)
-        NavigationBar(containerColor = Paper, tonalElevation = 0.dp) {
+    Surface(color = Color.White, shadowElevation = 12.dp, shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)) {
+        Row(
+            Modifier.fillMaxWidth().navigationBarsPadding().padding(horizontal = 18.dp, vertical = 12.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
             items.forEach { (destination, label, icon) ->
-                NavigationBarItem(selected = selected == destination, onClick = { onSelect(destination) }, icon = { Icon(icon, null) }, label = { Text(label, style = MaterialTheme.typography.labelMedium) }, colors = NavigationBarItemDefaults.colors(selectedIconColor = Emerald, selectedTextColor = Emerald, indicatorColor = Mint, unselectedIconColor = InkMuted, unselectedTextColor = InkMuted))
+                val isSelected = selected == destination
+                Box(
+                    Modifier
+                        .size(52.dp)
+                        .then(if (isSelected) Modifier.shadow(14.dp, CircleShape, ambientColor = Indigo, spotColor = Indigo) else Modifier)
+                        .clip(CircleShape)
+                        .background(if (isSelected) IndigoGradient else Brush.linearGradient(listOf(Color.Transparent, Color.Transparent)))
+                        .semantics { contentDescription = label }
+                        .clickable { onSelect(destination) },
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(icon, null, tint = if (isSelected) Color.White else Lavender, modifier = Modifier.size(25.dp))
+                }
             }
         }
     }
