@@ -108,11 +108,7 @@ fun PuzzleScreen(
                     )
                 },
             )
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Choose an answer", style = MaterialTheme.typography.titleLarge, color = Ink)
-                Spacer(Modifier.weight(1f))
-                Text("One option fits", style = MaterialTheme.typography.bodyMedium, color = InkMuted)
-            }
+            Text("Choose an answer", style = MaterialTheme.typography.titleLarge, color = Ink)
             puzzle.options.chunked(2).forEach { row ->
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                     row.forEach { answer ->
