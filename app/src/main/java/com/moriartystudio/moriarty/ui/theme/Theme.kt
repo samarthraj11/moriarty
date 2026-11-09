@@ -11,20 +11,20 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
-val Ink = Color(0xFF132238)
-val InkMuted = Color(0xFF587083)
-val Ivory = Color(0xFFFFFAF0)
-val Paper = Color(0xFFFFFDF8)
+val Ink = Color(0xFF17212B)
+val InkMuted = Color(0xFF61717E)
+val Ivory = Color(0xFFFAF7EF)
+val Paper = Color(0xFFFFFEFA)
 val Emerald = Color(0xFF0D6B56)
 val EmeraldDark = Color(0xFF095443)
 val Mint = Color(0xFFDCEFE5)
 val SoftMint = Color(0xFFEDF7F0)
 val Peach = Color(0xFFFF9272)
 val SoftPeach = Color(0xFFFFE1D4)
-val Amber = Color(0xFFFFC45C)
-val SoftAmber = Color(0xFFFFE8BA)
-val Line = Color(0xFFE5E7E2)
-val Mist = Color(0xFFF2F2ED)
+val Amber = Color(0xFFEAA33A)
+val SoftAmber = Color(0xFFFFE8BD)
+val Line = Color(0xFFDDE1DC)
+val Mist = Color(0xFFF0F1EC)
 val ErrorCoral = Color(0xFFE96952)
 
 private val MoriartyColorScheme = lightColorScheme(

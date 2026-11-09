@@ -28,6 +28,7 @@ class LocalGameRepository(
                 isSolved = puzzle.level in solved,
                 isUnlocked = ProgressionRules.isUnlocked(puzzle.level, solved),
                 bestTimeSeconds = preferences.getInt(bestTimeKey(puzzle.level), -1).takeIf { it >= 0 },
+                difficultyRating = puzzle.difficultyRating,
             )
         }
     }
