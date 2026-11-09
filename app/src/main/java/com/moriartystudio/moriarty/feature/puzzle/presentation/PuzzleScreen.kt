@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
@@ -114,11 +113,10 @@ fun PuzzleScreen(
                 Spacer(Modifier.weight(1f))
                 Text("One option fits", style = MaterialTheme.typography.bodyMedium, color = InkMuted)
             }
-            puzzle.options.chunked(2).forEachIndexed { rowIndex, row ->
+            puzzle.options.chunked(2).forEach { row ->
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    row.forEachIndexed { columnIndex, answer ->
+                    row.forEach { answer ->
                         AnswerOption(
-                            label = ('A'.code + rowIndex * 2 + columnIndex).toChar().toString(),
                             text = answer,
                             visual = puzzle.optionVisuals[answer],
                             correct = state.correctAnswer == answer,
@@ -212,7 +210,6 @@ private fun PuzzleCard(
 
 @Composable
 private fun AnswerOption(
-    label: String,
     text: String,
     visual: PuzzleAnswerVisual?,
     correct: Boolean,
@@ -233,40 +230,18 @@ private fun AnswerOption(
     Surface(
         modifier = modifier
             .height(if (visual == null) 72.dp else 96.dp)
-            .semantics { contentDescription = "Answer $label: $text" }
+            .semantics { contentDescription = "Answer: $text" }
             .clickable(enabled = !correct && !incorrect, onClick = onClick),
         shape = RoundedCornerShape(20.dp),
         color = containerColor,
         border = BorderStroke(if (correct || incorrect) 1.5.dp else 1.dp, borderColor),
     ) {
         Box(modifier = Modifier.padding(10.dp), contentAlignment = Alignment.Center) {
-            Surface(
-                modifier = Modifier.align(Alignment.TopStart).size(25.dp),
-                shape = CircleShape,
-                color = when {
-                    incorrect -> ErrorCoral.copy(alpha = 0.13f)
-                    correct -> Emerald.copy(alpha = 0.13f)
-                    else -> Ivory
-                },
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Text(
-                        label,
-                        style = MaterialTheme.typography.labelMedium,
-                        color = when {
-                            incorrect -> ErrorCoral
-                            correct -> Emerald
-                            else -> InkMuted
-                        },
-                    )
-                }
-            }
             if (visual == null) {
                 Text(
                     text,
                     style = MaterialTheme.typography.titleMedium,
                     color = if (incorrect) ErrorCoral else Ink,
-                    modifier = Modifier.padding(start = 22.dp),
                 )
             } else {
                 val visualModifier = when (visual) {
