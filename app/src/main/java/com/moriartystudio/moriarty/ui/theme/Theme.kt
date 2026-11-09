@@ -11,25 +11,23 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
-val Ink = Color(0xFF17212B)
-val InkMuted = Color(0xFF61717E)
-val Ivory = Color(0xFFFAF7EF)
-val Paper = Color(0xFFFFFEFA)
-val Emerald = Color(0xFF0D6B56)
-val EmeraldDark = Color(0xFF095443)
-val Mint = Color(0xFFDCEFE5)
-val SoftMint = Color(0xFFEDF7F0)
+val Ink = Color(0xFF12142B)
+val InkMuted = Color(0xFF6A6F8F)
+val Ivory = Color.White
+val Paper = Color(0xFFF4F5FD)
+val IndigoDark = Color(0xFF3E4BE0)
+val SoftFrost = Color(0xFFF4F5FD)
 val Peach = Color(0xFFFF9272)
-val SoftPeach = Color(0xFFFFE1D4)
-val Amber = Color(0xFFEAA33A)
-val SoftAmber = Color(0xFFFFE8BD)
-val Line = Color(0xFFDDE1DC)
-val Mist = Color(0xFFF0F1EC)
+val SoftPeach = Color(0xFFFFE3DA)
+val Amber = Color(0xFFF5B52E)
+val SoftAmber = Color(0xFFFFF1CF)
+val Line = Color(0xFFE3E5F6)
+val Mist = Color(0xFFEEF0FB)
 val ErrorCoral = Color(0xFFE96952)
 
 private val MoriartyColorScheme = lightColorScheme(
-    primary = Emerald, onPrimary = Color.White,
-    primaryContainer = Mint, onPrimaryContainer = EmeraldDark,
+    primary = Indigo, onPrimary = Color.White,
+    primaryContainer = Frost, onPrimaryContainer = IndigoDark,
     secondary = Amber, onSecondary = Ink,
     tertiary = Peach, background = Ivory, onBackground = Ink,
     surface = Paper, onSurface = Ink, surfaceVariant = Mist,

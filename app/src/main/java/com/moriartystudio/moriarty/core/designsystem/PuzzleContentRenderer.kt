@@ -39,13 +39,13 @@ import com.moriartystudio.moriarty.core.model.PuzzleAnswerVisual
 import com.moriartystudio.moriarty.core.model.ShapeKind
 import com.moriartystudio.moriarty.core.model.VisualToken
 import com.moriartystudio.moriarty.ui.theme.Amber
-import com.moriartystudio.moriarty.ui.theme.Emerald
-import com.moriartystudio.moriarty.ui.theme.EmeraldDark
+import com.moriartystudio.moriarty.ui.theme.Indigo
+import com.moriartystudio.moriarty.ui.theme.IndigoDark
 import com.moriartystudio.moriarty.ui.theme.Ink
 import com.moriartystudio.moriarty.ui.theme.InkMuted
 import com.moriartystudio.moriarty.ui.theme.Ivory
 import com.moriartystudio.moriarty.ui.theme.Line
-import com.moriartystudio.moriarty.ui.theme.Mint
+import com.moriartystudio.moriarty.ui.theme.Frost
 import com.moriartystudio.moriarty.ui.theme.Paper
 import com.moriartystudio.moriarty.ui.theme.Peach
 import com.moriartystudio.moriarty.ui.theme.SoftAmber
@@ -66,7 +66,7 @@ fun PuzzleContentRenderer(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFFFFF4DD))
+                .background(Color(0xFFF1F2FF))
                 .padding(if (compact) 14.dp else 20.dp),
             contentAlignment = Alignment.Center,
         ) {
@@ -133,8 +133,8 @@ private fun NumberSequence(content: PuzzleContent.NumberSequence, compact: Boole
             Box(
                 modifier = Modifier
                     .size(tileSize)
-                    .background(if (value == "?") Mint else Ivory, RoundedCornerShape(14.dp))
-                    .border(1.dp, if (value == "?") Emerald else Line, RoundedCornerShape(14.dp)),
+                    .background(if (value == "?") Frost else Ivory, RoundedCornerShape(14.dp))
+                    .border(1.dp, if (value == "?") Indigo else Line, RoundedCornerShape(14.dp)),
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
@@ -186,8 +186,8 @@ private fun ClueList(clues: List<String>, compact: Boolean, showLetters: Boolean
                     .padding(horizontal = 13.dp, vertical = if (compact) 9.dp else 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Box(Modifier.size(28.dp).background(Mint, CircleShape), contentAlignment = Alignment.Center) {
-                    Text(if (showLetters) ('A' + index).toString() else "${index + 1}", color = EmeraldDark, fontWeight = FontWeight.Bold)
+                Box(Modifier.size(28.dp).background(Frost, CircleShape), contentAlignment = Alignment.Center) {
+                    Text(if (showLetters) ('A' + index).toString() else "${index + 1}", color = IndigoDark, fontWeight = FontWeight.Bold)
                 }
                 Spacer(Modifier.width(10.dp))
                 Text(clue, style = if (compact) MaterialTheme.typography.bodyMedium else MaterialTheme.typography.bodyLarge, color = Ink)
@@ -207,7 +207,7 @@ private fun EquationList(rows: List<String>, compact: Boolean) {
             Text(
                 row,
                 modifier = Modifier
-                    .background(if (index == rows.lastIndex) Mint else Ivory, RoundedCornerShape(14.dp))
+                    .background(if (index == rows.lastIndex) Frost else Ivory, RoundedCornerShape(14.dp))
                     .padding(horizontal = 22.dp, vertical = if (compact) 8.dp else 11.dp),
                 style = if (compact) MaterialTheme.typography.titleMedium else MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
@@ -246,18 +246,18 @@ private fun TokenTile(token: VisualToken?, size: Int) {
     Box(
         modifier = Modifier
             .size(size.dp)
-            .background(if (token == null) Mint else Ivory, RoundedCornerShape(16.dp))
-            .border(1.dp, if (token == null) Emerald else Line, RoundedCornerShape(16.dp)),
+            .background(if (token == null) Frost else Ivory, RoundedCornerShape(16.dp))
+            .border(1.dp, if (token == null) Indigo else Line, RoundedCornerShape(16.dp)),
         contentAlignment = Alignment.Center,
     ) {
-        if (token == null) Text("?", style = MaterialTheme.typography.titleLarge, color = Emerald, fontWeight = FontWeight.Bold)
+        if (token == null) Text("?", style = MaterialTheme.typography.titleLarge, color = Indigo, fontWeight = FontWeight.Bold)
         else ShapeGlyph(token, Modifier.size((size * .58f).dp))
     }
 }
 
 @Composable
 private fun ShapeGlyph(token: VisualToken, modifier: Modifier) {
-    val colors = listOf(Emerald, Peach, Amber, Color(0xFF78BDA5))
+    val colors = listOf(Indigo, Peach, Amber, Color(0xFF9DA6FB))
     val color = colors[token.accentIndex.mod(colors.size)]
     Canvas(modifier) {
         rotate(token.rotationDegrees) {
@@ -308,7 +308,7 @@ private fun RouteGrid(content: PuzzleContent.RouteGrid) {
                 drawRoundRect(
                     color = when (index) {
                         in content.blockedCells -> Ink.copy(alpha = .13f)
-                        content.startCell -> Mint
+                        content.startCell -> Frost
                         content.endCell -> SoftPeach
                         else -> Ivory
                     },
@@ -324,7 +324,7 @@ private fun RouteGrid(content: PuzzleContent.RouteGrid) {
                     style = Stroke(2f),
                 )
                 val center = topLeft + Offset(cell / 2f, cell / 2f)
-                if (index == content.startCell) drawCircle(Emerald, cell * .18f, center)
+                if (index == content.startCell) drawCircle(Indigo, cell * .18f, center)
                 if (index == content.endCell) {
                     drawPath(Path().apply {
                         moveTo(center.x, center.y - cell * .20f)

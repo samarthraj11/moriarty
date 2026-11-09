@@ -30,9 +30,13 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 fun DailyScreen(viewModel: DailyViewModel, onStart: () -> Unit, onRoot: (RootDestination) -> Unit) {
     val state by viewModel.collectAsState(); viewModel.collectSideEffect { onStart() }
     val puzzle = state.puzzle ?: return
-    Scaffold(modifier = Modifier.statusBarsPadding(), containerColor = Ivory, bottomBar = { MoriartyBottomBar(RootDestination.Daily, onRoot) }) { padding ->
-        Column(Modifier.fillMaxSize().padding(padding).verticalScroll(rememberScrollState()).padding(horizontal = 22.dp, vertical = 14.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-            Row(verticalAlignment = Alignment.Top) { Column(Modifier.weight(1f)) { Text("Daily challenge", style = MaterialTheme.typography.headlineLarge); Text(state.dateLabel, style = MaterialTheme.typography.bodyLarge, color = InkMuted) }; Icon(Icons.Outlined.LocalFireDepartment, null, tint = Color(0xFFFF9818)); Text(if (state.streak == 0) " New streak" else " ${state.streak} day streak", color = InkMuted, style = MaterialTheme.typography.labelLarge) }
+    MoriartyPage(
+        title = "Daily challenge",
+        subtitle = state.dateLabel,
+        bottomBar = { MoriartyBottomBar(RootDestination.Daily, onRoot) },
+        trailing = { HeaderPill { Icon(Icons.Outlined.LocalFireDepartment, null, tint = Color(0xFFE77C22), modifier = Modifier.size(17.dp)); Spacer(Modifier.width(4.dp)); Text(if (state.streak == 0) "New streak" else "${state.streak} days", style = MaterialTheme.typography.labelLarge, color = Ink) } },
+    ) {
+        Column(Modifier.padding(horizontal = 22.dp, vertical = 22.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
             PuzzleContentRenderer(puzzle.content, Modifier.fillMaxWidth().height(240.dp))
             Text(puzzle.title, style = MaterialTheme.typography.headlineMedium)
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) { DifficultyPill(puzzle.difficulty.name); DifficultyPill(puzzle.category.label, SoftPeach, Ink); DifficultyPill("One ranked attempt", Mist, Ink) }
@@ -44,11 +48,11 @@ fun DailyScreen(viewModel: DailyViewModel, onStart: () -> Unit, onRoot: (RootDes
                 HorizontalDivider(color = Line)
                 PenaltyRow(Icons.Outlined.Lightbulb, "Second hint", "+45 sec", SoftAmber, Color(0xFFC37800))
                 HorizontalDivider(color = Line)
-                PenaltyRow(Icons.Outlined.Groups, "Guided help", "Unranked", Mint, Emerald)
+                PenaltyRow(Icons.Outlined.Groups, "Guided help", "Unranked", Frost, Indigo)
             }
             MoriartyPrimaryButton("Start challenge", viewModel::start, trailing = { Icon(Icons.AutoMirrored.Outlined.ArrowForward, null) })
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                listOf("Mon" to "✓", "Tue" to "✓", "Wed" to "23", "Thu" to "×", "Fri" to "", "Sat" to "", "Sun" to "").forEach { (day, value) -> Column(horizontalAlignment = Alignment.CenterHorizontally) { Text(day, style = MaterialTheme.typography.labelMedium, color = InkMuted); Spacer(Modifier.height(6.dp)); Box(Modifier.size(38.dp).background(if (day == "Wed") Emerald else if (value.isNotEmpty()) Mint else Color.Transparent, CircleShape), contentAlignment = Alignment.Center) { Text(value, color = if (day == "Wed") Color.White else Emerald, fontWeight = FontWeight.Bold) } } }
+                listOf("Mon" to "✓", "Tue" to "✓", "Wed" to "23", "Thu" to "×", "Fri" to "", "Sat" to "", "Sun" to "").forEach { (day, value) -> Column(horizontalAlignment = Alignment.CenterHorizontally) { Text(day, style = MaterialTheme.typography.labelMedium, color = InkMuted); Spacer(Modifier.height(6.dp)); Box(Modifier.size(38.dp).background(if (day == "Wed") Indigo else if (value.isNotEmpty()) Frost else Color.Transparent, CircleShape), contentAlignment = Alignment.Center) { Text(value, color = if (day == "Wed") Color.White else Indigo, fontWeight = FontWeight.Bold) } } }
             }
         }
     }

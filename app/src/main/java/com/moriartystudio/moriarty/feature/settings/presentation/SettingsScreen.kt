@@ -1,5 +1,7 @@
 package com.moriartystudio.moriarty.feature.settings.presentation
 
+import com.moriartystudio.moriarty.core.designsystem.GlassIconButton
+import com.moriartystudio.moriarty.core.designsystem.MoriartyPage
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -25,8 +27,8 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 @Composable
 fun SettingsScreen(viewModel: SettingsViewModel, onBack: () -> Unit) {
     val state by viewModel.collectAsState(); viewModel.collectSideEffect { when (it) { SettingsSideEffect.GoBack, SettingsSideEffect.SignOut -> onBack() } }
-    Scaffold(containerColor = Ivory, topBar = { TopBar("Settings", leading = { IconCircle(Icons.AutoMirrored.Outlined.ArrowBack, viewModel::back, "Back") }) }) { padding ->
-        Column(Modifier.fillMaxSize().padding(padding).verticalScroll(rememberScrollState()).padding(horizontal = 22.dp), verticalArrangement = Arrangement.spacedBy(18.dp)) {
+    MoriartyPage(title = "Settings", leading = { GlassIconButton(Icons.AutoMirrored.Outlined.ArrowBack, viewModel::back, "Back") }) {
+        Column(Modifier.padding(horizontal = 22.dp, vertical = 22.dp), verticalArrangement = Arrangement.spacedBy(18.dp)) {
             SettingsGroup("Accessibility") { SettingToggle("Larger puzzle text", "Make puzzle text bigger and easier to read.", state.largerText, viewModel::largerText); SettingToggle("High contrast", "Increase contrast for clearer visuals.", state.highContrast, viewModel::contrast); SettingToggle("Reduce motion", "Minimise animations and motion effects.", state.reduceMotion, viewModel::motion); SettingToggle("Describe visual puzzles", "Play audio descriptions for visual puzzles.", state.audioDescriptions, viewModel::descriptions); SettingToggle("Colour-independent clues", "Show shapes or patterns beyond colour alone.", state.colourIndependent, viewModel::colourClues) }
             SettingsGroup("Sound") { SettingToggle("Sound effects", "Play sounds for interactions and feedback.", state.soundEnabled, viewModel::sound); SettingToggle("Haptic feedback", "Vibrate for key interactions.", state.hapticsEnabled, viewModel::haptics) }
             SettingsGroup("Gameplay") { SettingToggle("Confirm before using a hint", "Show a confirmation before spending a hint.", state.confirmHint, viewModel::confirmHint); SettingToggle("Show timer while solving", "Display how long you’ve been solving a puzzle.", state.timerVisible, viewModel::timer) }
@@ -38,5 +40,5 @@ fun SettingsScreen(viewModel: SettingsViewModel, onBack: () -> Unit) {
 }
 
 @Composable private fun SettingsGroup(title: String, content: @Composable ColumnScope.() -> Unit) { Column(verticalArrangement = Arrangement.spacedBy(10.dp)) { Text(title, style = MaterialTheme.typography.titleMedium, color = InkMuted); Column(Modifier.fillMaxWidth().background(Paper, RoundedCornerShape(22.dp)).padding(horizontal = 16.dp), content = content) } }
-@Composable private fun SettingToggle(title: String, subtitle: String, checked: Boolean, onChecked: (Boolean) -> Unit) { Row(Modifier.fillMaxWidth().padding(vertical = 12.dp), verticalAlignment = Alignment.CenterVertically) { Column(Modifier.weight(1f)) { Text(title, style = MaterialTheme.typography.titleMedium); Text(subtitle, style = MaterialTheme.typography.bodyMedium, color = InkMuted) }; Switch(checked, onChecked, colors = SwitchDefaults.colors(checkedTrackColor = Emerald, checkedThumbColor = Color.White)) } }
+@Composable private fun SettingToggle(title: String, subtitle: String, checked: Boolean, onChecked: (Boolean) -> Unit) { Row(Modifier.fillMaxWidth().padding(vertical = 12.dp), verticalAlignment = Alignment.CenterVertically) { Column(Modifier.weight(1f)) { Text(title, style = MaterialTheme.typography.titleMedium); Text(subtitle, style = MaterialTheme.typography.bodyMedium, color = InkMuted) }; Switch(checked, onChecked, colors = SwitchDefaults.colors(checkedTrackColor = Indigo, checkedThumbColor = Color.White)) } }
 @Composable private fun SettingLink(title: String, subtitle: String) { Row(Modifier.fillMaxWidth().clickable { }.padding(vertical = 15.dp), verticalAlignment = Alignment.CenterVertically) { Column(Modifier.weight(1f)) { Text(title, style = MaterialTheme.typography.titleMedium); Text(subtitle, style = MaterialTheme.typography.bodyMedium, color = InkMuted) }; Icon(Icons.Outlined.ChevronRight, null, tint = InkMuted) } }

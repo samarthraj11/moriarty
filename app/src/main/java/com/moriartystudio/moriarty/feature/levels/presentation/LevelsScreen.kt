@@ -1,5 +1,7 @@
 package com.moriartystudio.moriarty.feature.levels.presentation
 
+import com.moriartystudio.moriarty.core.designsystem.GlassIconButton
+import com.moriartystudio.moriarty.core.designsystem.MoriartyPage
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -53,14 +55,14 @@ import com.moriartystudio.moriarty.core.designsystem.TopBar
 import com.moriartystudio.moriarty.core.model.Level
 import com.moriartystudio.moriarty.core.model.PuzzleCategory
 import com.moriartystudio.moriarty.ui.theme.Amber
-import com.moriartystudio.moriarty.ui.theme.Emerald
+import com.moriartystudio.moriarty.ui.theme.Indigo
 import com.moriartystudio.moriarty.ui.theme.Ink
 import com.moriartystudio.moriarty.ui.theme.InkMuted
 import com.moriartystudio.moriarty.ui.theme.Ivory
 import com.moriartystudio.moriarty.ui.theme.Line
-import com.moriartystudio.moriarty.ui.theme.Mint
+import com.moriartystudio.moriarty.ui.theme.Frost
 import com.moriartystudio.moriarty.ui.theme.Paper
-import com.moriartystudio.moriarty.ui.theme.SoftMint
+import com.moriartystudio.moriarty.ui.theme.SoftFrost
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
@@ -99,27 +101,20 @@ private fun LevelsContent(
         if (index >= 3) listState.scrollToItem(index + 2)
     }
 
-    Scaffold(
-        modifier = Modifier.statusBarsPadding(),
-        containerColor = Ivory,
-        topBar = {
-            TopBar(
-                title = "All levels",
-                subtitle = "Choose what to solve next",
-                leading = { IconCircle(Icons.AutoMirrored.Outlined.ArrowBack, onBack, "Back") },
-            )
-        },
-        bottomBar = {
-            CurrentLevelBar(current = current, onContinue = { current?.let(onLevel) })
-        },
-    ) { padding ->
+    MoriartyPage(
+        title = "All levels",
+        subtitle = "Choose what to solve next",
+        leading = { GlassIconButton(Icons.AutoMirrored.Outlined.ArrowBack, onBack, "Back") },
+        bottomBar = { CurrentLevelBar(current = current, onContinue = { current?.let(onLevel) }) },
+        scrollable = false,
+    ) {
         LazyColumn(
             state = listState,
-            modifier = Modifier.fillMaxSize().padding(padding),
+            modifier = Modifier.fillMaxSize(),
             contentPadding = androidx.compose.foundation.layout.PaddingValues(
                 start = 20.dp,
                 end = 20.dp,
-                top = 8.dp,
+                top = 22.dp,
                 bottom = 24.dp,
             ),
             verticalArrangement = Arrangement.spacedBy(11.dp),
@@ -159,7 +154,7 @@ private fun ProgressCard(solved: Int, total: Int) {
                 Text(
                     "$solved / $total",
                     style = MaterialTheme.typography.headlineMedium,
-                    color = Emerald,
+                    color = Indigo,
                 )
             }
             LinearProgressIndicator(
@@ -196,15 +191,15 @@ private fun CategoryChip(label: String, selected: Boolean, onClick: () -> Unit) 
         shape = RoundedCornerShape(14.dp),
         colors = FilterChipDefaults.filterChipColors(
             containerColor = Paper,
-            selectedContainerColor = Mint,
+            selectedContainerColor = Frost,
             labelColor = InkMuted,
-            selectedLabelColor = Emerald,
+            selectedLabelColor = Indigo,
         ),
         border = FilterChipDefaults.filterChipBorder(
             enabled = true,
             selected = selected,
             borderColor = Line,
-            selectedBorderColor = Emerald.copy(alpha = 0.28f),
+            selectedBorderColor = Indigo.copy(alpha = 0.28f),
         ),
     )
 }
@@ -213,7 +208,7 @@ private fun CategoryChip(label: String, selected: Boolean, onClick: () -> Unit) 
 private fun LevelCard(level: Level, isCurrent: Boolean, onClick: () -> Unit) {
     val accent = when (level.category) {
         PuzzleCategory.Pattern -> Amber
-        PuzzleCategory.Spatial -> Emerald
+        PuzzleCategory.Spatial -> Indigo
         PuzzleCategory.Deduction -> Color(0xFFDB7659)
         PuzzleCategory.Logic -> Color(0xFF587DA8)
     }
@@ -222,8 +217,8 @@ private fun LevelCard(level: Level, isCurrent: Boolean, onClick: () -> Unit) {
             .fillMaxWidth()
             .clickable(enabled = level.isUnlocked, onClick = onClick),
         shape = RoundedCornerShape(22.dp),
-        color = if (isCurrent) SoftMint else Paper,
-        border = BorderStroke(if (isCurrent) 1.5.dp else 1.dp, if (isCurrent) Emerald else Line),
+        color = if (isCurrent) SoftFrost else Paper,
+        border = BorderStroke(if (isCurrent) 1.5.dp else 1.dp, if (isCurrent) Indigo else Line),
     ) {
         Row(
             modifier = Modifier.padding(12.dp),
@@ -246,7 +241,7 @@ private fun LevelCard(level: Level, isCurrent: Boolean, onClick: () -> Unit) {
                         Text(
                             level.number.toString(),
                             style = MaterialTheme.typography.titleLarge,
-                            color = if (isCurrent) Emerald else Ink,
+                            color = if (isCurrent) Indigo else Ink,
                             fontWeight = FontWeight.Bold,
                         )
                     } else {
@@ -269,19 +264,19 @@ private fun LevelCard(level: Level, isCurrent: Boolean, onClick: () -> Unit) {
                     Text("Difficulty ${level.difficultyRating}/10", style = MaterialTheme.typography.labelMedium, color = InkMuted)
                 }
                 level.bestTimeSeconds?.let {
-                    Text("Best  %d:%02d".format(it / 60, it % 60), style = MaterialTheme.typography.labelMedium, color = Emerald)
+                    Text("Best  %d:%02d".format(it / 60, it % 60), style = MaterialTheme.typography.labelMedium, color = Indigo)
                 }
             }
             when {
-                level.isSolved -> Surface(shape = CircleShape, color = Mint) {
+                level.isSolved -> Surface(shape = CircleShape, color = Frost) {
                     Icon(
                         Icons.Outlined.Check,
                         "Solved",
-                        tint = Emerald,
+                        tint = Indigo,
                         modifier = Modifier.padding(9.dp).size(18.dp),
                     )
                 }
-                isCurrent -> Surface(shape = CircleShape, color = Emerald) {
+                isCurrent -> Surface(shape = CircleShape, color = Indigo) {
                     Icon(
                         Icons.AutoMirrored.Filled.ArrowForward,
                         "Continue",
@@ -289,7 +284,7 @@ private fun LevelCard(level: Level, isCurrent: Boolean, onClick: () -> Unit) {
                         modifier = Modifier.padding(9.dp).size(18.dp),
                     )
                 }
-                level.isUnlocked -> Text("Open", style = MaterialTheme.typography.labelMedium, color = Emerald)
+                level.isUnlocked -> Text("Open", style = MaterialTheme.typography.labelMedium, color = Indigo)
             }
         }
     }
@@ -297,9 +292,8 @@ private fun LevelCard(level: Level, isCurrent: Boolean, onClick: () -> Unit) {
 
 @Composable
 private fun CurrentLevelBar(current: Level?, onContinue: () -> Unit) {
-    Surface(color = Paper, shadowElevation = 8.dp) {
+    Surface(color = Color.White, shadowElevation = 12.dp, shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)) {
         Column(Modifier.navigationBarsPadding()) {
-            HorizontalDivider(color = Line)
             Row(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 11.dp),
                 verticalAlignment = Alignment.CenterVertically,
@@ -323,7 +317,7 @@ private fun CurrentLevelBar(current: Level?, onContinue: () -> Unit) {
                     enabled = current != null,
                     modifier = Modifier.height(48.dp),
                     shape = RoundedCornerShape(16.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Emerald),
+                    colors = ButtonDefaults.buttonColors(containerColor = Indigo),
                 ) {
                     Text("Continue", fontWeight = FontWeight.SemiBold)
                 }

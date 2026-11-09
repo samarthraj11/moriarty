@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
@@ -43,6 +44,25 @@ import com.moriartystudio.moriarty.feature.solution.presentation.SolutionViewMod
 
 private const val NAV_ANIMATION_MS = 300
 
+private fun forwardSlide(): ContentTransform =
+    slideInHorizontally(tween(NAV_ANIMATION_MS)) { it } togetherWith slideOutHorizontally(tween(NAV_ANIMATION_MS)) { -it / 3 }
+
+private fun backSlide(): ContentTransform =
+    slideInHorizontally(tween(NAV_ANIMATION_MS)) { -it / 3 } togetherWith slideOutHorizontally(tween(NAV_ANIMATION_MS)) { it }
+
+/** Full-width slide between tabs: a tab to the right enters from the right, one to the left from the left. */
+private fun tabSlide(direction: Int): ContentTransform =
+    slideInHorizontally(tween(NAV_ANIMATION_MS)) { it * direction } togetherWith slideOutHorizontally(tween(NAV_ANIMATION_MS)) { -it * direction }
+
+// Position of a route in the bottom tab order, or null for non-tab screens.
+private fun tabIndexOf(route: Any): Int? = when (route) {
+    HomeRoute -> RootDestination.Levels.ordinal
+    DailyRoute -> RootDestination.Daily.ordinal
+    LeaderboardRoute -> RootDestination.Leaderboard.ordinal
+    ProfileRoute -> RootDestination.Profile.ordinal
+    else -> null
+}
+
 enum class RootDestination { Levels, Daily, Leaderboard, Profile }
 
 private data object HomeRoute
@@ -59,10 +79,18 @@ fun MoriartyApp() {
     val backStack = remember { mutableStateListOf<Any>(HomeRoute) }
     var showExitDialog by remember { mutableStateOf(false) }
     val activity = LocalContext.current.findActivity()
-    fun back() { if (backStack.size > 1) backStack.removeAt(backStack.lastIndex) }
-    fun open(route: Any) { backStack.add(route) }
+    // +1 / -1 while switching to a bottom tab on the right / left of the current one, else 0.
+    val tabDirection = remember { IntArray(1) }
+    fun back() { tabDirection[0] = 0; if (backStack.size > 1) backStack.removeAt(backStack.lastIndex) }
+    fun open(route: Any) { tabDirection[0] = 0; backStack.add(route) }
     fun openRoot(destination: RootDestination) {
         val route = when (destination) { RootDestination.Levels -> HomeRoute; RootDestination.Daily -> DailyRoute; RootDestination.Leaderboard -> LeaderboardRoute; RootDestination.Profile -> ProfileRoute }
+        val currentTab = backStack.lastOrNull()?.let(::tabIndexOf)
+        tabDirection[0] = when {
+            currentTab == null || currentTab == destination.ordinal -> 0
+            destination.ordinal > currentTab -> 1
+            else -> -1
+        }
         backStack.clear(); backStack.add(route)
     }
 
@@ -85,16 +113,11 @@ fun MoriartyApp() {
     NavDisplay(
         backStack = backStack,
         onBack = ::back,
-        // Going deeper slides the new screen in from the right; going back reverses it.
-        transitionSpec = {
-            slideInHorizontally(tween(NAV_ANIMATION_MS)) { it } togetherWith slideOutHorizontally(tween(NAV_ANIMATION_MS)) { -it / 3 }
-        },
-        popTransitionSpec = {
-            slideInHorizontally(tween(NAV_ANIMATION_MS)) { -it / 3 } togetherWith slideOutHorizontally(tween(NAV_ANIMATION_MS)) { it }
-        },
-        predictivePopTransitionSpec = {
-            slideInHorizontally(tween(NAV_ANIMATION_MS)) { -it / 3 } togetherWith slideOutHorizontally(tween(NAV_ANIMATION_MS)) { it }
-        },
+        // Going deeper slides the new screen in from the right and back reverses it;
+        // switching bottom tabs slides toward the side the tab sits on.
+        transitionSpec = { if (tabDirection[0] != 0) tabSlide(tabDirection[0]) else forwardSlide() },
+        popTransitionSpec = { if (tabDirection[0] != 0) tabSlide(tabDirection[0]) else backSlide() },
+        predictivePopTransitionSpec = { if (tabDirection[0] != 0) tabSlide(tabDirection[0]) else backSlide() },
         entryDecorators = listOf(rememberSaveableStateHolderNavEntryDecorator(), rememberViewModelStoreNavEntryDecorator()),
         entryProvider = entryProvider {
             entry<HomeRoute> {

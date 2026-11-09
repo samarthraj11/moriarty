@@ -1,5 +1,7 @@
 package com.moriartystudio.moriarty.feature.puzzle.presentation
 
+import com.moriartystudio.moriarty.core.designsystem.GlassIconButton
+import com.moriartystudio.moriarty.core.designsystem.MoriartyPage
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -46,13 +48,13 @@ import com.moriartystudio.moriarty.core.designsystem.PuzzleContentRenderer
 import com.moriartystudio.moriarty.core.designsystem.TopBar
 import com.moriartystudio.moriarty.core.model.PuzzleAnswerVisual
 import com.moriartystudio.moriarty.ui.theme.Amber
-import com.moriartystudio.moriarty.ui.theme.Emerald
+import com.moriartystudio.moriarty.ui.theme.Indigo
 import com.moriartystudio.moriarty.ui.theme.ErrorCoral
 import com.moriartystudio.moriarty.ui.theme.Ink
 import com.moriartystudio.moriarty.ui.theme.InkMuted
 import com.moriartystudio.moriarty.ui.theme.Ivory
 import com.moriartystudio.moriarty.ui.theme.Line
-import com.moriartystudio.moriarty.ui.theme.Mint
+import com.moriartystudio.moriarty.ui.theme.Frost
 import com.moriartystudio.moriarty.ui.theme.Paper
 import com.moriartystudio.moriarty.ui.theme.SoftAmber
 import com.moriartystudio.moriarty.ui.theme.SoftPeach
@@ -76,26 +78,14 @@ fun PuzzleScreen(
     }
     val puzzle = state.puzzle ?: return
 
-    Scaffold(
-        modifier = Modifier.statusBarsPadding(),
-        containerColor = Ivory,
-        topBar = {
-            TopBar(
-                title = "Level ${puzzle.level}",
-                subtitle = puzzle.title,
-                leading = {
-                    IconCircle(Icons.AutoMirrored.Outlined.ArrowBack, viewModel::goBack, "Back")
-                },
-                trailing = { PuzzleTimer(state.elapsedSeconds, state.status == AnswerStatus.Incorrect) },
-            )
-        },
-    ) { padding ->
+    MoriartyPage(
+        title = "Level ${puzzle.level}",
+        subtitle = puzzle.title,
+        leading = { GlassIconButton(Icons.AutoMirrored.Outlined.ArrowBack, viewModel::goBack, "Back") },
+        trailing = { PuzzleTimer(state.elapsedSeconds, state.status == AnswerStatus.Incorrect) },
+    ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp),
+            modifier = Modifier.padding(horizontal = 20.dp, vertical = 22.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             PuzzleCard(
@@ -136,7 +126,7 @@ fun PuzzleScreen(
                     Spacer(Modifier.width(7.dp))
                     Text(
                         if (state.showHint) "Hide hint" else "Show a hint  +20 sec",
-                        color = Emerald,
+                        color = Indigo,
                         fontWeight = FontWeight.SemiBold,
                     )
                 }
@@ -155,9 +145,8 @@ fun PuzzleScreen(
 @Composable
 private fun PuzzleTimer(seconds: Int, penalized: Boolean) {
     Surface(
-        shape = RoundedCornerShape(15.dp),
-        color = if (penalized) SoftAmber else Paper,
-        border = BorderStroke(1.dp, if (penalized) Amber.copy(alpha = 0.5f) else Line),
+        shape = RoundedCornerShape(50),
+        color = if (penalized) SoftAmber else Color.White,
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 11.dp, vertical = 9.dp),
@@ -188,7 +177,7 @@ private fun PuzzleCard(
         shadowElevation = 2.dp,
     ) {
         Column {
-            Box(Modifier.fillMaxWidth().height(5.dp).background(Emerald))
+            Box(Modifier.fillMaxWidth().height(5.dp).background(Indigo))
             Column(
                 modifier = Modifier.padding(17.dp),
                 verticalArrangement = Arrangement.spacedBy(14.dp),
@@ -212,12 +201,12 @@ private fun AnswerOption(
 ) {
     val borderColor = when {
         incorrect -> ErrorCoral
-        correct -> Emerald
+        correct -> Indigo
         else -> Line
     }
     val containerColor = when {
         incorrect -> SoftPeach
-        correct -> Mint
+        correct -> Frost
         else -> Paper
     }
     Surface(
@@ -247,7 +236,7 @@ private fun AnswerOption(
                 Icon(
                     Icons.Filled.CheckCircle,
                     "Correct",
-                    tint = Emerald,
+                    tint = Indigo,
                     modifier = Modifier.align(Alignment.TopEnd).size(23.dp),
                 )
             }
