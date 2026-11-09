@@ -83,3 +83,6 @@ data class PlayerProfile(
     val averageSeconds: Int,
     val accuracy: Int,
 )
+
+/** In-flight state of an unfinished puzzle, kept so leaving and re-entering does not reset the clock. */
+data class PuzzleProgress(val elapsedSeconds: Int = 0, val hintUsed: Boolean = false)

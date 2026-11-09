@@ -5,6 +5,7 @@ import com.moriartystudio.moriarty.core.model.LeaderboardEntry
 import com.moriartystudio.moriarty.core.model.Level
 import com.moriartystudio.moriarty.core.model.PlayerProfile
 import com.moriartystudio.moriarty.core.model.Puzzle
+import com.moriartystudio.moriarty.core.model.PuzzleProgress
 import com.moriartystudio.moriarty.data.local.AssetPuzzleLocalDataSource
 import com.moriartystudio.moriarty.data.local.PuzzleLocalDataSource
 import com.moriartystudio.moriarty.domain.progression.ProgressionRules
@@ -44,6 +45,22 @@ class LocalGameRepository(
             .apply()
     }
 
+    override fun puzzleProgress(level: Int) = PuzzleProgress(
+        elapsedSeconds = preferences.getInt(progressSecondsKey(level), 0),
+        hintUsed = preferences.getBoolean(progressHintKey(level), false),
+    )
+
+    override fun savePuzzleProgress(level: Int, progress: PuzzleProgress) {
+        preferences.edit()
+            .putInt(progressSecondsKey(level), progress.elapsedSeconds)
+            .putBoolean(progressHintKey(level), progress.hintUsed)
+            .apply()
+    }
+
+    override fun clearPuzzleProgress(level: Int) {
+        preferences.edit().remove(progressSecondsKey(level)).remove(progressHintKey(level)).apply()
+    }
+
     override fun leaderboard(): List<LeaderboardEntry> = listOf(
         LeaderboardEntry(1, "Anika", 1, 24), LeaderboardEntry(2, "Ravi", 1, 29),
         LeaderboardEntry(3, "Mira", 1, 31), LeaderboardEntry(4, "Leo", 1, 33),
@@ -65,6 +82,8 @@ class LocalGameRepository(
         .toSet()
 
     private fun bestTimeKey(level: Int) = "best_time_$level"
+    private fun progressSecondsKey(level: Int) = "progress_seconds_$level"
+    private fun progressHintKey(level: Int) = "progress_hint_$level"
 
     private companion object {
         const val SOLVED_LEVELS = "solved_levels"

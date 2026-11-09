@@ -3,6 +3,7 @@ package com.moriartystudio.moriarty.feature.puzzle.presentation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.moriartystudio.moriarty.core.model.PuzzleProgress
 import com.moriartystudio.moriarty.domain.repository.GameRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -10,7 +11,11 @@ import org.orbitmvi.orbit.OrbitContainerHost
 import org.orbitmvi.orbit.viewmodel.orbitContainer
 
 class PuzzleViewModel(level: Int, private val repository: GameRepository) : ViewModel(), OrbitContainerHost<PuzzleState, PuzzleState, PuzzleSideEffect> {
-    override val container = orbitContainer<PuzzleState, PuzzleSideEffect>(PuzzleState(puzzle = repository.puzzle(level)))
+    override val container = orbitContainer<PuzzleState, PuzzleSideEffect>(
+        repository.puzzleProgress(level).let { saved ->
+            PuzzleState(puzzle = repository.puzzle(level), elapsedSeconds = saved.elapsedSeconds, hintUsed = saved.hintUsed)
+        },
+    )
 
     init {
         viewModelScope.launch {
@@ -30,6 +35,7 @@ class PuzzleViewModel(level: Int, private val repository: GameRepository) : View
             val seconds = state.elapsedSeconds
             Log.d(TAG, "Level ${puzzle.level} solved in ${seconds}s")
             repository.completeLevel(puzzle.level, seconds)
+            repository.clearPuzzleProgress(puzzle.level)
             reduce { state.copy(status = AnswerStatus.Correct, correctAnswer = answer) }
             delay(SUCCESS_DELAY_MS)
             postSideEffect(if (puzzle.level < repository.levels().size) PuzzleSideEffect.NextLevel(puzzle.level + 1) else PuzzleSideEffect.FinishJourney)
@@ -42,6 +48,16 @@ class PuzzleViewModel(level: Int, private val repository: GameRepository) : View
         reduce { state.copy(showHint = !state.showHint, hintUsed = state.hintUsed || firstUse, elapsedSeconds = state.elapsedSeconds + if (firstUse) 20 else 0) }
     }
     fun goBack() = intent { postSideEffect(PuzzleSideEffect.GoBack) }
+
+    // Leaving mid-puzzle keeps the clock where it was; a solved puzzle starts fresh next time.
+    override fun onCleared() {
+        val current = container.stateFlow.value
+        val level = current.puzzle?.level
+        if (level != null && current.status != AnswerStatus.Correct) {
+            repository.savePuzzleProgress(level, PuzzleProgress(current.elapsedSeconds, current.hintUsed))
+        }
+        super.onCleared()
+    }
 
     private companion object {
         const val TAG = "Puzzle"
