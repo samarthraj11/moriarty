@@ -4,6 +4,10 @@ import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -36,6 +40,8 @@ import com.moriartystudio.moriarty.feature.settings.presentation.SettingsScreen
 import com.moriartystudio.moriarty.feature.settings.presentation.SettingsViewModel
 import com.moriartystudio.moriarty.feature.solution.presentation.SolutionScreen
 import com.moriartystudio.moriarty.feature.solution.presentation.SolutionViewModel
+
+private const val NAV_ANIMATION_MS = 300
 
 enum class RootDestination { Levels, Daily, Leaderboard, Profile }
 
@@ -79,6 +85,16 @@ fun MoriartyApp() {
     NavDisplay(
         backStack = backStack,
         onBack = ::back,
+        // Going deeper slides the new screen in from the right; going back reverses it.
+        transitionSpec = {
+            slideInHorizontally(tween(NAV_ANIMATION_MS)) { it } togetherWith slideOutHorizontally(tween(NAV_ANIMATION_MS)) { -it / 3 }
+        },
+        popTransitionSpec = {
+            slideInHorizontally(tween(NAV_ANIMATION_MS)) { -it / 3 } togetherWith slideOutHorizontally(tween(NAV_ANIMATION_MS)) { it }
+        },
+        predictivePopTransitionSpec = {
+            slideInHorizontally(tween(NAV_ANIMATION_MS)) { -it / 3 } togetherWith slideOutHorizontally(tween(NAV_ANIMATION_MS)) { it }
+        },
         entryDecorators = listOf(rememberSaveableStateHolderNavEntryDecorator(), rememberViewModelStoreNavEntryDecorator()),
         entryProvider = entryProvider {
             entry<HomeRoute> {
