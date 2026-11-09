@@ -50,6 +50,7 @@ data class Level(
     val isUnlocked: Boolean,
     val bestTimeSeconds: Int? = null,
     val difficultyRating: Int = 1,
+    val isSkipped: Boolean = false,
 )
 
 data class Puzzle(

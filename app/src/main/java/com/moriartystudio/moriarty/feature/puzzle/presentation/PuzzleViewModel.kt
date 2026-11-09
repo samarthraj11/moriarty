@@ -22,7 +22,7 @@ class PuzzleViewModel(level: Int, private val repository: GameRepository) : View
             while (true) {
                 delay(1_000)
                 intent {
-                    if (state.status != AnswerStatus.Correct) reduce { state.copy(elapsedSeconds = state.elapsedSeconds + 1) }
+                    if (state.status != AnswerStatus.Correct && state.status != AnswerStatus.Skipped) reduce { state.copy(elapsedSeconds = state.elapsedSeconds + 1) }
                 }
             }
         }
@@ -43,6 +43,14 @@ class PuzzleViewModel(level: Int, private val repository: GameRepository) : View
             reduce { state.copy(status = AnswerStatus.Incorrect, elapsedSeconds = state.elapsedSeconds + 10, wrongOptions = state.wrongOptions + answer) }
         }
     }
+    fun skip() = intent {
+        val puzzle = state.puzzle ?: return@intent
+        if (state.status == AnswerStatus.Correct || state.status == AnswerStatus.Skipped) return@intent
+        Log.d(TAG, "Level ${puzzle.level} skipped after ${state.elapsedSeconds}s")
+        repository.skipLevel(puzzle.level)
+        reduce { state.copy(status = AnswerStatus.Skipped) }
+        postSideEffect(if (puzzle.level < repository.levels().size) PuzzleSideEffect.NextLevel(puzzle.level + 1) else PuzzleSideEffect.FinishJourney)
+    }
     fun toggleHint() = intent {
         val firstUse = !state.showHint && !state.hintUsed
         reduce { state.copy(showHint = !state.showHint, hintUsed = state.hintUsed || firstUse, elapsedSeconds = state.elapsedSeconds + if (firstUse) 20 else 0) }
@@ -53,7 +61,7 @@ class PuzzleViewModel(level: Int, private val repository: GameRepository) : View
     override fun onCleared() {
         val current = container.stateFlow.value
         val level = current.puzzle?.level
-        if (level != null && current.status != AnswerStatus.Correct) {
+        if (level != null && current.status != AnswerStatus.Correct && current.status != AnswerStatus.Skipped) {
             repository.savePuzzleProgress(level, PuzzleProgress(current.elapsedSeconds, current.hintUsed))
         }
         super.onCleared()

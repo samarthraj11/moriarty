@@ -22,6 +22,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.outlined.Lightbulb
+import androidx.compose.material.icons.outlined.SkipNext
 import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -130,17 +131,22 @@ fun PuzzleScreen(
             if (state.showHint) {
                 HintCard(puzzle.hint)
             }
-            TextButton(
-                onClick = viewModel::toggleHint,
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-            ) {
-                Icon(Icons.Outlined.Lightbulb, null, tint = Amber, modifier = Modifier.size(19.dp))
-                Spacer(Modifier.width(7.dp))
-                Text(
-                    if (state.showHint) "Hide hint" else "Show a hint  +20 sec",
-                    color = Emerald,
-                    fontWeight = FontWeight.SemiBold,
-                )
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                TextButton(onClick = viewModel::toggleHint) {
+                    Icon(Icons.Outlined.Lightbulb, null, tint = Amber, modifier = Modifier.size(19.dp))
+                    Spacer(Modifier.width(7.dp))
+                    Text(
+                        if (state.showHint) "Hide hint" else "Show a hint  +20 sec",
+                        color = Emerald,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                }
+                Spacer(Modifier.weight(1f))
+                TextButton(onClick = viewModel::skip) {
+                    Text("Skip", color = InkMuted, fontWeight = FontWeight.SemiBold)
+                    Spacer(Modifier.width(4.dp))
+                    Icon(Icons.Outlined.SkipNext, null, tint = InkMuted, modifier = Modifier.size(20.dp))
+                }
             }
             Spacer(Modifier.height(16.dp))
         }

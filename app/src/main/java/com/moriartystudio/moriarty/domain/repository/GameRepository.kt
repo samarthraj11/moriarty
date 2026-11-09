@@ -10,6 +10,7 @@ interface GameRepository {
     fun levels(): List<Level>
     fun puzzle(level: Int): Puzzle
     fun completeLevel(level: Int, rankedSeconds: Int)
+    fun skipLevel(level: Int)
     fun puzzleProgress(level: Int): PuzzleProgress
     fun savePuzzleProgress(level: Int, progress: PuzzleProgress)
     fun clearPuzzleProgress(level: Int)

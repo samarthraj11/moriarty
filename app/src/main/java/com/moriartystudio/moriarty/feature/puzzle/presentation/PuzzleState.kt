@@ -2,7 +2,7 @@ package com.moriartystudio.moriarty.feature.puzzle.presentation
 
 import com.moriartystudio.moriarty.core.model.Puzzle
 
-enum class AnswerStatus { Unanswered, Incorrect, Correct }
+enum class AnswerStatus { Unanswered, Incorrect, Correct, Skipped }
 
 data class PuzzleState(
     val puzzle: Puzzle? = null,

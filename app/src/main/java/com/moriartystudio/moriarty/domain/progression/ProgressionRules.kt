@@ -5,7 +5,7 @@ import com.moriartystudio.moriarty.core.model.Level
 object ProgressionRules {
     fun isUnlocked(level: Int, solvedLevels: Set<Int>): Boolean = level == 1 || level - 1 in solvedLevels
 
-    fun currentLevel(levels: List<Level>): Level? = levels.firstOrNull { it.isUnlocked && !it.isSolved }
+    fun currentLevel(levels: List<Level>): Level? = levels.firstOrNull { it.isUnlocked && !it.isSolved && !it.isSkipped }
         ?: levels.lastOrNull()
 
     fun nearbyLevels(levels: List<Level>, currentLevel: Level?, windowSize: Int = 5): List<Level> {

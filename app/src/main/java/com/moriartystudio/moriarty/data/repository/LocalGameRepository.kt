@@ -20,6 +20,7 @@ class LocalGameRepository(
 
     override fun levels(): List<Level> {
         val solved = solvedLevels()
+        val skipped = skippedLevels()
         return puzzles.map { puzzle ->
             Level(
                 number = puzzle.level,
@@ -27,9 +28,10 @@ class LocalGameRepository(
                 category = puzzle.category,
                 difficulty = puzzle.difficulty,
                 isSolved = puzzle.level in solved,
-                isUnlocked = ProgressionRules.isUnlocked(puzzle.level, solved),
+                isUnlocked = ProgressionRules.isUnlocked(puzzle.level, solved + skipped),
                 bestTimeSeconds = preferences.getInt(bestTimeKey(puzzle.level), -1).takeIf { it >= 0 },
                 difficultyRating = puzzle.difficultyRating,
+                isSkipped = puzzle.level in skipped && puzzle.level !in solved,
             )
         }
     }
@@ -43,6 +45,15 @@ class LocalGameRepository(
             .putStringSet(SOLVED_LEVELS, solved.map(Int::toString).toSet())
             .putInt(bestTimeKey(level), minOf(previousBest, rankedSeconds))
             .apply()
+    }
+
+    // A skipped level unlocks the next one but is not counted as solved.
+    override fun skipLevel(level: Int) {
+        if (level in solvedLevels()) return
+        preferences.edit()
+            .putStringSet(SKIPPED_LEVELS, (skippedLevels() + level).map(Int::toString).toSet())
+            .apply()
+        clearPuzzleProgress(level)
     }
 
     override fun puzzleProgress(level: Int) = PuzzleProgress(
@@ -81,11 +92,17 @@ class LocalGameRepository(
         .mapNotNull(String::toIntOrNull)
         .toSet()
 
+    private fun skippedLevels(): Set<Int> = preferences.getStringSet(SKIPPED_LEVELS, emptySet())
+        .orEmpty()
+        .mapNotNull(String::toIntOrNull)
+        .toSet()
+
     private fun bestTimeKey(level: Int) = "best_time_$level"
     private fun progressSecondsKey(level: Int) = "progress_seconds_$level"
     private fun progressHintKey(level: Int) = "progress_hint_$level"
 
     private companion object {
         const val SOLVED_LEVELS = "solved_levels"
+        const val SKIPPED_LEVELS = "skipped_levels"
     }
 }
