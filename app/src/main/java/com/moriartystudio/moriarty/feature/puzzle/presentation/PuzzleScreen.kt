@@ -1,5 +1,16 @@
 package com.moriartystudio.moriarty.feature.puzzle.presentation
 
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.keyframes
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.Animatable
 import com.moriartystudio.moriarty.core.designsystem.GlassIconButton
 import com.moriartystudio.moriarty.core.designsystem.MoriartyPage
 import androidx.compose.foundation.BorderStroke
@@ -88,17 +99,12 @@ fun PuzzleScreen(
             modifier = Modifier.padding(horizontal = 20.dp, vertical = 22.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            PuzzleCard(
-                prompt = puzzle.prompt,
-                category = puzzle.category.label,
-                content = {
-                    PuzzleContentRenderer(
-                        content = puzzle.content,
-                        modifier = Modifier.fillMaxWidth().height(260.dp),
-                    )
-                },
+            Text(puzzle.prompt, style = MaterialTheme.typography.headlineMedium, color = Ink)
+            PuzzleContentRenderer(
+                content = puzzle.content,
+                modifier = Modifier.fillMaxWidth().height(260.dp),
             )
-            Text("Choose an answer", style = MaterialTheme.typography.titleLarge, color = Ink)
+            Spacer(Modifier.height(2.dp))
             puzzle.options.chunked(2).forEach { row ->
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                     row.forEach { answer ->
@@ -164,33 +170,6 @@ private fun PuzzleTimer(seconds: Int, penalized: Boolean) {
 }
 
 @Composable
-private fun PuzzleCard(
-    prompt: String,
-    category: String,
-    content: @Composable () -> Unit,
-) {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(28.dp),
-        color = Paper,
-        border = BorderStroke(1.dp, Line),
-        shadowElevation = 2.dp,
-    ) {
-        Column {
-            Box(Modifier.fillMaxWidth().height(5.dp).background(Indigo))
-            Column(
-                modifier = Modifier.padding(17.dp),
-                verticalArrangement = Arrangement.spacedBy(14.dp),
-            ) {
-                DifficultyPill(category)
-                Text(prompt, style = MaterialTheme.typography.headlineMedium, color = Ink)
-                content()
-            }
-        }
-    }
-}
-
-@Composable
 private fun AnswerOption(
     text: String,
     visual: PuzzleAnswerVisual?,
@@ -209,11 +188,33 @@ private fun AnswerOption(
         correct -> Frost
         else -> Paper
     }
+    // Motion only answers the tap: squish while pressed, shake when wrong, pop when right.
+    val shake = remember { Animatable(0f) }
+    val pop = remember { Animatable(1f) }
+    LaunchedEffect(incorrect) {
+        if (incorrect) {
+            shake.animateTo(0f, keyframes { durationMillis = 380; -12f at 60; 12f at 130; -8f at 200; 8f at 260; -3f at 320 })
+        }
+    }
+    LaunchedEffect(correct) {
+        if (correct) {
+            pop.animateTo(1.07f, tween(110))
+            pop.animateTo(1f, spring(dampingRatio = Spring.DampingRatioMediumBouncy))
+        }
+    }
+    val interaction = remember { MutableInteractionSource() }
+    val pressed by interaction.collectIsPressedAsState()
+    val pressScale by animateFloatAsState(if (pressed) 0.95f else 1f, label = "press")
     Surface(
         modifier = modifier
             .height(if (visual == null) 72.dp else 96.dp)
+            .graphicsLayer {
+                translationX = shake.value * density
+                scaleX = pressScale * pop.value
+                scaleY = pressScale * pop.value
+            }
             .semantics { contentDescription = "Answer: $text" }
-            .clickable(enabled = !correct && !incorrect, onClick = onClick),
+            .clickable(interactionSource = interaction, indication = null, enabled = !correct && !incorrect, onClick = onClick),
         shape = RoundedCornerShape(20.dp),
         color = containerColor,
         border = BorderStroke(if (correct || incorrect) 1.5.dp else 1.dp, borderColor),
