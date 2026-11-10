@@ -6,18 +6,25 @@ import com.moriartystudio.moriarty.domain.progression.ProgressionRules
 import org.orbitmvi.orbit.OrbitContainerHost
 import org.orbitmvi.orbit.viewmodel.orbitContainer
 
-class HomeViewModel(repository: GameRepository) : ViewModel(), OrbitContainerHost<HomeState, HomeState, HomeSideEffect> {
-    private val initial = repository.levels()
-    private val current = ProgressionRules.currentLevel(initial)
-    override val container = orbitContainer<HomeState, HomeSideEffect>(HomeState(
-        streak = repository.profile().streak,
-        currentLevel = current,
-        currentPuzzle = current?.let { repository.puzzle(it.number) },
-        nearbyLevels = ProgressionRules.nearbyLevels(initial, current),
-        solvedCount = initial.count { it.isSolved },
-        totalLevels = initial.size,
-    ))
+class HomeViewModel(private val repository: GameRepository) : ViewModel(), OrbitContainerHost<HomeState, HomeState, HomeSideEffect> {
+    override val container = orbitContainer<HomeState, HomeSideEffect>(buildState())
 
+    private fun buildState(): HomeState {
+        val levels = repository.levels()
+        val current = ProgressionRules.currentLevel(levels)
+        return HomeState(
+            streak = repository.profile().streak,
+            currentLevel = current,
+            currentPuzzle = current?.let { repository.puzzle(it.number) },
+            nearbyLevels = ProgressionRules.nearbyLevels(levels, current),
+            solvedCount = levels.count { it.isSolved },
+            totalLevels = levels.size,
+            resumeSeconds = current?.let { repository.puzzleProgress(it.number).elapsedSeconds } ?: 0,
+        )
+    }
+
+    // Home stays on the back stack under a puzzle, so re-read progress when it comes back.
+    fun refresh() = intent { reduce { buildState() } }
     fun continuePuzzle() = intent { postSideEffect(HomeSideEffect.OpenPuzzle(state.currentLevel?.number ?: 1)) }
     fun openLevel(level: Int) = intent {
         if (state.nearbyLevels.firstOrNull { it.number == level }?.isUnlocked == true) {

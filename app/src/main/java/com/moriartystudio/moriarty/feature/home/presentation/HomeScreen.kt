@@ -24,17 +24,15 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowForward
 import androidx.compose.material.icons.outlined.Check
-import androidx.compose.material.icons.outlined.Extension
-import androidx.compose.material.icons.outlined.GridView
+import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material.icons.outlined.LocalFireDepartment
-import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material.icons.outlined.ViewInAr
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,16 +40,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.moriartystudio.moriarty.app.navigation.RootDestination
-import com.moriartystudio.moriarty.core.designsystem.CoinStack
 import com.moriartystudio.moriarty.core.designsystem.MoriartyBottomBar
+import com.moriartystudio.moriarty.core.designsystem.PuzzleContentRenderer
 import com.moriartystudio.moriarty.core.designsystem.SmallGeometryThumbnail
 import com.moriartystudio.moriarty.core.model.Level
-import com.moriartystudio.moriarty.core.model.PuzzleCategory
 import com.moriartystudio.moriarty.ui.theme.Gold
 import com.moriartystudio.moriarty.ui.theme.Frost
 import com.moriartystudio.moriarty.ui.theme.Indigo
@@ -71,6 +67,7 @@ fun HomeScreen(
     onProfile: () -> Unit,
 ) {
     val state by viewModel.collectAsState()
+    LaunchedEffect(Unit) { viewModel.refresh() }
     viewModel.collectSideEffect { effect ->
         when (effect) {
             is HomeSideEffect.OpenPuzzle -> onOpenPuzzle(effect.level)
@@ -131,10 +128,8 @@ internal fun HomeContent(
                     .padding(top = 24.dp, bottom = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(22.dp),
             ) {
-                CategoryGrid(onAllLevels)
-                state.currentPuzzle?.let { UpNextCard(it.level, it.title, it.prompt, onContinue) }
-                RecentSolves(state.nearbyLevels, onLevel, onAllLevels)
                 DailyCard(state.dailyReset, onDaily)
+                RecentSolves(state.nearbyLevels, onLevel, onAllLevels)
             }
             Spacer(Modifier.height(0.dp))
         }
@@ -158,12 +153,6 @@ private fun HomeHeader(state: HomeState, onProfile: () -> Unit) {
             Spacer(Modifier.width(4.dp))
             Text(state.streak.toString(), style = MaterialTheme.typography.labelLarge, color = Night)
         }
-        Spacer(Modifier.width(8.dp))
-        StatPill {
-            Box(Modifier.size(14.dp).background(Gold, CircleShape))
-            Spacer(Modifier.width(5.dp))
-            Text(state.solvedCount.toString(), style = MaterialTheme.typography.labelLarge, color = Night)
-        }
     }
 }
 
@@ -175,42 +164,53 @@ private fun StatPill(content: @Composable () -> Unit) {
     ) { content() }
 }
 
-/** Frosted-glass card: translucent white over the gradient with a soft border. */
+/** Frosted-glass card holding the next puzzle itself, so one tap starts playing. */
 @Composable
 private fun HeroCard(state: HomeState, onContinue: () -> Unit) {
     val next = state.currentLevel?.number ?: 1
     val progress = if (state.totalLevels == 0) 0f else state.solvedCount / state.totalLevels.toFloat()
-    Box(
+    Column(
         Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(28.dp))
             .background(Brush.linearGradient(listOf(Color.White.copy(alpha = 0.30f), Color.White.copy(alpha = 0.10f))))
-            .border(1.dp, Color.White.copy(alpha = 0.35f), RoundedCornerShape(28.dp)),
+            .border(1.dp, Color.White.copy(alpha = 0.35f), RoundedCornerShape(28.dp))
+            .padding(18.dp),
+        verticalArrangement = Arrangement.spacedBy(14.dp),
     ) {
-        Box(Modifier.align(Alignment.CenterEnd).padding(end = 6.dp).size(width = 150.dp, height = 140.dp)) { CoinStack() }
-        Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            Text("Puzzles solved", color = Color.White.copy(alpha = 0.85f), style = MaterialTheme.typography.titleMedium)
-            Text(state.solvedCount.toString(), color = Color.White, fontSize = 48.sp, fontWeight = FontWeight.Bold, lineHeight = 54.sp)
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(Modifier.size(14.dp).background(Gold, CircleShape))
-                Spacer(Modifier.width(7.dp))
-                Text("of ${state.totalLevels} levels", color = Color.White.copy(alpha = 0.9f), style = MaterialTheme.typography.bodyMedium)
-            }
-            Box(Modifier.width(150.dp).height(6.dp).clip(CircleShape).background(Color.White.copy(alpha = 0.25f))) {
-                Box(Modifier.fillMaxWidth(progress).height(6.dp).background(Gold, CircleShape))
-            }
-            Spacer(Modifier.height(8.dp))
-            Row(
-                Modifier
-                    .background(Color.White, RoundedCornerShape(50))
-                    .clip(RoundedCornerShape(50))
-                    .clickable(onClick = onContinue)
-                    .padding(horizontal = 18.dp, vertical = 11.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text("Solve level $next", color = Indigo, style = MaterialTheme.typography.titleMedium)
-                Spacer(Modifier.width(8.dp))
-                Icon(Icons.AutoMirrored.Outlined.ArrowForward, null, tint = Indigo, modifier = Modifier.size(18.dp))
+        Column {
+            Text("Level $next", color = Color.White.copy(alpha = 0.85f), style = MaterialTheme.typography.titleMedium)
+            Text(state.currentPuzzle?.title ?: "Start playing", color = Color.White, style = MaterialTheme.typography.headlineMedium)
+        }
+        state.currentPuzzle?.let { puzzle ->
+            PuzzleContentRenderer(
+                content = puzzle.content,
+                compact = true,
+                modifier = Modifier.fillMaxWidth().height(150.dp).clip(RoundedCornerShape(20.dp)).clickable(onClick = onContinue),
+            )
+        }
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .height(54.dp)
+                .clip(RoundedCornerShape(50))
+                .background(Color.White)
+                .clickable(onClick = onContinue),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+        ) {
+            Icon(Icons.Outlined.PlayArrow, null, tint = Indigo, modifier = Modifier.size(22.dp))
+            Spacer(Modifier.width(8.dp))
+            Text(
+                if (state.resumeSeconds > 0) "Resume  %d:%02d".format(state.resumeSeconds / 60, state.resumeSeconds % 60) else "Play level $next",
+                color = Indigo,
+                style = MaterialTheme.typography.titleMedium,
+            )
+        }
+        Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
+            Text("${state.solvedCount} of ${state.totalLevels} solved", color = Color.White.copy(alpha = 0.85f), style = MaterialTheme.typography.labelMedium)
+            Box(Modifier.fillMaxWidth().height(5.dp).clip(CircleShape).background(Color.White.copy(alpha = 0.25f))) {
+                Box(Modifier.fillMaxWidth(progress).height(5.dp).background(Gold, CircleShape))
             }
         }
     }
@@ -232,67 +232,8 @@ private fun SectionHeader(title: String, action: String? = null, onAction: (() -
 }
 
 @Composable
-private fun CategoryGrid(onClick: () -> Unit) {
-    val tiles = listOf(
-        PuzzleCategory.Pattern to Icons.Outlined.GridView,
-        PuzzleCategory.Spatial to Icons.Outlined.ViewInAr,
-        PuzzleCategory.Deduction to Icons.Outlined.Search,
-        PuzzleCategory.Logic to Icons.Outlined.Extension,
-    )
-    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        SectionHeader("Explore")
-        tiles.chunked(2).forEach { row ->
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                row.forEach { (category, icon) -> CategoryTile(category.label, icon, onClick, Modifier.weight(1f)) }
-            }
-        }
-    }
-}
-
-@Composable
-private fun CategoryTile(label: String, icon: ImageVector, onClick: () -> Unit, modifier: Modifier = Modifier) {
-    Surface(
-        modifier = modifier.shadow(6.dp, RoundedCornerShape(22.dp), ambientColor = Indigo.copy(alpha = 0.25f), spotColor = Indigo.copy(alpha = 0.25f)).clickable(onClick = onClick),
-        shape = RoundedCornerShape(22.dp),
-        color = Color.White,
-        border = BorderStroke(1.dp, Frost),
-    ) {
-        Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
-            Box(Modifier.size(42.dp).background(Frost, CircleShape), contentAlignment = Alignment.Center) {
-                Icon(icon, null, tint = Indigo, modifier = Modifier.size(22.dp))
-            }
-            Spacer(Modifier.width(12.dp))
-            Text(label, style = MaterialTheme.typography.titleMedium, color = Night)
-        }
-    }
-}
-
-@Composable
-private fun UpNextCard(level: Int, title: String, prompt: String, onClick: () -> Unit) {
-    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        SectionHeader("Up next")
-        Surface(
-            modifier = Modifier.fillMaxWidth().clickable(onClick = onClick),
-            shape = RoundedCornerShape(24.dp),
-            color = Frost.copy(alpha = 0.55f),
-        ) {
-            Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    Text("Level $level · $title", style = MaterialTheme.typography.titleMedium, color = Night)
-                    Text(prompt, style = MaterialTheme.typography.bodyMedium, color = Night.copy(alpha = 0.6f))
-                }
-                Spacer(Modifier.width(12.dp))
-                Box(Modifier.size(44.dp).background(IndigoGradient, CircleShape), contentAlignment = Alignment.Center) {
-                    Icon(Icons.AutoMirrored.Outlined.ArrowForward, "Start", tint = Color.White, modifier = Modifier.size(20.dp))
-                }
-            }
-        }
-    }
-}
-
-@Composable
 private fun RecentSolves(levels: List<Level>, onLevel: (Int) -> Unit, onAllLevels: () -> Unit) {
-    val solved = levels.filter { it.isSolved }.sortedByDescending { it.number }
+    val solved = levels.filter { it.isSolved }.sortedByDescending { it.number }.take(3)
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
         SectionHeader("Recent solves", "View all", onAllLevels)
         if (solved.isEmpty()) {
