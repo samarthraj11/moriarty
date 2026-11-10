@@ -11,5 +11,5 @@ data class HomeState(
     val solvedCount: Int = 0,
     val totalLevels: Int = 10,
     val dailyReset: String = "08:24",
-    val resumeSeconds: Int = 0,
+    val points: Int = 0,
 )

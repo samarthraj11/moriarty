@@ -3,7 +3,6 @@ package com.moriartystudio.moriarty.feature.puzzle.presentation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.moriartystudio.moriarty.core.model.PuzzleProgress
 import com.moriartystudio.moriarty.domain.repository.GameRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -12,9 +11,7 @@ import org.orbitmvi.orbit.viewmodel.orbitContainer
 
 class PuzzleViewModel(level: Int, private val repository: GameRepository) : ViewModel(), OrbitContainerHost<PuzzleState, PuzzleState, PuzzleSideEffect> {
     override val container = orbitContainer<PuzzleState, PuzzleSideEffect>(
-        repository.puzzleProgress(level).let { saved ->
-            PuzzleState(puzzle = repository.puzzle(level), elapsedSeconds = saved.elapsedSeconds, hintUsed = saved.hintUsed)
-        },
+        PuzzleState(puzzle = repository.puzzle(level), totalPoints = repository.totalPoints()),
     )
 
     init {
@@ -32,15 +29,15 @@ class PuzzleViewModel(level: Int, private val repository: GameRepository) : View
         val puzzle = state.puzzle ?: return@intent
         if (state.status == AnswerStatus.Correct || answer in state.wrongOptions) return@intent
         if (answer == puzzle.correctOption) {
-            val seconds = state.elapsedSeconds
-            Log.d(TAG, "Level ${puzzle.level} solved in ${seconds}s")
-            repository.completeLevel(puzzle.level, seconds)
-            repository.clearPuzzleProgress(puzzle.level)
-            reduce { state.copy(status = AnswerStatus.Correct, correctAnswer = answer) }
+            val delta = repository.recordFirstAnswer(puzzle.level, correct = true)
+            repository.completeLevel(puzzle.level)
+            Log.d(TAG, "Level ${puzzle.level} solved in ${state.elapsedSeconds}s, $delta points")
+            reduce { state.copy(status = AnswerStatus.Correct, correctAnswer = answer, lastDelta = delta, totalPoints = repository.totalPoints()) }
             delay(SUCCESS_DELAY_MS)
             postSideEffect(if (puzzle.level < repository.levels().size) PuzzleSideEffect.NextLevel(puzzle.level + 1) else PuzzleSideEffect.FinishJourney)
         } else {
-            reduce { state.copy(status = AnswerStatus.Incorrect, elapsedSeconds = state.elapsedSeconds + 10, wrongOptions = state.wrongOptions + answer) }
+            val delta = repository.recordFirstAnswer(puzzle.level, correct = false)
+            reduce { state.copy(status = AnswerStatus.Incorrect, wrongOptions = state.wrongOptions + answer, lastDelta = delta, totalPoints = repository.totalPoints()) }
         }
     }
     fun skip() = intent {
@@ -51,21 +48,8 @@ class PuzzleViewModel(level: Int, private val repository: GameRepository) : View
         reduce { state.copy(status = AnswerStatus.Skipped) }
         postSideEffect(if (puzzle.level < repository.levels().size) PuzzleSideEffect.NextLevel(puzzle.level + 1) else PuzzleSideEffect.FinishJourney)
     }
-    fun toggleHint() = intent {
-        val firstUse = !state.showHint && !state.hintUsed
-        reduce { state.copy(showHint = !state.showHint, hintUsed = state.hintUsed || firstUse, elapsedSeconds = state.elapsedSeconds + if (firstUse) 20 else 0) }
-    }
+    fun toggleHint() = intent { reduce { state.copy(showHint = !state.showHint) } }
     fun goBack() = intent { postSideEffect(PuzzleSideEffect.GoBack) }
-
-    // Leaving mid-puzzle keeps the clock where it was; a solved puzzle starts fresh next time.
-    override fun onCleared() {
-        val current = container.stateFlow.value
-        val level = current.puzzle?.level
-        if (level != null && current.status != AnswerStatus.Correct && current.status != AnswerStatus.Skipped) {
-            repository.savePuzzleProgress(level, PuzzleProgress(current.elapsedSeconds, current.hintUsed))
-        }
-        super.onCleared()
-    }
 
     private companion object {
         const val TAG = "Puzzle"

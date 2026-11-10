@@ -41,7 +41,7 @@ fun SolutionScreen(viewModel: SolutionViewModel, onNext: (Int) -> Unit, onComple
             }
             Text("Why it works", style = MaterialTheme.typography.titleLarge, modifier = Modifier.fillMaxWidth())
             Text(puzzle.explanation, style = MaterialTheme.typography.bodyLarge, color = InkMuted, modifier = Modifier.fillMaxWidth())
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) { MetricCard("Level", state.level.toString(), Modifier.weight(1f)); MetricCard("Ranked time", "%02d:%02d".format(state.seconds / 60, state.seconds % 60), Modifier.weight(1f)) }
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) { MetricCard("Level", state.level.toString(), Modifier.weight(1f)); MetricCard("Time", "%02d:%02d".format(state.seconds / 60, state.seconds % 60), Modifier.weight(1f)) }
             MoriartyPrimaryButton(if (state.hasNextLevel) "Next level" else "Back to levels", viewModel::next, trailing = { Icon(Icons.AutoMirrored.Outlined.ArrowForward, null) })
             MoriartySecondaryButton("View leaderboard", viewModel::leaderboard)
             TextButton(onClick = viewModel::share) { Icon(Icons.Outlined.Share, null, tint = Indigo); Spacer(Modifier.width(7.dp)); Text("Share result", color = Indigo) }

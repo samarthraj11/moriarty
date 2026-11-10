@@ -1,5 +1,7 @@
 package com.moriartystudio.moriarty.feature.puzzle.presentation
 
+import com.moriartystudio.moriarty.core.designsystem.HeaderPill
+import androidx.compose.material.icons.outlined.Star
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.LaunchedEffect
@@ -93,7 +95,17 @@ fun PuzzleScreen(
         title = "Level ${puzzle.level}",
         subtitle = puzzle.title,
         leading = { GlassIconButton(Icons.AutoMirrored.Outlined.ArrowBack, viewModel::goBack, "Back") },
-        trailing = { PuzzleTimer(state.elapsedSeconds, state.status == AnswerStatus.Incorrect) },
+        trailing = {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                HeaderPill {
+                    Icon(Icons.Outlined.Star, null, tint = Amber, modifier = Modifier.size(17.dp))
+                    Spacer(Modifier.width(4.dp))
+                    Text(state.totalPoints.toString(), style = MaterialTheme.typography.labelLarge, color = Ink)
+                }
+                Spacer(Modifier.width(8.dp))
+                PuzzleTimer(state.elapsedSeconds)
+            }
+        },
     ) {
         Column(
             modifier = Modifier.padding(horizontal = 20.dp, vertical = 22.dp),
@@ -121,7 +133,10 @@ fun PuzzleScreen(
                 }
             }
             if (state.status == AnswerStatus.Incorrect) {
-                FeedbackCard()
+                FeedbackCard(state.lastDelta ?: 0)
+            }
+            if (state.status == AnswerStatus.Correct) {
+                CorrectCard(state.lastDelta ?: 0)
             }
             if (state.showHint) {
                 HintCard(puzzle.hint)
@@ -131,7 +146,7 @@ fun PuzzleScreen(
                     Icon(Icons.Outlined.Lightbulb, null, tint = Amber, modifier = Modifier.size(19.dp))
                     Spacer(Modifier.width(7.dp))
                     Text(
-                        if (state.showHint) "Hide hint" else "Show a hint  +20 sec",
+                        if (state.showHint) "Hide hint" else "Show a hint",
                         color = Indigo,
                         fontWeight = FontWeight.SemiBold,
                     )
@@ -149,11 +164,8 @@ fun PuzzleScreen(
 }
 
 @Composable
-private fun PuzzleTimer(seconds: Int, penalized: Boolean) {
-    Surface(
-        shape = RoundedCornerShape(50),
-        color = if (penalized) SoftAmber else Color.White,
-    ) {
+private fun PuzzleTimer(seconds: Int) {
+    Surface(shape = RoundedCornerShape(50), color = Color.White) {
         Row(
             modifier = Modifier.padding(horizontal = 11.dp, vertical = 9.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -246,7 +258,7 @@ private fun AnswerOption(
 }
 
 @Composable
-private fun FeedbackCard() {
+private fun FeedbackCard(delta: Int) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(18.dp),
@@ -257,12 +269,27 @@ private fun FeedbackCard() {
             Column(Modifier.weight(1f)) {
                 Text("That rule does not fit.", style = MaterialTheme.typography.titleMedium, color = ErrorCoral)
                 Text(
-                    "Compare every clue, then choose another card.",
+                    if (delta < 0) "Compare every clue, then choose another card." else "No more points on this puzzle. Keep going to solve it.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = InkMuted,
                 )
             }
-            Text("+10 sec", style = MaterialTheme.typography.labelLarge, color = ErrorCoral)
+            if (delta < 0) Text("\u2212${-delta} pts", style = MaterialTheme.typography.labelLarge, color = ErrorCoral)
+        }
+    }
+}
+
+@Composable
+private fun CorrectCard(delta: Int) {
+    Surface(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), color = Frost) {
+        Row(Modifier.padding(15.dp), verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                if (delta > 0) "Right first time." else "Solved, but no points this time.",
+                style = MaterialTheme.typography.titleMedium,
+                color = Indigo,
+                modifier = Modifier.weight(1f),
+            )
+            if (delta > 0) Text("+$delta pts", style = MaterialTheme.typography.labelLarge, color = Indigo)
         }
     }
 }

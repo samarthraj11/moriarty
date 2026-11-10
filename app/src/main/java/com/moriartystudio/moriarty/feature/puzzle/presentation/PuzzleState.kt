@@ -11,5 +11,7 @@ data class PuzzleState(
     val status: AnswerStatus = AnswerStatus.Unanswered,
     val elapsedSeconds: Int = 0,
     val showHint: Boolean = false,
-    val hintUsed: Boolean = false,
+    val totalPoints: Int = 0,
+    /** Points change from the answer just given: 10, -5, or 0 when the puzzle was already scored. */
+    val lastDelta: Int? = null,
 )

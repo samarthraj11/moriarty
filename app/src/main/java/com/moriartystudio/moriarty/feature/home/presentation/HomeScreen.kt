@@ -1,5 +1,6 @@
 package com.moriartystudio.moriarty.feature.home.presentation
 
+import androidx.compose.material.icons.outlined.Star
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -153,6 +154,12 @@ private fun HomeHeader(state: HomeState, onProfile: () -> Unit) {
             Spacer(Modifier.width(4.dp))
             Text(state.streak.toString(), style = MaterialTheme.typography.labelLarge, color = Night)
         }
+        Spacer(Modifier.width(8.dp))
+        StatPill {
+            Icon(Icons.Outlined.Star, null, tint = Gold, modifier = Modifier.size(17.dp))
+            Spacer(Modifier.width(4.dp))
+            Text(state.points.toString(), style = MaterialTheme.typography.labelLarge, color = Night)
+        }
     }
 }
 
@@ -202,7 +209,7 @@ private fun HeroCard(state: HomeState, onContinue: () -> Unit) {
             Icon(Icons.Outlined.PlayArrow, null, tint = Indigo, modifier = Modifier.size(22.dp))
             Spacer(Modifier.width(8.dp))
             Text(
-                if (state.resumeSeconds > 0) "Resume  %d:%02d".format(state.resumeSeconds / 60, state.resumeSeconds % 60) else "Play level $next",
+                "Play level $next",
                 color = Indigo,
                 style = MaterialTheme.typography.titleMedium,
             )
@@ -252,8 +259,8 @@ private fun RecentSolves(levels: List<Level>, onLevel: (Int) -> Unit, onAllLevel
                     Text("Level ${level.number} · ${level.title}", style = MaterialTheme.typography.titleMedium, color = Night, maxLines = 1)
                     Text(level.category.label, style = MaterialTheme.typography.bodyMedium, color = Night.copy(alpha = 0.5f))
                 }
-                level.bestTimeSeconds?.let {
-                    Text("%d:%02d".format(it / 60, it % 60), style = MaterialTheme.typography.titleMedium, color = Indigo)
+                level.points?.let {
+                    Text(if (it > 0) "+$it" else if (it < 0) "\u2212${-it}" else "0", style = MaterialTheme.typography.titleMedium, color = Indigo)
                 }
             }
         }

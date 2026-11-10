@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowForward
+import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Groups
 import androidx.compose.material.icons.outlined.Lightbulb
@@ -39,16 +40,14 @@ fun DailyScreen(viewModel: DailyViewModel, onStart: () -> Unit, onRoot: (RootDes
         Column(Modifier.padding(horizontal = 22.dp, vertical = 22.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
             PuzzleContentRenderer(puzzle.content, Modifier.fillMaxWidth().height(240.dp))
             Text(puzzle.title, style = MaterialTheme.typography.headlineMedium)
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) { DifficultyPill(puzzle.difficulty.name); DifficultyPill(puzzle.category.label, SoftPeach, Ink); DifficultyPill("One ranked attempt", Mist, Ink) }
-            Text("Estimated time: 1–3 min", style = MaterialTheme.typography.bodyLarge, color = InkMuted)
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) { DifficultyPill(puzzle.difficulty.name); DifficultyPill(puzzle.category.label, SoftPeach, Ink); DifficultyPill("One attempt", Mist, Ink) }
+            Text("Only your first answer scores.", style = MaterialTheme.typography.bodyLarge, color = InkMuted)
             Column(Modifier.fillMaxWidth().background(Paper, RoundedCornerShape(22.dp)).padding(horizontal = 16.dp)) {
-                PenaltyRow(Icons.Outlined.Close, "Wrong answer", "+10 sec", SoftPeach, ErrorCoral)
+                PenaltyRow(Icons.Outlined.Check, "Right first time", "+10 pts", Frost, Indigo)
                 HorizontalDivider(color = Line)
-                PenaltyRow(Icons.Outlined.Lightbulb, "First hint", "+20 sec", SoftAmber, Color(0xFFC37800))
+                PenaltyRow(Icons.Outlined.Close, "Wrong first answer", "\u22125 pts", SoftPeach, ErrorCoral)
                 HorizontalDivider(color = Line)
-                PenaltyRow(Icons.Outlined.Lightbulb, "Second hint", "+45 sec", SoftAmber, Color(0xFFC37800))
-                HorizontalDivider(color = Line)
-                PenaltyRow(Icons.Outlined.Groups, "Guided help", "Unranked", Frost, Indigo)
+                PenaltyRow(Icons.Outlined.Groups, "Any answer after that", "0 pts", Frost, Indigo)
             }
             MoriartyPrimaryButton("Start challenge", viewModel::start, trailing = { Icon(Icons.AutoMirrored.Outlined.ArrowForward, null) })
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {

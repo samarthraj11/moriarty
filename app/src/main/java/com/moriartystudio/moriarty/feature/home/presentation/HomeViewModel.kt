@@ -19,7 +19,7 @@ class HomeViewModel(private val repository: GameRepository) : ViewModel(), Orbit
             nearbyLevels = ProgressionRules.nearbyLevels(levels, current),
             solvedCount = levels.count { it.isSolved },
             totalLevels = levels.size,
-            resumeSeconds = current?.let { repository.puzzleProgress(it.number).elapsedSeconds } ?: 0,
+            points = repository.totalPoints(),
         )
     }
 

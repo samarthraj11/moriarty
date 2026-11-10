@@ -263,8 +263,8 @@ private fun LevelCard(level: Level, isCurrent: Boolean, onClick: () -> Unit) {
                     Box(Modifier.size(3.dp).background(Line, CircleShape))
                     Text("Difficulty ${level.difficultyRating}/10", style = MaterialTheme.typography.labelMedium, color = InkMuted)
                 }
-                level.bestTimeSeconds?.let {
-                    Text("Best  %d:%02d".format(it / 60, it % 60), style = MaterialTheme.typography.labelMedium, color = Indigo)
+                level.points?.let {
+                    Text("Score  " + (if (it > 0) "+$it" else if (it < 0) "\u2212${-it}" else "0"), style = MaterialTheme.typography.labelMedium, color = Indigo)
                 }
             }
             when {

@@ -48,7 +48,7 @@ data class Level(
     val difficulty: Difficulty,
     val isSolved: Boolean,
     val isUnlocked: Boolean,
-    val bestTimeSeconds: Int? = null,
+    val points: Int? = null,
     val difficultyRating: Int = 1,
     val isSkipped: Boolean = false,
 )
@@ -72,7 +72,7 @@ data class LeaderboardEntry(
     val rank: Int,
     val name: String,
     val solved: Int,
-    val totalSeconds: Int,
+    val points: Int,
     val isCurrentUser: Boolean = false,
 )
 
@@ -81,9 +81,6 @@ data class PlayerProfile(
     val handle: String,
     val solved: Int,
     val streak: Int,
-    val averageSeconds: Int,
+    val points: Int,
     val accuracy: Int,
 )
-
-/** In-flight state of an unfinished puzzle, kept so leaving and re-entering does not reset the clock. */
-data class PuzzleProgress(val elapsedSeconds: Int = 0, val hintUsed: Boolean = false)
