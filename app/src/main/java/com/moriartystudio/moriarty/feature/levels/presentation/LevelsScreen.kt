@@ -1,5 +1,6 @@
 package com.moriartystudio.moriarty.feature.levels.presentation
 
+import com.moriartystudio.moriarty.ui.theme.categoryColor
 import com.moriartystudio.moriarty.core.designsystem.GlassIconButton
 import com.moriartystudio.moriarty.core.designsystem.MoriartyPage
 import androidx.compose.foundation.BorderStroke
@@ -206,12 +207,7 @@ private fun CategoryChip(label: String, selected: Boolean, onClick: () -> Unit) 
 
 @Composable
 private fun LevelCard(level: Level, isCurrent: Boolean, onClick: () -> Unit) {
-    val accent = when (level.category) {
-        PuzzleCategory.Pattern -> Amber
-        PuzzleCategory.Spatial -> Indigo
-        PuzzleCategory.Deduction -> Color(0xFFDB7659)
-        PuzzleCategory.Logic -> Color(0xFF587DA8)
-    }
+    val accent = categoryColor(level.category)
     Surface(
         modifier = Modifier
             .fillMaxWidth()

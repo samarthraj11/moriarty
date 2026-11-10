@@ -1,6 +1,7 @@
 package com.moriartystudio.moriarty.feature.home.presentation
 
 import androidx.lifecycle.ViewModel
+import com.moriartystudio.moriarty.core.model.PuzzleCategory
 import com.moriartystudio.moriarty.domain.repository.GameRepository
 import com.moriartystudio.moriarty.domain.progression.ProgressionRules
 import org.orbitmvi.orbit.OrbitContainerHost
@@ -20,6 +21,10 @@ class HomeViewModel(private val repository: GameRepository) : ViewModel(), Orbit
             solvedCount = levels.count { it.isSolved },
             totalLevels = levels.size,
             points = repository.totalPoints(),
+            categoryProgress = PuzzleCategory.entries.map { category ->
+                val inCategory = levels.filter { it.category == category }
+                CategoryProgress(category, inCategory.count { it.isSolved }, inCategory.size)
+            },
         )
     }
 
@@ -31,6 +36,7 @@ class HomeViewModel(private val repository: GameRepository) : ViewModel(), Orbit
             postSideEffect(HomeSideEffect.OpenPuzzle(level))
         }
     }
+    fun openCategory(category: PuzzleCategory) = intent { postSideEffect(HomeSideEffect.OpenCategory(category)) }
     fun openAllLevels() = intent { postSideEffect(HomeSideEffect.OpenAllLevels) }
     fun openDaily() = intent { postSideEffect(HomeSideEffect.OpenDaily) }
     fun openProfile() = intent { postSideEffect(HomeSideEffect.OpenProfile) }

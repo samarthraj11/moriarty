@@ -1,5 +1,8 @@
 package com.moriartystudio.moriarty.app.navigation
 
+import com.moriartystudio.moriarty.feature.category.presentation.CategoryViewModel
+import com.moriartystudio.moriarty.feature.category.presentation.CategoryScreen
+import com.moriartystudio.moriarty.core.model.PuzzleCategory
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
@@ -67,6 +70,7 @@ enum class RootDestination { Levels, Daily, Leaderboard, Profile }
 
 private data object HomeRoute
 private data object LevelsRoute
+private data class CategoryRoute(val category: PuzzleCategory)
 private data object DailyRoute
 private data object LeaderboardRoute
 private data object ProfileRoute
@@ -122,7 +126,11 @@ fun MoriartyApp() {
         entryProvider = entryProvider {
             entry<HomeRoute> {
                 val vm = viewModel { HomeViewModel(AppContainer.gameRepository) }
-                HomeScreen(vm, { open(PuzzleRoute(it)) }, { open(LevelsRoute) }, ::openRoot, { openRoot(RootDestination.Profile) })
+                HomeScreen(vm, { open(PuzzleRoute(it)) }, { open(LevelsRoute) }, ::openRoot, { openRoot(RootDestination.Profile) }, { open(CategoryRoute(it)) })
+            }
+            entry<CategoryRoute> { route ->
+                val vm = viewModel(key = "category-${route.category}") { CategoryViewModel(route.category, AppContainer.gameRepository) }
+                CategoryScreen(vm, ::back) { open(PuzzleRoute(it)) }
             }
             entry<LevelsRoute> {
                 val vm = viewModel { LevelsViewModel(AppContainer.gameRepository) }

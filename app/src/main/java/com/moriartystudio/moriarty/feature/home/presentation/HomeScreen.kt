@@ -1,5 +1,17 @@
 package com.moriartystudio.moriarty.feature.home.presentation
 
+import com.moriartystudio.moriarty.ui.theme.categoryColor
+import com.moriartystudio.moriarty.core.model.PuzzleCategory
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.material.icons.outlined.ViewInAr
+import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.GridView
+import androidx.compose.material.icons.outlined.Extension
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.Canvas
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -66,6 +78,7 @@ fun HomeScreen(
     onOpenAllLevels: () -> Unit,
     onRoot: (RootDestination) -> Unit,
     onProfile: () -> Unit,
+    onOpenCategory: (PuzzleCategory) -> Unit,
 ) {
     val state by viewModel.collectAsState()
     LaunchedEffect(Unit) { viewModel.refresh() }
@@ -73,6 +86,7 @@ fun HomeScreen(
         when (effect) {
             is HomeSideEffect.OpenPuzzle -> onOpenPuzzle(effect.level)
             HomeSideEffect.OpenAllLevels -> onOpenAllLevels()
+            is HomeSideEffect.OpenCategory -> onOpenCategory(effect.category)
             HomeSideEffect.OpenDaily -> onRoot(RootDestination.Daily)
             HomeSideEffect.OpenProfile -> onProfile()
         }
@@ -82,6 +96,7 @@ fun HomeScreen(
         onContinue = viewModel::continuePuzzle,
         onLevel = viewModel::openLevel,
         onAllLevels = viewModel::openAllLevels,
+        onCategory = viewModel::openCategory,
         onDaily = viewModel::openDaily,
         onProfile = viewModel::openProfile,
         onRoot = onRoot,
@@ -97,6 +112,7 @@ internal fun HomeContent(
     onDaily: () -> Unit,
     onProfile: () -> Unit,
     onRoot: (RootDestination) -> Unit,
+    onCategory: (PuzzleCategory) -> Unit = {},
 ) {
     Scaffold(
         containerColor = Color.White,
@@ -129,6 +145,7 @@ internal fun HomeContent(
                     .padding(top = 24.dp, bottom = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(22.dp),
             ) {
+                ExploreSection(state, onCategory)
                 DailyCard(state.dailyReset, onDaily)
                 RecentSolves(state.nearbyLevels, onLevel, onAllLevels)
             }
@@ -234,6 +251,72 @@ private fun SectionHeader(title: String, action: String? = null, onAction: (() -
                 color = Indigo,
                 modifier = Modifier.clip(RoundedCornerShape(10.dp)).clickable(onClick = onAction).padding(8.dp),
             )
+        }
+    }
+}
+
+@Composable
+private fun ExploreSection(state: HomeState, onCategory: (PuzzleCategory) -> Unit) {
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Text("Explore", style = MaterialTheme.typography.titleLarge, color = Night, modifier = Modifier.weight(1f))
+            ProgressRing(state.solvedCount, state.totalLevels)
+        }
+        val progress = PuzzleCategory.entries.map { category ->
+            state.categoryProgress.firstOrNull { it.category == category } ?: CategoryProgress(category, 0, 0)
+        }
+        progress.chunked(2).forEach { row ->
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                row.forEach { item -> CategoryTile(item, { onCategory(item.category) }, Modifier.weight(1f)) }
+            }
+        }
+    }
+}
+
+/** Circle around "solved/total", filled clockwise to the overall progress. */
+@Composable
+private fun ProgressRing(solved: Int, total: Int) {
+    val fraction = if (total == 0) 0f else solved / total.toFloat()
+    Box(Modifier.size(58.dp), contentAlignment = Alignment.Center) {
+        Canvas(Modifier.fillMaxSize()) {
+            val stroke = 5.dp.toPx()
+            val inset = stroke / 2
+            val arcSize = Size(size.width - stroke, size.height - stroke)
+            drawArc(Frost, 0f, 360f, false, Offset(inset, inset), arcSize, style = Stroke(stroke))
+            drawArc(Indigo, -90f, 360f * fraction, false, Offset(inset, inset), arcSize, style = Stroke(stroke, cap = StrokeCap.Round))
+        }
+        Text("$solved/$total", style = MaterialTheme.typography.labelMedium, color = Night, fontWeight = FontWeight.Bold)
+    }
+}
+
+/** Tile washed in the category colour and filled left to right up to that category's progress. */
+@Composable
+private fun CategoryTile(progress: CategoryProgress, onClick: () -> Unit, modifier: Modifier = Modifier) {
+    val color = categoryColor(progress.category)
+    val icon = when (progress.category) {
+        PuzzleCategory.Pattern -> Icons.Outlined.GridView
+        PuzzleCategory.Spatial -> Icons.Outlined.ViewInAr
+        PuzzleCategory.Deduction -> Icons.Outlined.Search
+        PuzzleCategory.Logic -> Icons.Outlined.Extension
+    }
+    Box(
+        modifier
+            .clip(RoundedCornerShape(22.dp))
+            .background(color.copy(alpha = 0.10f))
+            .clickable(onClick = onClick),
+    ) {
+        Box(Modifier.matchParentSize()) {
+            Box(Modifier.fillMaxHeight().fillMaxWidth(progress.fraction).background(color.copy(alpha = 0.28f)))
+        }
+        Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
+            Box(Modifier.size(42.dp).background(Color.White, CircleShape), contentAlignment = Alignment.Center) {
+                Icon(icon, null, tint = color, modifier = Modifier.size(22.dp))
+            }
+            Spacer(Modifier.width(12.dp))
+            Column {
+                Text(progress.category.label, style = MaterialTheme.typography.titleMedium, color = Night)
+                Text("${progress.solved} of ${progress.total}", style = MaterialTheme.typography.labelMedium, color = Night.copy(alpha = 0.6f))
+            }
         }
     }
 }

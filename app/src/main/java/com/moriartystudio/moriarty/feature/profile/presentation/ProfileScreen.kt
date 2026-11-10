@@ -1,5 +1,7 @@
 package com.moriartystudio.moriarty.feature.profile.presentation
 
+import com.moriartystudio.moriarty.core.model.PuzzleCategory
+import com.moriartystudio.moriarty.ui.theme.categoryColor
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -39,7 +41,7 @@ fun ProfileScreen(viewModel: ProfileViewModel, onSettings: () -> Unit, onRoot: (
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) { Metric(profile.solved.toString(), "puzzles solved"); Metric(profile.streak.toString(), "day streak"); Metric("${profile.accuracy}%", "accuracy"); Metric(profile.points.toString(), "points") }
             HorizontalDivider(color = Line)
             SectionTitle("Your reasoning activity")
-            listOf("Patterns", "Spatial", "Deduction", "Logic").forEachIndexed { index, label -> Row(verticalAlignment = Alignment.CenterVertically) { Box(Modifier.size(34.dp).background(listOf(Frost, SoftPeach, SoftAmber, Frost)[index], CircleShape)); Spacer(Modifier.width(12.dp)); Text(label, modifier = Modifier.width(104.dp)); LinearProgressIndicator(progress = { if (profile.solved == 0) 0f else (profile.solved / 10f).coerceIn(0f, 1f) }, modifier = Modifier.weight(1f).height(9.dp), color = listOf(Indigo, Peach, Amber, Color(0xFF9DA6FB))[index], trackColor = Line) } }
+            listOf("Patterns", "Spatial", "Deduction", "Logic").forEachIndexed { index, label -> Row(verticalAlignment = Alignment.CenterVertically) { Box(Modifier.size(34.dp).background(categoryColor(PuzzleCategory.entries[index]).copy(alpha = 0.18f), CircleShape)); Spacer(Modifier.width(12.dp)); Text(label, modifier = Modifier.width(104.dp)); LinearProgressIndicator(progress = { if (profile.solved == 0) 0f else (profile.solved / 10f).coerceIn(0f, 1f) }, modifier = Modifier.weight(1f).height(9.dp), color = categoryColor(PuzzleCategory.entries[index]), trackColor = Line) } }
             HorizontalDivider(color = Line)
             SectionTitle("Achievements", "See all", {})
             if (state.recentAchievements.isEmpty()) {

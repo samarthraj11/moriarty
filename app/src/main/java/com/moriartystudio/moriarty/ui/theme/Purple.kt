@@ -15,3 +15,16 @@ val Gold = Color(0xFFF5B52E)
 val GoldDark = Color(0xFFC98512)
 
 val IndigoGradient = Brush.linearGradient(listOf(Indigo, IndigoLight))
+
+// One colour per puzzle category, used for tiles, progress and accents everywhere.
+val CategoryPattern = Color(0xFFF5B52E)
+val CategorySpatial = Color(0xFF5262FB)
+val CategoryDeduction = Color(0xFFFF7A5C)
+val CategoryLogic = Color(0xFF1BB3A0)
+
+fun categoryColor(category: com.moriartystudio.moriarty.core.model.PuzzleCategory): Color = when (category) {
+    com.moriartystudio.moriarty.core.model.PuzzleCategory.Pattern -> CategoryPattern
+    com.moriartystudio.moriarty.core.model.PuzzleCategory.Spatial -> CategorySpatial
+    com.moriartystudio.moriarty.core.model.PuzzleCategory.Deduction -> CategoryDeduction
+    com.moriartystudio.moriarty.core.model.PuzzleCategory.Logic -> CategoryLogic
+}
