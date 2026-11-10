@@ -1,5 +1,6 @@
 package com.moriartystudio.moriarty.feature.category.presentation
 
+import com.moriartystudio.moriarty.ui.theme.BitterFamily
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -169,7 +170,7 @@ private fun Header(state: CategoryState, color: Color, onColor: Color, onBack: (
             ) { Icon(Icons.AutoMirrored.Outlined.ArrowBack, "Back", tint = onColor, modifier = Modifier.size(21.dp)) }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    Text(state.category.label, color = onColor, fontSize = 34.sp, fontWeight = FontWeight.Bold, lineHeight = 38.sp)
+                    Text(state.category.label, color = onColor, fontSize = 34.sp, fontWeight = FontWeight.Bold, lineHeight = 40.sp, fontFamily = BitterFamily)
                     Text(voice(state.category), color = onColor.copy(alpha = 0.85f), style = MaterialTheme.typography.bodyLarge)
                 }
                 Spacer(Modifier.width(12.dp))
