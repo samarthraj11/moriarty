@@ -146,6 +146,11 @@ fun MoriartyApp() {
                         backStack.add(HomeRoute)
                         backStack.add(PuzzleRoute(next))
                     },
+                    onNextSection = { category ->
+                        backStack.clear()
+                        backStack.add(HomeRoute)
+                        backStack.add(CategoryRoute(category))
+                    },
                     onFinish = { openRoot(RootDestination.Levels) },
                 )
             }

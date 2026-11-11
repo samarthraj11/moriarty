@@ -1,5 +1,6 @@
 package com.moriartystudio.moriarty.feature.puzzle.presentation
 
+import com.moriartystudio.moriarty.core.model.PuzzleCategory
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -55,16 +56,23 @@ class PuzzleViewModel(level: Int, private val repository: GameRepository) : View
     fun toggleHint() = intent { reduce { state.copy(showHint = !state.showHint) } }
     fun goBack() = intent { postSideEffect(PuzzleSideEffect.GoBack) }
 
-    // After a puzzle, carry on in the same category; finish when it has nothing left to play.
+    // After a puzzle: carry on in the same section, then move to the next section that still has
+    // something to solve, and only finish when nothing is left anywhere.
     private fun nextEffect(level: Int): PuzzleSideEffect {
         val levels = repository.levels()
-        val category = levels.firstOrNull { it.number == level }?.category
-        val next = levels.firstOrNull { it.category == category && it.number > level && !it.isSolved }
-        return if (next != null) PuzzleSideEffect.NextLevel(next.number) else PuzzleSideEffect.FinishJourney
+        val category = levels.firstOrNull { it.number == level }?.category ?: return PuzzleSideEffect.FinishJourney
+        val remaining = levels.filter { it.category == category && it.number != level && !it.isSolved }
+        (remaining.firstOrNull { it.number > level } ?: remaining.firstOrNull())?.let { return PuzzleSideEffect.NextLevel(it.number) }
+        val order = PuzzleCategory.entries
+        val start = order.indexOf(category)
+        val nextSection = (1 until order.size)
+            .map { order[(start + it) % order.size] }
+            .firstOrNull { candidate -> levels.any { it.category == candidate && !it.isSolved } }
+        return if (nextSection != null) PuzzleSideEffect.NextSection(nextSection) else PuzzleSideEffect.FinishJourney
     }
 
     private companion object {
         const val TAG = "Puzzle"
-        const val SUCCESS_DELAY_MS = 800L
+        const val SUCCESS_DELAY_MS = 1_000L
     }
 }

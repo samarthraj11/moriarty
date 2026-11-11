@@ -1,5 +1,18 @@
 package com.moriartystudio.moriarty.feature.puzzle.presentation
 
+import kotlin.math.sin
+import kotlin.math.cos
+import com.moriartystudio.moriarty.ui.theme.categoryColor
+import com.moriartystudio.moriarty.ui.theme.Peach
+import com.moriartystudio.moriarty.ui.theme.Gold
+import com.moriartystudio.moriarty.core.model.PuzzleCategory
+import androidx.compose.ui.graphics.drawscope.rotate
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.animation.core.FastOutSlowInEasing
 import com.moriartystudio.moriarty.core.designsystem.HeaderPill
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.ui.graphics.graphicsLayer
@@ -79,6 +92,7 @@ fun PuzzleScreen(
     viewModel: PuzzleViewModel,
     onBack: () -> Unit,
     onNext: (Int) -> Unit,
+    onNextSection: (PuzzleCategory) -> Unit,
     onFinish: () -> Unit,
 ) {
     val state by viewModel.collectAsState()
@@ -86,6 +100,7 @@ fun PuzzleScreen(
         when (it) {
             PuzzleSideEffect.GoBack -> onBack()
             is PuzzleSideEffect.NextLevel -> onNext(it.level)
+            is PuzzleSideEffect.NextSection -> onNextSection(it.category)
             PuzzleSideEffect.FinishJourney -> onFinish()
         }
     }
@@ -124,6 +139,7 @@ fun PuzzleScreen(
                             text = answer,
                             visual = puzzle.optionVisuals[answer],
                             correct = state.correctAnswer == answer,
+                            accent = categoryColor(puzzle.category),
                             incorrect = answer in state.wrongOptions,
                             onClick = { viewModel.select(answer) },
                             modifier = Modifier.weight(1f),
@@ -186,6 +202,7 @@ private fun AnswerOption(
     text: String,
     visual: PuzzleAnswerVisual?,
     correct: Boolean,
+    accent: Color,
     incorrect: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -214,6 +231,11 @@ private fun AnswerOption(
             pop.animateTo(1f, spring(dampingRatio = Spring.DampingRatioMediumBouncy))
         }
     }
+    // A burst of confetti in the section's colours when the answer is right.
+    val burst = remember { Animatable(0f) }
+    LaunchedEffect(correct) {
+        if (correct) burst.animateTo(1f, tween(950, easing = FastOutSlowInEasing))
+    }
     val interaction = remember { MutableInteractionSource() }
     val pressed by interaction.collectIsPressedAsState()
     val pressScale by animateFloatAsState(if (pressed) 0.95f else 1f, label = "press")
@@ -224,6 +246,10 @@ private fun AnswerOption(
                 translationX = shake.value * density
                 scaleX = pressScale * pop.value
                 scaleY = pressScale * pop.value
+            }
+            .drawWithContent {
+                drawContent()
+                if (burst.value > 0f && burst.value < 1f) drawSuccessBurst(burst.value, listOf(accent, Gold, Indigo, Peach))
             }
             .semantics { contentDescription = "Answer: $text" }
             .clickable(interactionSource = interaction, indication = null, enabled = !correct && !incorrect, onClick = onClick),
@@ -307,6 +333,27 @@ private fun HintCard(hint: String) {
             Column {
                 Text("A different angle", style = MaterialTheme.typography.labelLarge, color = Ink)
                 Text(hint, style = MaterialTheme.typography.bodyMedium, color = Ink)
+            }
+        }
+    }
+}
+
+/** Confetti radiating from the centre of the tile, easing out and fading as [progress] runs 0 to 1. */
+internal fun DrawScope.drawSuccessBurst(progress: Float, colors: List<Color>) {
+    val eased = 1f - (1f - progress) * (1f - progress)
+    val fade = (1f - progress * progress).coerceIn(0f, 1f)
+    val count = 18
+    repeat(count) { i ->
+        val angle = Math.toRadians(i * 360.0 / count + (i % 3) * 8.0)
+        val distance = (62 + (i * 37) % 52).dp.toPx() * eased
+        val position = Offset(center.x + (cos(angle) * distance).toFloat(), center.y + (sin(angle) * distance).toFloat())
+        val color = colors[i % colors.size].copy(alpha = fade)
+        val size = (5 + (i % 3) * 2).dp.toPx()
+        if (i % 2 == 0) {
+            drawCircle(color, size / 2, position)
+        } else {
+            rotate(progress * 220f + i * 20f, pivot = position) {
+                drawRoundRect(color, Offset(position.x - size / 2, position.y - size), Size(size, size * 2), CornerRadius(size / 3))
             }
         }
     }
