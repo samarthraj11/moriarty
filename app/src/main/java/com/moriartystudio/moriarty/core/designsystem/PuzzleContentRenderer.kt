@@ -1,5 +1,10 @@
 package com.moriartystudio.moriarty.core.designsystem
 
+import androidx.compose.ui.text.style.BaselineShift
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -196,21 +201,41 @@ private fun ClueList(clues: List<String>, compact: Boolean, showLetters: Boolean
     }
 }
 
+// Shapes inside equations are text characters; each gets its own colour and is drawn twice as large.
+private fun shapeColor(char: Char): Color? = when (char) {
+    '●' -> Indigo
+    '▲' -> Peach
+    '■' -> Amber
+    '◆' -> Color(0xFF1BB3A0)
+    '★' -> Color(0xFF9B6BFF)
+    else -> null
+}
+
 @Composable
 private fun EquationList(rows: List<String>, compact: Boolean) {
+    val style = if (compact) MaterialTheme.typography.titleMedium else MaterialTheme.typography.titleLarge
+    val shapeSize = style.fontSize * 2
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(if (compact) 6.dp else 10.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         rows.forEachIndexed { index, row ->
+            val text = buildAnnotatedString {
+                row.forEach { char ->
+                    val color = shapeColor(char)
+                    if (color != null) withStyle(SpanStyle(color = color, fontSize = shapeSize, baselineShift = BaselineShift(-0.12f))) { append(char) } else append(char)
+                }
+            }
             Text(
-                row,
+                text,
                 modifier = Modifier
                     .background(if (index == rows.lastIndex) Frost else Ivory, RoundedCornerShape(14.dp))
-                    .padding(horizontal = 22.dp, vertical = if (compact) 8.dp else 11.dp),
-                style = if (compact) MaterialTheme.typography.titleMedium else MaterialTheme.typography.titleLarge,
+                    .padding(horizontal = 22.dp, vertical = if (compact) 6.dp else 8.dp),
+                // Let the line grow with the larger shapes instead of using the style's fixed height.
+                style = style.copy(lineHeight = TextUnit.Unspecified),
                 fontWeight = FontWeight.Bold,
+                softWrap = false,
             )
         }
     }
