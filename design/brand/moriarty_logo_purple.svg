@@ -25,6 +25,6 @@
   <circle cx="400" cy="347" r="225" fill="none" stroke="#FFFDF8" stroke-width="5"/>
   <!-- Central negative-space M tablet, echoing the supplied reference -->
   <path d="M333 309 Q333 294 348 294 H452 Q467 294 467 309 V393 Q467 409 452 409 H348 Q333 409 333 393 Z" fill="#FFFDF8"/>
-  <text x="400" y="382" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="91" font-weight="850" letter-spacing="-5" fill="#35265E">M</text>
+  <text x="400" y="392" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="118.3" font-weight="850" letter-spacing="-6.5" fill="#35265E">M</text>
   <text x="400" y="748" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="111" letter-spacing="-3" fill="#292044">Moriarty</text>
 </svg>

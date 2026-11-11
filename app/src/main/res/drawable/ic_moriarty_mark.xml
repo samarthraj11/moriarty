@@ -43,5 +43,5 @@
   </group>
   <path android:pathData="M80,256a176,176 0 1,0 352,0a176,176 0 1,0 -352,0z" android:fillColor="#00000000" android:strokeColor="#FFFDF8" android:strokeWidth="4"/>
   <path android:pathData="M217,214 H295 A13,13 0 0 1 308,227 V285 A13,13 0 0 1 295,298 H217 A13,13 0 0 1 204,285 V227 A13,13 0 0 1 217,214 Z" android:fillColor="#FFFDF8"/>
-  <path android:pathData="M224.5,282 L224.5,228 L237.5,228 L256,262 L274.5,228 L287.5,228 L287.5,282 L277.5,282 L277.5,246 L260.5,277 L251.5,277 L234.5,246 L234.5,282 Z" android:fillColor="#35265E"/>
+  <path android:pathData="M215.1,290.1 L215.1,219.9 L231.9,219.9 L256,264.1 L280.1,219.9 L296.9,219.9 L296.9,290.1 L283.9,290.1 L283.9,243.3 L261.9,283.6 L250.2,283.6 L228.1,243.3 L228.1,290.1 Z" android:fillColor="#35265E"/>
 </vector>
