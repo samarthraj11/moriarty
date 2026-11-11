@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="900" viewBox="0 0 800 900" role="img" aria-labelledby="title desc">
+  <title id="title">Moriarty — Purple Puzzle Logo</title>
+  <desc id="desc">A four-part circular jigsaw symbol in purple and lavender, with a central M, above the Moriarty wordmark.</desc>
+  <defs>
+    <linearGradient id="tl" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#8875FC"/><stop offset="1" stop-color="#6555DE"/></linearGradient>
+    <linearGradient id="tr" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#C8B9FF"/><stop offset="1" stop-color="#A08BEE"/></linearGradient>
+    <linearGradient id="bl" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#42307A"/><stop offset="1" stop-color="#5D46A9"/></linearGradient>
+    <linearGradient id="br" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#7158D8"/><stop offset="1" stop-color="#43307D"/></linearGradient>
+    <clipPath id="circle"><circle cx="400" cy="347" r="225"/></clipPath>
+  </defs>
+  <g clip-path="url(#circle)">
+    <rect x="175" y="122" width="225" height="225" fill="url(#tl)"/>
+    <rect x="400" y="122" width="225" height="225" fill="url(#tr)"/>
+    <rect x="175" y="347" width="225" height="225" fill="url(#bl)"/>
+    <rect x="400" y="347" width="225" height="225" fill="url(#br)"/>
+    <!-- Puzzle seams: smooth interlocking notches, not a generic quartered circle -->
+    <g fill="none" stroke="#FFFDF8" stroke-width="11" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M400 122 V205 C374 202 360 220 360 240 C360 260 376 275 400 270 V347"/>
+      <path d="M175 347 H270 C265 323 279 306 301 306 C323 306 335 324 331 347 H400"/>
+      <path d="M400 347 H463 C458 370 473 386 494 386 C515 386 529 370 524 347 H625"/>
+      <path d="M400 347 V424 C426 419 442 436 442 457 C442 478 426 491 400 487 V572"/>
+    </g>
+  </g>
+  <!-- Subtle outer outline reinforces the app-icon silhouette -->
+  <circle cx="400" cy="347" r="225" fill="none" stroke="#FFFDF8" stroke-width="5"/>
+  <!-- Central negative-space M tablet, echoing the supplied reference -->
+  <path d="M333 309 Q333 294 348 294 H452 Q467 294 467 309 V393 Q467 409 452 409 H348 Q333 409 333 393 Z" fill="#FFFDF8"/>
+  <text x="400" y="382" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="91" font-weight="850" letter-spacing="-5" fill="#35265E">M</text>
+  <text x="400" y="748" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="111" letter-spacing="-3" fill="#292044">Moriarty</text>
+</svg>

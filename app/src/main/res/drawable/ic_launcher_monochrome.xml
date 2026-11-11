@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp" android:height="108dp"
+    android:viewportWidth="108" android:viewportHeight="108">
+  <group android:scaleX="0.1875" android:scaleY="0.1875" android:translateX="6" android:translateY="6">
+    <path android:pathData="M80,256a176,176 0 1,0 352,0a176,176 0 1,0 -352,0z" android:fillColor="#00000000" android:strokeColor="#000000" android:strokeWidth="9"/>
+    <group>
+      <clip-path android:pathData="M0,0 H512 V512 H0 Z M217,214 A13,13 0 0 0 204,227 V285 A13,13 0 0 0 217,298 H295 A13,13 0 0 0 308,285 V227 A13,13 0 0 0 295,214 Z"/>
+      <path android:pathData="M256,80 V145 C235,141 221,155 221,174 C221,192 235,205 256,201 V256" android:fillColor="#00000000" android:strokeColor="#000000" android:strokeWidth="9" android:strokeLineCap="round" android:strokeLineJoin="round"/>
+      <path android:pathData="M80,256 H154 C150,235 163,221 181,221 C200,221 212,236 208,256 H256" android:fillColor="#00000000" android:strokeColor="#000000" android:strokeWidth="9" android:strokeLineCap="round" android:strokeLineJoin="round"/>
+      <path android:pathData="M256,256 H304 C300,275 313,288 330,288 C348,288 361,275 357,256 H432" android:fillColor="#00000000" android:strokeColor="#000000" android:strokeWidth="9" android:strokeLineCap="round" android:strokeLineJoin="round"/>
+      <path android:pathData="M256,256 V317 C277,313 290,327 290,345 C290,363 277,376 256,372 V432" android:fillColor="#00000000" android:strokeColor="#000000" android:strokeWidth="9" android:strokeLineCap="round" android:strokeLineJoin="round"/>
+    </group>
+    <path android:pathData="M217,214 H295 A13,13 0 0 1 308,227 V285 A13,13 0 0 1 295,298 H217 A13,13 0 0 1 204,285 V227 A13,13 0 0 1 217,214 Z M224.5,282 L224.5,228 L237.5,228 L256,262 L274.5,228 L287.5,228 L287.5,282 L277.5,282 L277.5,246 L260.5,277 L251.5,277 L234.5,246 L234.5,282 Z" android:fillType="evenOdd" android:fillColor="#000000"/>
+  </group>
+</vector>

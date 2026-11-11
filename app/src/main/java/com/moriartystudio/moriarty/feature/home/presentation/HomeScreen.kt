@@ -1,5 +1,6 @@
 package com.moriartystudio.moriarty.feature.home.presentation
 
+import com.moriartystudio.moriarty.core.designsystem.MoriartyMark
 import kotlinx.coroutines.delay
 import java.time.ZonedDateTime
 import com.moriartystudio.moriarty.domain.daily.DailyClock
@@ -172,10 +173,7 @@ internal fun HomeContent(
 @Composable
 private fun HomeHeader(state: HomeState, onProfile: () -> Unit) {
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        Box(
-            Modifier.size(46.dp).clip(CircleShape).background(Color.White.copy(alpha = 0.25f)).clickable(onClick = onProfile),
-            contentAlignment = Alignment.Center,
-        ) { Text("M", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 19.sp) }
+        MoriartyMark(Modifier.size(46.dp).clip(CircleShape).clickable(onClick = onProfile), contentDescription = "Profile")
         Spacer(Modifier.width(12.dp))
         Column(Modifier.weight(1f)) {
             Text("Welcome back!", color = Color.White.copy(alpha = 0.8f), style = MaterialTheme.typography.bodyMedium)

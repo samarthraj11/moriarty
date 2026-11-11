@@ -1,5 +1,6 @@
 package com.moriartystudio.moriarty.feature.settings.presentation
 
+import com.moriartystudio.moriarty.core.designsystem.MoriartyLogo
 import com.moriartystudio.moriarty.core.designsystem.GlassIconButton
 import com.moriartystudio.moriarty.core.designsystem.MoriartyPage
 import androidx.compose.foundation.background
@@ -34,7 +35,10 @@ fun SettingsScreen(viewModel: SettingsViewModel, onBack: () -> Unit) {
             SettingsGroup("Gameplay") { SettingToggle("Confirm before using a hint", "Show a confirmation before spending a hint.", state.confirmHint, viewModel::confirmHint); SettingToggle("Show timer while solving", "Display how long you’ve been solving a puzzle.", state.timerVisible, viewModel::timer) }
             SettingsGroup("Account") { SettingLink("Continue with Google", "Sign in to save your progress across devices."); SettingLink("Restore progress", "Recover your saved progress."); SettingLink("Delete account", "Permanently delete your account and progress.") }
             TextButton(onClick = viewModel::signOut, modifier = Modifier.fillMaxWidth()) { Text("Sign out", color = ErrorCoral, style = MaterialTheme.typography.titleMedium) }
-            Text("Moriarty 0.1.0", style = MaterialTheme.typography.bodyMedium, color = InkMuted, modifier = Modifier.align(Alignment.CenterHorizontally))
+            Column(Modifier.align(Alignment.CenterHorizontally), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                MoriartyLogo(markSize = 64.dp)
+                Text("Version 0.1.0", style = MaterialTheme.typography.bodyMedium, color = InkMuted)
+            }
         }
     }
 }
