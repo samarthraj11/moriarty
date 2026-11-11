@@ -1,5 +1,8 @@
 package com.moriartystudio.moriarty.data.repository
 
+import java.time.LocalDate
+import com.moriartystudio.moriarty.domain.daily.DailyStreak
+import com.moriartystudio.moriarty.domain.daily.DailyPuzzlePicker
 import android.content.Context
 import com.moriartystudio.moriarty.core.model.LeaderboardEntry
 import com.moriartystudio.moriarty.core.model.Level
@@ -66,6 +69,28 @@ class LocalGameRepository(
             .apply()
     }
 
+    override fun dailyPuzzle(date: LocalDate): Puzzle {
+        val ordered = puzzles.sortedBy { it.level }
+        return ordered[DailyPuzzlePicker.indexFor(date, ordered.size)]
+    }
+
+    override fun dailyPlayedDays(): Set<LocalDate> = preferences.getStringSet(DAILY_PLAYED, emptySet())
+        .orEmpty()
+        .mapNotNull { runCatching { LocalDate.parse(it) }.getOrNull() }
+        .toSet()
+
+    override fun recordDailyPlayed(date: LocalDate) {
+        preferences.edit()
+            .putStringSet(DAILY_PLAYED, (dailyPlayedDays() + date).map(LocalDate::toString).toSet())
+            .apply()
+    }
+
+    override fun dailyStartDate(today: LocalDate): LocalDate {
+        preferences.getString(DAILY_START, null)?.let { saved -> runCatching { LocalDate.parse(saved) }.getOrNull()?.let { return it } }
+        preferences.edit().putString(DAILY_START, today.toString()).apply()
+        return today
+    }
+
     override fun leaderboard(): List<LeaderboardEntry> = listOf(
         LeaderboardEntry(1, "Anika", 50, 500), LeaderboardEntry(2, "Ravi", 48, 480),
         LeaderboardEntry(3, "Mira", 47, 465), LeaderboardEntry(4, "Leo", 45, 440),
@@ -79,7 +104,7 @@ class LocalGameRepository(
         val answered = levels.filter { it.points != null }
         val firstTry = answered.count { it.points == Scoring.CORRECT_POINTS }
         val accuracy = if (answered.isEmpty()) 0 else firstTry * 100 / answered.size
-        return PlayerProfile("Moriarty", "Quiet Observer", levels.count(Level::isSolved), 0, totalPoints(), accuracy)
+        return PlayerProfile("Moriarty", "Quiet Observer", levels.count(Level::isSolved), DailyStreak.current(dailyPlayedDays(), LocalDate.now()), totalPoints(), accuracy)
     }
 
     private fun solvedLevels(): Set<Int> = preferences.getStringSet(SOLVED_LEVELS, emptySet())
@@ -97,5 +122,7 @@ class LocalGameRepository(
     private companion object {
         const val SOLVED_LEVELS = "solved_levels"
         const val SKIPPED_LEVELS = "skipped_levels"
+        const val DAILY_PLAYED = "daily_played_days"
+        const val DAILY_START = "daily_start_date"
     }
 }
