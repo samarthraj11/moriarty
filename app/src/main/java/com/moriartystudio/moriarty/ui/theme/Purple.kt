@@ -28,3 +28,6 @@ fun categoryColor(category: com.moriartystudio.moriarty.core.model.PuzzleCategor
     com.moriartystudio.moriarty.core.model.PuzzleCategory.Deduction -> CategoryDeduction
     com.moriartystudio.moriarty.core.model.PuzzleCategory.Logic -> CategoryLogic
 }
+
+// Confirming / moving-on actions after a success.
+val SuccessGreen = Color(0xFF2EAD62)

@@ -37,9 +37,8 @@ class PuzzleViewModel(level: Int, private val repository: GameRepository) : View
             val delta = repository.recordFirstAnswer(puzzle.level, correct = true)
             repository.completeLevel(puzzle.level)
             Log.d(TAG, "Level ${puzzle.level} solved in ${state.elapsedSeconds}s, $delta points")
+            // Stay on the solved puzzle; the player moves on with Next (or plays it again with Retry).
             reduce { state.copy(status = AnswerStatus.Correct, correctAnswer = answer, lastDelta = delta, totalPoints = repository.totalPoints()) }
-            delay(SUCCESS_DELAY_MS)
-            postSideEffect(nextEffect(puzzle.level))
         } else {
             val delta = repository.recordFirstAnswer(puzzle.level, correct = false)
             reduce { state.copy(status = AnswerStatus.Incorrect, wrongOptions = state.wrongOptions + answer, lastDelta = delta, totalPoints = repository.totalPoints()) }
@@ -53,6 +52,26 @@ class PuzzleViewModel(level: Int, private val repository: GameRepository) : View
         reduce { state.copy(status = AnswerStatus.Skipped) }
         postSideEffect(nextEffect(puzzle.level))
     }
+    fun next() = intent {
+        val puzzle = state.puzzle ?: return@intent
+        if (state.status == AnswerStatus.Correct) postSideEffect(nextEffect(puzzle.level))
+    }
+
+    // Play the solved puzzle again: clear the answers, restart the timer. Points only ever count once.
+    fun retry() = intent {
+        if (state.status != AnswerStatus.Correct) return@intent
+        reduce {
+            state.copy(
+                status = AnswerStatus.Unanswered,
+                correctAnswer = null,
+                wrongOptions = emptySet(),
+                lastDelta = null,
+                elapsedSeconds = 0,
+                showHint = false,
+            )
+        }
+    }
+
     fun toggleHint() = intent { reduce { state.copy(showHint = !state.showHint) } }
     fun goBack() = intent { postSideEffect(PuzzleSideEffect.GoBack) }
 
@@ -73,6 +92,5 @@ class PuzzleViewModel(level: Int, private val repository: GameRepository) : View
 
     private companion object {
         const val TAG = "Puzzle"
-        const val SUCCESS_DELAY_MS = 1_000L
     }
 }

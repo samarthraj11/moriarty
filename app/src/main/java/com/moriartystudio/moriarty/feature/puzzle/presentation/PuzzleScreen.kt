@@ -1,5 +1,11 @@
 package com.moriartystudio.moriarty.feature.puzzle.presentation
 
+import com.moriartystudio.moriarty.ui.theme.SuccessGreen
+import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.border
+import androidx.compose.material.icons.automirrored.outlined.ArrowForward
+import androidx.compose.material.icons.outlined.Replay
 import androidx.compose.ui.unit.sp
 import kotlin.math.sin
 import kotlin.math.cos
@@ -110,6 +116,7 @@ fun PuzzleScreen(
         title = "Level ${state.categoryLevel}",
         subtitle = "${puzzle.category.label}: ${puzzle.title}",
         leading = { GlassIconButton(Icons.AutoMirrored.Outlined.ArrowBack, viewModel::goBack, "Back") },
+        bottomBar = { if (state.status == AnswerStatus.Correct) SolvedBar(onRetry = viewModel::retry, onNext = viewModel::next) },
         trailing = {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 HeaderPill {
@@ -157,21 +164,23 @@ fun PuzzleScreen(
             if (state.showHint) {
                 HintCard(puzzle.hint)
             }
-            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                TextButton(onClick = viewModel::toggleHint) {
-                    Icon(Icons.Outlined.Lightbulb, null, tint = Amber, modifier = Modifier.size(19.dp))
-                    Spacer(Modifier.width(7.dp))
-                    Text(
-                        if (state.showHint) "Hide hint" else "Show a hint",
-                        color = Indigo,
-                        fontWeight = FontWeight.SemiBold,
-                    )
-                }
-                Spacer(Modifier.weight(1f))
-                TextButton(onClick = viewModel::skip) {
-                    Text("Skip", color = InkMuted, fontWeight = FontWeight.SemiBold)
-                    Spacer(Modifier.width(4.dp))
-                    Icon(Icons.Outlined.SkipNext, null, tint = InkMuted, modifier = Modifier.size(20.dp))
+            if (state.status != AnswerStatus.Correct) {
+                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                    TextButton(onClick = viewModel::toggleHint) {
+                        Icon(Icons.Outlined.Lightbulb, null, tint = Amber, modifier = Modifier.size(19.dp))
+                        Spacer(Modifier.width(7.dp))
+                        Text(
+                            if (state.showHint) "Hide hint" else "Show a hint",
+                            color = Indigo,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                    }
+                    Spacer(Modifier.weight(1f))
+                    TextButton(onClick = viewModel::skip) {
+                        Text("Skip", color = InkMuted, fontWeight = FontWeight.SemiBold)
+                        Spacer(Modifier.width(4.dp))
+                        Icon(Icons.Outlined.SkipNext, null, tint = InkMuted, modifier = Modifier.size(20.dp))
+                    }
                 }
             }
             Spacer(Modifier.height(16.dp))
@@ -234,7 +243,8 @@ private fun AnswerOption(
     // A burst of confetti in the section's colours when the answer is right.
     val burst = remember { Animatable(0f) }
     LaunchedEffect(correct) {
-        if (correct) burst.animateTo(1f, tween(950, easing = FastOutSlowInEasing))
+        burst.snapTo(0f)
+        if (correct) burst.animateTo(1f, tween(1900, easing = FastOutSlowInEasing))
     }
     val interaction = remember { MutableInteractionSource() }
     val pressed by interaction.collectIsPressedAsState()
@@ -354,6 +364,46 @@ internal fun DrawScope.drawSuccessBurst(progress: Float, colors: List<Color>) {
         } else {
             rotate(progress * 220f + i * 20f, pivot = position) {
                 drawRoundRect(color, Offset(position.x - size / 2, position.y - size), Size(size, size * 2), CornerRadius(size / 3))
+            }
+        }
+    }
+}
+
+/** Docked once a puzzle is solved: play it again, or carry on. Nothing moves until a button is tapped. */
+@Composable
+internal fun SolvedBar(onRetry: () -> Unit, onNext: () -> Unit) {
+    Surface(color = Color.White, shadowElevation = 12.dp, shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)) {
+        Row(
+            Modifier.fillMaxWidth().navigationBarsPadding().padding(horizontal = 20.dp, vertical = 14.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Row(
+                Modifier
+                    .weight(1f)
+                    .height(56.dp)
+                    .clip(RoundedCornerShape(28.dp))
+                    .border(2.dp, Indigo, RoundedCornerShape(28.dp))
+                    .clickable(onClick = onRetry),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+            ) {
+                Icon(Icons.Outlined.Replay, null, tint = Indigo, modifier = Modifier.size(22.dp))
+                Spacer(Modifier.width(8.dp))
+                Text("Retry", color = Indigo, style = MaterialTheme.typography.titleMedium)
+            }
+            Row(
+                Modifier
+                    .weight(1f)
+                    .height(56.dp)
+                    .clip(RoundedCornerShape(28.dp))
+                    .background(SuccessGreen)
+                    .clickable(onClick = onNext),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+            ) {
+                Text("Next", color = Color.White, style = MaterialTheme.typography.titleMedium)
+                Spacer(Modifier.width(8.dp))
+                Icon(Icons.AutoMirrored.Outlined.ArrowForward, null, tint = Color.White, modifier = Modifier.size(22.dp))
             }
         }
     }
