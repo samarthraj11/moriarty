@@ -203,7 +203,10 @@ private fun HeroCard(state: HomeState, onContinue: () -> Unit) {
         verticalArrangement = Arrangement.spacedBy(14.dp),
     ) {
         Column {
-            Text("Level $next", color = Color.White.copy(alpha = 0.85f), style = MaterialTheme.typography.titleMedium)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("Level $next", color = Color.White.copy(alpha = 0.85f), style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
+                state.currentLevel?.category?.let { SectionTag(it) }
+            }
             Text(state.currentPuzzle?.title ?: "Start playing", color = Color.White, style = MaterialTheme.typography.headlineMedium)
         }
         state.currentPuzzle?.let { puzzle ->
@@ -237,6 +240,19 @@ private fun HeroCard(state: HomeState, onContinue: () -> Unit) {
                 Box(Modifier.fillMaxWidth(progress).height(5.dp).background(Gold, CircleShape))
             }
         }
+    }
+}
+
+/** Which of the four sections the previewed puzzle belongs to. */
+@Composable
+private fun SectionTag(category: PuzzleCategory) {
+    Row(
+        Modifier.background(Color.White, RoundedCornerShape(50)).padding(horizontal = 11.dp, vertical = 5.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Box(Modifier.size(9.dp).background(categoryColor(category), CircleShape))
+        Spacer(Modifier.width(6.dp))
+        Text(category.label, style = MaterialTheme.typography.labelMedium, color = Night)
     }
 }
 
