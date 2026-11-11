@@ -1,5 +1,6 @@
 package com.moriartystudio.moriarty.feature.home.presentation
 
+import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -188,6 +189,16 @@ private fun HomeHeader(state: HomeState, onProfile: () -> Unit) {
             Spacer(Modifier.width(4.dp))
             Text(
                 state.streak.toString(),
+                style = MaterialTheme.typography.labelLarge,
+                color = Night
+            )
+        }
+        Spacer(Modifier.width(8.dp))
+        StatPill {
+            Text("\uD83C\uDFC6", fontSize = 15.sp)
+            Spacer(Modifier.width(4.dp))
+            Text(
+                state.points.toString(),
                 style = MaterialTheme.typography.labelLarge,
                 color = Night
             )

@@ -98,7 +98,7 @@ internal fun CategoryContent(
     val onColor = onCategoryColor(state.category)
     Scaffold(
         containerColor = Color.White,
-        bottomBar = { PlayBar(state, color, onColor, onPlay) },
+        bottomBar = { PlayBar(state, color, onPlay) },
     ) { padding ->
         Column(
             Modifier
@@ -270,7 +270,7 @@ private fun LevelCell(level: Level, isNext: Boolean, color: Color, onColor: Colo
 }
 
 @Composable
-private fun PlayBar(state: CategoryState, color: Color, onColor: Color, onPlay: () -> Unit) {
+private fun PlayBar(state: CategoryState, color: Color, onPlay: () -> Unit) {
     val target = state.next ?: return
     Surface(color = Color.White, shadowElevation = 12.dp, shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)) {
         Row(
@@ -280,14 +280,15 @@ private fun PlayBar(state: CategoryState, color: Color, onColor: Color, onPlay: 
                 .padding(horizontal = 20.dp, vertical = 14.dp)
                 .height(64.dp)
                 .clip(RoundedCornerShape(32.dp))
-                .background(color)
+                .background(color.copy(alpha = 0.10f))
+                .border(2.dp, color, RoundedCornerShape(32.dp))
                 .clickable(onClick = onPlay),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center,
         ) {
-            Icon(Icons.Outlined.PlayArrow, null, tint = onColor, modifier = Modifier.size(28.dp))
+            Icon(Icons.Outlined.PlayArrow, null, tint = color, modifier = Modifier.size(28.dp))
             Spacer(Modifier.width(8.dp))
-            Text("Play level ${target.categoryLevel}", color = onColor, style = MaterialTheme.typography.titleLarge)
+            Text("Play level ${target.categoryLevel}", color = Night, style = MaterialTheme.typography.titleLarge)
         }
     }
 }

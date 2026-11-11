@@ -1,5 +1,6 @@
 package com.moriartystudio.moriarty.feature.puzzle.presentation
 
+import androidx.compose.ui.unit.sp
 import kotlin.math.sin
 import kotlin.math.cos
 import com.moriartystudio.moriarty.ui.theme.categoryColor
@@ -14,7 +15,6 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.animation.core.FastOutSlowInEasing
 import com.moriartystudio.moriarty.core.designsystem.HeaderPill
-import androidx.compose.material.icons.outlined.Star
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.LaunchedEffect
@@ -113,7 +113,7 @@ fun PuzzleScreen(
         trailing = {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 HeaderPill {
-                    Icon(Icons.Outlined.Star, null, tint = Amber, modifier = Modifier.size(17.dp))
+                    Text("\uD83C\uDFC6", fontSize = 15.sp)
                     Spacer(Modifier.width(4.dp))
                     Text(state.totalPoints.toString(), style = MaterialTheme.typography.labelLarge, color = Ink)
                 }
