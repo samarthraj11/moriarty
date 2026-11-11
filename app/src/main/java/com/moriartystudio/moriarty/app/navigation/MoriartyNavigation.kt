@@ -75,7 +75,7 @@ private data object DailyRoute
 private data object LeaderboardRoute
 private data object ProfileRoute
 private data object SettingsRoute
-private data class PuzzleRoute(val level: Int)
+private data class PuzzleRoute(val level: Int, val daily: Boolean = false)
 private data class SolutionRoute(val level: Int, val seconds: Int)
 
 @Composable
@@ -137,7 +137,7 @@ fun MoriartyApp() {
                 LevelsScreen(vm, ::back) { open(PuzzleRoute(it)) }
             }
             entry<PuzzleRoute> { route ->
-                val vm = viewModel(key = "puzzle-${route.level}") { PuzzleViewModel(route.level, AppContainer.gameRepository) }
+                val vm = viewModel(key = "puzzle-${route.level}-${route.daily}") { PuzzleViewModel(route.level, AppContainer.gameRepository, route.daily) }
                 PuzzleScreen(
                     vm,
                     onBack = ::back,
@@ -169,7 +169,7 @@ fun MoriartyApp() {
             }
             entry<DailyRoute> {
                 val vm = viewModel { DailyViewModel(AppContainer.gameRepository) }
-                DailyScreen(vm, { open(PuzzleRoute(1)) }, ::openRoot)
+                DailyScreen(vm, { level -> open(PuzzleRoute(level, daily = true)) }, ::openRoot)
             }
             entry<LeaderboardRoute> {
                 val vm = viewModel { LeaderboardViewModel(AppContainer.gameRepository) }

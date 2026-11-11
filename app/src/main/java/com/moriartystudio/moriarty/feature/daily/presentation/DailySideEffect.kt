@@ -1,3 +1,3 @@
 package com.moriartystudio.moriarty.feature.daily.presentation
 
-sealed interface DailySideEffect { data object StartChallenge : DailySideEffect }
+sealed interface DailySideEffect { data class StartChallenge(val level: Int) : DailySideEffect }

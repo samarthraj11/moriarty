@@ -113,10 +113,10 @@ fun PuzzleScreen(
     val puzzle = state.puzzle ?: return
 
     MoriartyPage(
-        title = "Level ${state.categoryLevel}",
+        title = if (state.isDaily) "Daily challenge" else "Level ${state.categoryLevel}",
         subtitle = "${puzzle.category.label}: ${puzzle.title}",
         leading = { GlassIconButton(Icons.AutoMirrored.Outlined.ArrowBack, viewModel::goBack, "Back") },
-        bottomBar = { if (state.status == AnswerStatus.Correct) SolvedBar(onRetry = viewModel::retry, onNext = viewModel::next) },
+        bottomBar = { if (state.status == AnswerStatus.Correct) SolvedBar(nextLabel = if (state.isDaily) "Done" else "Next", onRetry = viewModel::retry, onNext = viewModel::next) },
         trailing = {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 HeaderPill {
@@ -371,7 +371,7 @@ internal fun DrawScope.drawSuccessBurst(progress: Float, colors: List<Color>) {
 
 /** Docked once a puzzle is solved: play it again, or carry on. Nothing moves until a button is tapped. */
 @Composable
-internal fun SolvedBar(onRetry: () -> Unit, onNext: () -> Unit) {
+internal fun SolvedBar(nextLabel: String = "Next", onRetry: () -> Unit, onNext: () -> Unit) {
     Surface(color = Color.White, shadowElevation = 12.dp, shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)) {
         Row(
             Modifier.fillMaxWidth().navigationBarsPadding().padding(horizontal = 20.dp, vertical = 14.dp),
@@ -401,7 +401,7 @@ internal fun SolvedBar(onRetry: () -> Unit, onNext: () -> Unit) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
             ) {
-                Text("Next", color = Color.White, style = MaterialTheme.typography.titleMedium)
+                Text(nextLabel, color = Color.White, style = MaterialTheme.typography.titleMedium)
                 Spacer(Modifier.width(8.dp))
                 Icon(Icons.AutoMirrored.Outlined.ArrowForward, null, tint = Color.White, modifier = Modifier.size(22.dp))
             }

@@ -1,5 +1,7 @@
 package com.moriartystudio.moriarty.feature.home.presentation
 
+import com.moriartystudio.moriarty.core.designsystem.categoryIcon
+import com.moriartystudio.moriarty.core.designsystem.rememberDailyCountdown
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.Canvas
@@ -289,12 +291,6 @@ private fun HeroCard(state: HomeState, onContinue: () -> Unit) {
     }
 }
 
-private fun categoryIcon(category: PuzzleCategory): ImageVector = when (category) {
-    PuzzleCategory.Pattern -> Icons.Outlined.GridView
-    PuzzleCategory.Spatial -> Icons.Outlined.ViewInAr
-    PuzzleCategory.Deduction -> Icons.Outlined.Search
-    PuzzleCategory.Logic -> Icons.Outlined.Extension
-}
 
 /** Which of the four sections the previewed puzzle belongs to: its icon and name in that section's colour. */
 @Composable
@@ -512,15 +508,7 @@ private fun RecentSolves(levels: List<Level>, onLevel: (Int) -> Unit, onAllLevel
 
 @Composable
 private fun DailyCard(onClick: () -> Unit) {
-    // Ticks down to local midnight, when the daily challenge resets.
-    var secondsLeft by remember { mutableLongStateOf(DailyClock.secondsUntilReset(ZonedDateTime.now())) }
-    LaunchedEffect(Unit) {
-        while (true) {
-            secondsLeft = DailyClock.secondsUntilReset(ZonedDateTime.now())
-            delay(1_000)
-        }
-    }
-    val reset = DailyClock.format(secondsLeft)
+    val reset = rememberDailyCountdown()
     Surface(
         modifier = Modifier
             .fillMaxWidth()

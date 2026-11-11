@@ -1,5 +1,6 @@
 package com.moriartystudio.moriarty.feature.puzzle.presentation
 
+import java.time.LocalDate
 import com.moriartystudio.moriarty.core.model.PuzzleCategory
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -10,11 +11,12 @@ import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.OrbitContainerHost
 import org.orbitmvi.orbit.viewmodel.orbitContainer
 
-class PuzzleViewModel(level: Int, private val repository: GameRepository) : ViewModel(), OrbitContainerHost<PuzzleState, PuzzleState, PuzzleSideEffect> {
+class PuzzleViewModel(level: Int, private val repository: GameRepository, private val daily: Boolean = false) : ViewModel(), OrbitContainerHost<PuzzleState, PuzzleState, PuzzleSideEffect> {
     override val container = orbitContainer<PuzzleState, PuzzleSideEffect>(
         PuzzleState(
             puzzle = repository.puzzle(level),
             totalPoints = repository.totalPoints(),
+            isDaily = daily,
             categoryLevel = repository.levels().firstOrNull { it.number == level }?.categoryLevel ?: 1,
         ),
     )
@@ -36,6 +38,7 @@ class PuzzleViewModel(level: Int, private val repository: GameRepository) : View
         if (answer == puzzle.correctOption) {
             val delta = repository.recordFirstAnswer(puzzle.level, correct = true)
             repository.completeLevel(puzzle.level)
+            if (daily) repository.recordDailyPlayed(LocalDate.now())
             Log.d(TAG, "Level ${puzzle.level} solved in ${state.elapsedSeconds}s, $delta points")
             // Stay on the solved puzzle; the player moves on with Next (or plays it again with Retry).
             reduce { state.copy(status = AnswerStatus.Correct, correctAnswer = answer, lastDelta = delta, totalPoints = repository.totalPoints()) }
@@ -50,11 +53,11 @@ class PuzzleViewModel(level: Int, private val repository: GameRepository) : View
         Log.d(TAG, "Level ${puzzle.level} skipped after ${state.elapsedSeconds}s")
         repository.skipLevel(puzzle.level)
         reduce { state.copy(status = AnswerStatus.Skipped) }
-        postSideEffect(nextEffect(puzzle.level))
+        postSideEffect(afterPuzzle(puzzle.level))
     }
     fun next() = intent {
         val puzzle = state.puzzle ?: return@intent
-        if (state.status == AnswerStatus.Correct) postSideEffect(nextEffect(puzzle.level))
+        if (state.status == AnswerStatus.Correct) postSideEffect(afterPuzzle(puzzle.level))
     }
 
     // Play the solved puzzle again: clear the answers, restart the timer. Points only ever count once.
@@ -74,6 +77,9 @@ class PuzzleViewModel(level: Int, private val repository: GameRepository) : View
 
     fun toggleHint() = intent { reduce { state.copy(showHint = !state.showHint) } }
     fun goBack() = intent { postSideEffect(PuzzleSideEffect.GoBack) }
+
+    // The daily puzzle returns to the calendar; any other puzzle carries on through the levels.
+    private fun afterPuzzle(level: Int): PuzzleSideEffect = if (daily) PuzzleSideEffect.GoBack else nextEffect(level)
 
     // After a puzzle: carry on in the same section, then move to the next section that still has
     // something to solve, and only finish when nothing is left anywhere.
