@@ -1,5 +1,7 @@
 package com.moriartystudio.moriarty.feature.category.presentation
 
+import androidx.compose.runtime.remember
+import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.layout.height
 import com.moriartystudio.moriarty.ui.theme.BitterFamily
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -81,7 +83,7 @@ fun CategoryScreen(viewModel: CategoryViewModel, onBack: () -> Unit, onOpenPuzzl
             is CategorySideEffect.OpenPuzzle -> onOpenPuzzle(it.level)
         }
     }
-    CategoryContent(state, onBack = viewModel::goBack, onLevel = viewModel::openLevel, onPlay = viewModel::play)
+    CategoryContent(state, onBack = viewModel::goBack, onLevel = viewModel::openLevel, onPlay = viewModel::play, onShimmerDone = viewModel::shimmerPlayed)
 }
 
 @Composable
@@ -90,6 +92,7 @@ internal fun CategoryContent(
     onBack: () -> Unit,
     onLevel: (Level) -> Unit,
     onPlay: () -> Unit,
+    onShimmerDone: () -> Unit = {},
 ) {
     val color = categoryColor(state.category)
     val onColor = onCategoryColor(state.category)
@@ -103,7 +106,7 @@ internal fun CategoryContent(
                 .padding(bottom = padding.calculateBottomPadding())
                 .verticalScroll(rememberScrollState()),
         ) {
-            Header(state, color, onColor, onBack)
+            Header(state, color, onColor, onBack, onShimmerDone)
             Column(
                 Modifier
                     .offset(y = (-28).dp)
@@ -133,14 +136,16 @@ private fun voice(category: PuzzleCategory): String = when (category) {
 }
 
 @Composable
-private fun Header(state: CategoryState, color: Color, onColor: Color, onBack: () -> Unit) {
-    // One slow highlight sweeps across the header; it is the only decoration on the screen.
-    val sweep = rememberInfiniteTransition(label = "sweep").animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(tween(3800, easing = FastOutSlowInEasing), RepeatMode.Restart),
-        label = "sweep",
-    )
+private fun Header(state: CategoryState, color: Color, onColor: Color, onBack: () -> Unit, onShimmerDone: () -> Unit) {
+    // A single highlight sweeps across the header when you land here, then the screen goes still.
+    val play = remember { state.shimmerPending }
+    val sweep = remember { Animatable(0f) }
+    LaunchedEffect(Unit) {
+        if (play) {
+            sweep.animateTo(1f, tween(1800, easing = FastOutSlowInEasing))
+            onShimmerDone()
+        }
+    }
     Box(
         Modifier
             .fillMaxWidth()

@@ -11,6 +11,8 @@ data class CategoryState(
     val firstTryPercent: Int? = null,
     /** First open puzzle in this category, if any. */
     val next: Level? = null,
+    /** True until the header shimmer has played once for this visit to the screen. */
+    val shimmerPending: Boolean = true,
 ) {
     val solved: Int get() = levels.count(Level::isSolved)
     val total: Int get() = levels.size
