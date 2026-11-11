@@ -1,35 +1,7 @@
 package com.moriartystudio.moriarty.feature.home.presentation
 
-import com.moriartystudio.moriarty.core.designsystem.MoriartyMark
-import kotlinx.coroutines.delay
-import java.time.ZonedDateTime
-import com.moriartystudio.moriarty.domain.daily.DailyClock
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.mutableLongStateOf
-import androidx.compose.runtime.setValue
-import kotlin.math.hypot
-import androidx.compose.ui.graphics.drawscope.rotate
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.LinearEasing
-import com.moriartystudio.moriarty.ui.theme.categoryColor
-import com.moriartystudio.moriarty.core.model.PuzzleCategory
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.material.icons.outlined.ViewInAr
-import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material.icons.outlined.GridView
-import androidx.compose.material.icons.outlined.Extension
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.Canvas
-import androidx.compose.material.icons.outlined.Star
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -38,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -53,8 +26,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowForward
 import androidx.compose.material.icons.outlined.Check
-import androidx.compose.material.icons.outlined.PlayArrow
+import androidx.compose.material.icons.outlined.Extension
+import androidx.compose.material.icons.outlined.GridView
 import androidx.compose.material.icons.outlined.LocalFireDepartment
+import androidx.compose.material.icons.outlined.PlayArrow
+import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.Star
+import androidx.compose.material.icons.outlined.ViewInAr
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -63,29 +41,40 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.moriartystudio.moriarty.app.navigation.RootDestination
 import com.moriartystudio.moriarty.core.designsystem.MoriartyBottomBar
+import com.moriartystudio.moriarty.core.designsystem.MoriartyMark
 import com.moriartystudio.moriarty.core.designsystem.PuzzleContentRenderer
 import com.moriartystudio.moriarty.core.designsystem.SmallGeometryThumbnail
 import com.moriartystudio.moriarty.core.model.Level
-import com.moriartystudio.moriarty.ui.theme.Gold
+import com.moriartystudio.moriarty.core.model.PuzzleCategory
+import com.moriartystudio.moriarty.domain.daily.DailyClock
 import com.moriartystudio.moriarty.ui.theme.Frost
+import com.moriartystudio.moriarty.ui.theme.Gold
 import com.moriartystudio.moriarty.ui.theme.Indigo
-import com.moriartystudio.moriarty.ui.theme.IndigoGradient
 import com.moriartystudio.moriarty.ui.theme.IndigoLight
 import com.moriartystudio.moriarty.ui.theme.Lavender
 import com.moriartystudio.moriarty.ui.theme.Night
+import com.moriartystudio.moriarty.ui.theme.categoryColor
+import kotlinx.coroutines.delay
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
+import java.time.ZonedDateTime
 
 @Composable
 fun HomeScreen(
@@ -173,22 +162,35 @@ internal fun HomeContent(
 @Composable
 private fun HomeHeader(state: HomeState, onProfile: () -> Unit) {
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        MoriartyMark(Modifier.size(46.dp).clip(CircleShape).clickable(onClick = onProfile), contentDescription = "Profile")
+        MoriartyMark(
+            Modifier
+                .size(46.dp)
+                .clip(CircleShape)
+                .clickable(onClick = onProfile),
+            contentDescription = "Profile"
+        )
         Spacer(Modifier.width(12.dp))
         Column(Modifier.weight(1f)) {
-            Text("Welcome back!", color = Color.White.copy(alpha = 0.8f), style = MaterialTheme.typography.bodyMedium)
+            Text(
+                "Welcome back!",
+                color = Color.White.copy(alpha = 0.8f),
+                style = MaterialTheme.typography.bodyMedium
+            )
             Text("Moriarty", color = Color.White, style = MaterialTheme.typography.titleLarge)
         }
         StatPill {
-            Icon(Icons.Outlined.LocalFireDepartment, null, tint = Color(0xFFE77C22), modifier = Modifier.size(17.dp))
+            Icon(
+                Icons.Outlined.LocalFireDepartment,
+                null,
+                tint = Color(0xFFE77C22),
+                modifier = Modifier.size(17.dp)
+            )
             Spacer(Modifier.width(4.dp))
-            Text(state.streak.toString(), style = MaterialTheme.typography.labelLarge, color = Night)
-        }
-        Spacer(Modifier.width(8.dp))
-        StatPill {
-            Icon(Icons.Outlined.Star, null, tint = Gold, modifier = Modifier.size(17.dp))
-            Spacer(Modifier.width(4.dp))
-            Text(state.points.toString(), style = MaterialTheme.typography.labelLarge, color = Night)
+            Text(
+                state.streak.toString(),
+                style = MaterialTheme.typography.labelLarge,
+                color = Night
+            )
         }
     }
 }
@@ -196,7 +198,9 @@ private fun HomeHeader(state: HomeState, onProfile: () -> Unit) {
 @Composable
 private fun StatPill(content: @Composable () -> Unit) {
     Row(
-        Modifier.background(Color.White, RoundedCornerShape(50)).padding(horizontal = 12.dp, vertical = 8.dp),
+        Modifier
+            .background(Color.White, RoundedCornerShape(50))
+            .padding(horizontal = 12.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) { content() }
 }
@@ -205,32 +209,51 @@ private fun StatPill(content: @Composable () -> Unit) {
 @Composable
 private fun HeroCard(state: HomeState, onContinue: () -> Unit) {
     val next = state.currentLevel?.categoryLevel ?: 1
-    val progress = if (state.totalLevels == 0) 0f else state.solvedCount / state.totalLevels.toFloat()
     Column(
         Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(28.dp))
-            .background(Brush.linearGradient(listOf(Color.White.copy(alpha = 0.30f), Color.White.copy(alpha = 0.10f))))
+            .background(
+                Brush.linearGradient(
+                    listOf(
+                        Color.White.copy(alpha = 0.30f),
+                        Color.White.copy(alpha = 0.10f)
+                    )
+                )
+            )
             .border(1.dp, Color.White.copy(alpha = 0.35f), RoundedCornerShape(28.dp))
             .padding(18.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp),
     ) {
         Column {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Level $next", color = Color.White.copy(alpha = 0.85f), style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
+                Text(
+                    "Level $next",
+                    color = Color.White.copy(alpha = 0.85f),
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.weight(1f)
+                )
                 state.currentLevel?.category?.let { SectionTag(it) }
             }
-            Text(state.currentPuzzle?.title ?: "Start playing", color = Color.White, style = MaterialTheme.typography.headlineMedium)
+            Text(
+                state.currentPuzzle?.title ?: "Start playing",
+                color = Color.White,
+                style = MaterialTheme.typography.headlineMedium
+            )
         }
         state.currentPuzzle?.let { puzzle ->
-            MovingBorder(
-                color = categoryColor(puzzle.category),
-                modifier = Modifier.fillMaxWidth().clickable(onClick = onContinue),
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(22.dp))
+                    .clickable(onClick = onContinue),
             ) {
                 PuzzleContentRenderer(
                     content = puzzle.content,
                     compact = true,
-                    modifier = Modifier.fillMaxWidth().height(150.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 120.dp),
                 )
             }
         }
@@ -245,73 +268,65 @@ private fun HeroCard(state: HomeState, onContinue: () -> Unit) {
             horizontalArrangement = Arrangement.Center,
         ) {
             Icon(Icons.Outlined.PlayArrow, null, tint = Indigo, modifier = Modifier.size(22.dp))
-            Spacer(Modifier.width(8.dp))
+            Spacer(Modifier.width(4.dp))
             Text(
-                "Play level $next",
+                "Play",
                 color = Indigo,
                 style = MaterialTheme.typography.titleMedium,
             )
         }
-        Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
-            Text("${state.solvedCount} of ${state.totalLevels} solved", color = Color.White.copy(alpha = 0.85f), style = MaterialTheme.typography.labelMedium)
-            Box(Modifier.fillMaxWidth().height(5.dp).clip(CircleShape).background(Color.White.copy(alpha = 0.25f))) {
-                Box(Modifier.fillMaxWidth(progress).height(5.dp).background(Gold, CircleShape))
-            }
-        }
     }
 }
 
-/** An arc in [color] travels around the card's edge over a light track, so it reads on any section colour. */
-@Composable
-private fun MovingBorder(color: Color, modifier: Modifier = Modifier, content: @Composable () -> Unit) {
-    val angle by rememberInfiniteTransition(label = "border").animateFloat(
-        initialValue = 0f,
-        targetValue = 360f,
-        animationSpec = infiniteRepeatable(tween(3200, easing = LinearEasing)),
-        label = "angle",
-    )
-    Box(
-        modifier
-            .clip(RoundedCornerShape(23.dp))
-            .drawBehind {
-                drawRect(Color.White.copy(alpha = 0.40f))
-                rotate(angle, pivot = center) {
-                    drawCircle(
-                        brush = Brush.sweepGradient(0f to Color.Transparent, 0.55f to Color.Transparent, 1f to color, center = center),
-                        radius = hypot(size.width, size.height) / 2,
-                        center = center,
-                    )
-                }
-            }
-            .padding(4.dp),
-    ) {
-        Box(Modifier.clip(RoundedCornerShape(19.dp))) { content() }
-    }
+private fun categoryIcon(category: PuzzleCategory): ImageVector = when (category) {
+    PuzzleCategory.Pattern -> Icons.Outlined.GridView
+    PuzzleCategory.Spatial -> Icons.Outlined.ViewInAr
+    PuzzleCategory.Deduction -> Icons.Outlined.Search
+    PuzzleCategory.Logic -> Icons.Outlined.Extension
 }
 
-/** Which of the four sections the previewed puzzle belongs to. */
+/** Which of the four sections the previewed puzzle belongs to: its icon and name in that section's colour. */
 @Composable
 private fun SectionTag(category: PuzzleCategory) {
     Row(
-        Modifier.background(Color.White, RoundedCornerShape(50)).padding(horizontal = 11.dp, vertical = 5.dp),
+        Modifier
+            .background(Color.White, RoundedCornerShape(50))
+            .padding(horizontal = 11.dp, vertical = 5.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Box(Modifier.size(9.dp).background(categoryColor(category), CircleShape))
-        Spacer(Modifier.width(6.dp))
-        Text(category.label, style = MaterialTheme.typography.labelMedium, color = Night)
+        Icon(
+            categoryIcon(category),
+            null,
+            tint = categoryColor(category),
+            modifier = Modifier.size(15.dp)
+        )
+        Spacer(Modifier.width(2.dp))
+        Text(
+            category.label,
+            style = MaterialTheme.typography.labelMedium,
+            color = categoryColor(category)
+        )
     }
 }
 
 @Composable
 private fun SectionHeader(title: String, action: String? = null, onAction: (() -> Unit)? = null) {
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        Text(title, style = MaterialTheme.typography.titleLarge, color = Night, modifier = Modifier.weight(1f))
+        Text(
+            title,
+            style = MaterialTheme.typography.titleLarge,
+            color = Night,
+            modifier = Modifier.weight(1f)
+        )
         if (action != null && onAction != null) {
             Text(
                 action,
                 style = MaterialTheme.typography.labelLarge,
                 color = Indigo,
-                modifier = Modifier.clip(RoundedCornerShape(10.dp)).clickable(onClick = onAction).padding(8.dp),
+                modifier = Modifier
+                    .clip(RoundedCornerShape(10.dp))
+                    .clickable(onClick = onAction)
+                    .padding(8.dp),
             )
         }
     }
@@ -321,15 +336,30 @@ private fun SectionHeader(title: String, action: String? = null, onAction: (() -
 private fun ExploreSection(state: HomeState, onCategory: (PuzzleCategory) -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Text("Explore", style = MaterialTheme.typography.titleLarge, color = Night, modifier = Modifier.weight(1f))
+            Text(
+                "Explore",
+                style = MaterialTheme.typography.titleLarge,
+                color = Night,
+                modifier = Modifier.weight(1f)
+            )
             ProgressRing(state.solvedCount, state.totalLevels)
         }
         val progress = PuzzleCategory.entries.map { category ->
-            state.categoryProgress.firstOrNull { it.category == category } ?: CategoryProgress(category, 0, 0)
+            state.categoryProgress.firstOrNull { it.category == category } ?: CategoryProgress(
+                category,
+                0,
+                0
+            )
         }
         progress.chunked(2).forEach { row ->
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                row.forEach { item -> CategoryTile(item, { onCategory(item.category) }, Modifier.weight(1f)) }
+                row.forEach { item ->
+                    CategoryTile(
+                        item,
+                        { onCategory(item.category) },
+                        Modifier.weight(1f)
+                    )
+                }
             }
         }
     }
@@ -345,22 +375,34 @@ private fun ProgressRing(solved: Int, total: Int) {
             val inset = stroke / 2
             val arcSize = Size(size.width - stroke, size.height - stroke)
             drawArc(Frost, 0f, 360f, false, Offset(inset, inset), arcSize, style = Stroke(stroke))
-            drawArc(Indigo, -90f, 360f * fraction, false, Offset(inset, inset), arcSize, style = Stroke(stroke, cap = StrokeCap.Round))
+            drawArc(
+                Indigo,
+                -90f,
+                360f * fraction,
+                false,
+                Offset(inset, inset),
+                arcSize,
+                style = Stroke(stroke, cap = StrokeCap.Round)
+            )
         }
-        Text("$solved/$total", style = MaterialTheme.typography.labelMedium, color = Night, fontWeight = FontWeight.Bold)
+        Text(
+            "$solved/$total",
+            style = MaterialTheme.typography.labelMedium,
+            color = Night,
+            fontWeight = FontWeight.Bold
+        )
     }
 }
 
 /** Tile washed in the category colour and filled left to right up to that category's progress. */
 @Composable
-private fun CategoryTile(progress: CategoryProgress, onClick: () -> Unit, modifier: Modifier = Modifier) {
+private fun CategoryTile(
+    progress: CategoryProgress,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     val color = categoryColor(progress.category)
-    val icon = when (progress.category) {
-        PuzzleCategory.Pattern -> Icons.Outlined.GridView
-        PuzzleCategory.Spatial -> Icons.Outlined.ViewInAr
-        PuzzleCategory.Deduction -> Icons.Outlined.Search
-        PuzzleCategory.Logic -> Icons.Outlined.Extension
-    }
+    val icon = categoryIcon(progress.category)
     Box(
         modifier
             .clip(RoundedCornerShape(22.dp))
@@ -368,16 +410,34 @@ private fun CategoryTile(progress: CategoryProgress, onClick: () -> Unit, modifi
             .clickable(onClick = onClick),
     ) {
         Box(Modifier.matchParentSize()) {
-            Box(Modifier.fillMaxHeight().fillMaxWidth(progress.fraction).background(color.copy(alpha = 0.28f)))
+            Box(
+                Modifier
+                    .fillMaxHeight()
+                    .fillMaxWidth(progress.fraction)
+                    .background(color.copy(alpha = 0.28f))
+            )
         }
         Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
-            Box(Modifier.size(42.dp).background(Color.White, CircleShape), contentAlignment = Alignment.Center) {
+            Box(
+                Modifier
+                    .size(42.dp)
+                    .background(Color.White, CircleShape),
+                contentAlignment = Alignment.Center
+            ) {
                 Icon(icon, null, tint = color, modifier = Modifier.size(22.dp))
             }
             Spacer(Modifier.width(12.dp))
             Column {
-                Text(progress.category.label, style = MaterialTheme.typography.titleMedium, color = Night)
-                Text("${progress.solved} of ${progress.total}", style = MaterialTheme.typography.labelMedium, color = Night.copy(alpha = 0.6f))
+                Text(
+                    progress.category.label,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = Night
+                )
+                Text(
+                    "${progress.solved} of ${progress.total}",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = Night.copy(alpha = 0.6f)
+                )
             }
         }
     }
@@ -389,23 +449,50 @@ private fun RecentSolves(levels: List<Level>, onLevel: (Int) -> Unit, onAllLevel
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
         SectionHeader("Recent solves", "View all", onAllLevels)
         if (solved.isEmpty()) {
-            Text("Solve your first puzzle and it will show up here.", style = MaterialTheme.typography.bodyMedium, color = Night.copy(alpha = 0.55f), modifier = Modifier.padding(vertical = 6.dp))
+            Text(
+                "Solve your first puzzle and it will show up here.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = Night.copy(alpha = 0.55f),
+                modifier = Modifier.padding(vertical = 6.dp)
+            )
         }
         solved.forEach { level ->
             Row(
-                Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).clickable { onLevel(level.number) }.padding(vertical = 8.dp),
+                Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(16.dp))
+                    .clickable { onLevel(level.number) }
+                    .padding(vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Box(Modifier.size(40.dp).background(Frost, CircleShape), contentAlignment = Alignment.Center) {
+                Box(
+                    Modifier
+                        .size(40.dp)
+                        .background(Frost, CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
                     Icon(Icons.Outlined.Check, null, tint = Indigo, modifier = Modifier.size(20.dp))
                 }
                 Spacer(Modifier.width(12.dp))
                 Column(Modifier.weight(1f)) {
-                    Text("Level ${level.categoryLevel} · ${level.title}", style = MaterialTheme.typography.titleMedium, color = Night, maxLines = 1)
-                    Text(level.category.label, style = MaterialTheme.typography.bodyMedium, color = Night.copy(alpha = 0.5f))
+                    Text(
+                        "Level ${level.categoryLevel} · ${level.title}",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = Night,
+                        maxLines = 1
+                    )
+                    Text(
+                        level.category.label,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Night.copy(alpha = 0.5f)
+                    )
                 }
                 level.points?.let {
-                    Text(if (it > 0) "+$it" else if (it < 0) "\u2212${-it}" else "0", style = MaterialTheme.typography.titleMedium, color = Indigo)
+                    Text(
+                        if (it > 0) "+$it" else if (it < 0) "\u2212${-it}" else "0",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = Indigo
+                    )
                 }
             }
         }
@@ -424,7 +511,9 @@ private fun DailyCard(onClick: () -> Unit) {
     }
     val reset = DailyClock.format(secondsLeft)
     Surface(
-        modifier = Modifier.fillMaxWidth().clickable(onClick = onClick),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
         shape = RoundedCornerShape(24.dp),
         color = Frost.copy(alpha = 0.55f),
     ) {
@@ -433,13 +522,28 @@ private fun DailyCard(onClick: () -> Unit) {
             Spacer(Modifier.width(13.dp))
             Column(Modifier.weight(1f)) {
                 Text("Daily challenge", style = MaterialTheme.typography.titleMedium, color = Night)
-                Text("One puzzle. One attempt.", style = MaterialTheme.typography.bodyMedium, color = Night.copy(alpha = 0.55f))
+                Text(
+                    "One puzzle. One attempt.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Night.copy(alpha = 0.55f)
+                )
             }
             Column(horizontalAlignment = Alignment.End) {
-                Text("Resets in", style = MaterialTheme.typography.labelMedium, color = Night.copy(alpha = 0.55f))
+                Text(
+                    "Resets in",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = Night.copy(alpha = 0.55f)
+                )
                 Text(reset, style = MaterialTheme.typography.titleMedium, color = Indigo)
             }
-            Icon(Icons.AutoMirrored.Outlined.ArrowForward, null, tint = Indigo, modifier = Modifier.padding(start = 8.dp).size(20.dp))
+            Icon(
+                Icons.AutoMirrored.Outlined.ArrowForward,
+                null,
+                tint = Indigo,
+                modifier = Modifier
+                    .padding(start = 8.dp)
+                    .size(20.dp)
+            )
         }
     }
 }
