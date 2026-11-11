@@ -10,18 +10,15 @@ import org.junit.Test
 
 class ProgressionRulesTest {
     @Test
-    fun `fresh install unlocks only level one`() {
-        assertTrue(ProgressionRules.isUnlocked(1, emptySet()))
-        assertFalse(ProgressionRules.isUnlocked(2, emptySet()))
-        assertFalse(ProgressionRules.isUnlocked(10, emptySet()))
+    fun `first level in a category is always unlocked`() {
+        assertTrue(ProgressionRules.isUnlockedInCategory(null, emptySet()))
     }
 
     @Test
-    fun `solving a level unlocks exactly the next level`() {
-        val solved = setOf(1, 2)
-        assertTrue(ProgressionRules.isUnlocked(2, solved))
-        assertTrue(ProgressionRules.isUnlocked(3, solved))
-        assertFalse(ProgressionRules.isUnlocked(4, solved))
+    fun `a level unlocks once the previous one in its category is passed`() {
+        assertFalse(ProgressionRules.isUnlockedInCategory(4, emptySet()))
+        assertTrue(ProgressionRules.isUnlockedInCategory(4, setOf(4)))
+        assertFalse(ProgressionRules.isUnlockedInCategory(8, setOf(4)))
     }
 
     @Test

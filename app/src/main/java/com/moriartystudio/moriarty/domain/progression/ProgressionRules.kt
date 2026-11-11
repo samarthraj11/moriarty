@@ -3,7 +3,9 @@ package com.moriartystudio.moriarty.domain.progression
 import com.moriartystudio.moriarty.core.model.Level
 
 object ProgressionRules {
-    fun isUnlocked(level: Int, solvedLevels: Set<Int>): Boolean = level == 1 || level - 1 in solvedLevels
+    /** Each category unlocks on its own: a level opens once the one before it in the same category is solved or skipped. */
+    fun isUnlockedInCategory(previousInCategory: Int?, passedLevels: Set<Int>): Boolean =
+        previousInCategory == null || previousInCategory in passedLevels
 
     fun currentLevel(levels: List<Level>): Level? = levels.firstOrNull { it.isUnlocked && !it.isSolved && !it.isSkipped }
         ?: levels.lastOrNull()

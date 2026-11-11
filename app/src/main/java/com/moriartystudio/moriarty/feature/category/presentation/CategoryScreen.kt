@@ -249,7 +249,7 @@ private fun LevelCell(level: Level, isNext: Boolean, color: Color, onColor: Colo
         modifier
             .aspectRatio(1f)
             .scale(breathe.value)
-            .semantics { contentDescription = "Level ${level.number}" }
+            .semantics { contentDescription = "Level ${level.categoryLevel}" }
             .clip(shape)
             .background(background)
             .then(if (isNext) Modifier.border(2.5.dp, color, shape) else Modifier)
@@ -259,14 +259,14 @@ private fun LevelCell(level: Level, isNext: Boolean, color: Color, onColor: Colo
         when {
             level.isSolved -> Icon(Icons.Outlined.Check, null, tint = onColor, modifier = Modifier.size(22.dp))
             !level.isUnlocked -> Icon(Icons.Outlined.Lock, null, tint = InkMuted.copy(alpha = 0.6f), modifier = Modifier.size(18.dp))
-            else -> Text(level.number.toString(), style = MaterialTheme.typography.titleMedium, color = Night, fontWeight = FontWeight.Bold)
+            else -> Text(level.categoryLevel.toString(), style = MaterialTheme.typography.titleMedium, color = Night, fontWeight = FontWeight.Bold)
         }
     }
 }
 
 @Composable
 private fun PlayBar(state: CategoryState, color: Color, onColor: Color, onPlay: () -> Unit) {
-    val target = state.next ?: state.fallback ?: return
+    val target = state.next ?: return
     Surface(color = Color.White, shadowElevation = 12.dp, shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)) {
         Row(
             Modifier
@@ -282,7 +282,7 @@ private fun PlayBar(state: CategoryState, color: Color, onColor: Color, onPlay: 
         ) {
             Icon(Icons.Outlined.PlayArrow, null, tint = onColor, modifier = Modifier.size(28.dp))
             Spacer(Modifier.width(8.dp))
-            Text("Play level ${target.number}", color = onColor, style = MaterialTheme.typography.titleLarge)
+            Text("Play level ${target.categoryLevel}", color = onColor, style = MaterialTheme.typography.titleLarge)
         }
     }
 }

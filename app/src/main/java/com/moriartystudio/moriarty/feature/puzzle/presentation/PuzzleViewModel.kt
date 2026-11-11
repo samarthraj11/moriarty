@@ -11,7 +11,11 @@ import org.orbitmvi.orbit.viewmodel.orbitContainer
 
 class PuzzleViewModel(level: Int, private val repository: GameRepository) : ViewModel(), OrbitContainerHost<PuzzleState, PuzzleState, PuzzleSideEffect> {
     override val container = orbitContainer<PuzzleState, PuzzleSideEffect>(
-        PuzzleState(puzzle = repository.puzzle(level), totalPoints = repository.totalPoints()),
+        PuzzleState(
+            puzzle = repository.puzzle(level),
+            totalPoints = repository.totalPoints(),
+            categoryLevel = repository.levels().firstOrNull { it.number == level }?.categoryLevel ?: 1,
+        ),
     )
 
     init {
@@ -34,7 +38,7 @@ class PuzzleViewModel(level: Int, private val repository: GameRepository) : View
             Log.d(TAG, "Level ${puzzle.level} solved in ${state.elapsedSeconds}s, $delta points")
             reduce { state.copy(status = AnswerStatus.Correct, correctAnswer = answer, lastDelta = delta, totalPoints = repository.totalPoints()) }
             delay(SUCCESS_DELAY_MS)
-            postSideEffect(if (puzzle.level < repository.levels().size) PuzzleSideEffect.NextLevel(puzzle.level + 1) else PuzzleSideEffect.FinishJourney)
+            postSideEffect(nextEffect(puzzle.level))
         } else {
             val delta = repository.recordFirstAnswer(puzzle.level, correct = false)
             reduce { state.copy(status = AnswerStatus.Incorrect, wrongOptions = state.wrongOptions + answer, lastDelta = delta, totalPoints = repository.totalPoints()) }
@@ -46,10 +50,18 @@ class PuzzleViewModel(level: Int, private val repository: GameRepository) : View
         Log.d(TAG, "Level ${puzzle.level} skipped after ${state.elapsedSeconds}s")
         repository.skipLevel(puzzle.level)
         reduce { state.copy(status = AnswerStatus.Skipped) }
-        postSideEffect(if (puzzle.level < repository.levels().size) PuzzleSideEffect.NextLevel(puzzle.level + 1) else PuzzleSideEffect.FinishJourney)
+        postSideEffect(nextEffect(puzzle.level))
     }
     fun toggleHint() = intent { reduce { state.copy(showHint = !state.showHint) } }
     fun goBack() = intent { postSideEffect(PuzzleSideEffect.GoBack) }
+
+    // After a puzzle, carry on in the same category; finish when it has nothing left to play.
+    private fun nextEffect(level: Int): PuzzleSideEffect {
+        val levels = repository.levels()
+        val category = levels.firstOrNull { it.number == level }?.category
+        val next = levels.firstOrNull { it.category == category && it.number > level && !it.isSolved }
+        return if (next != null) PuzzleSideEffect.NextLevel(next.number) else PuzzleSideEffect.FinishJourney
+    }
 
     private companion object {
         const val TAG = "Puzzle"

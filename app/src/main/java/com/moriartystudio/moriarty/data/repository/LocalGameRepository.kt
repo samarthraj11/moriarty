@@ -21,17 +21,22 @@ class LocalGameRepository(
     override fun levels(): List<Level> {
         val solved = solvedLevels()
         val skipped = skippedLevels()
+        val passed = solved + skipped
+        val byCategory = puzzles.groupBy { it.category }.mapValues { (_, list) -> list.sortedBy { it.level } }
         return puzzles.map { puzzle ->
+            val inCategory = byCategory.getValue(puzzle.category)
+            val index = inCategory.indexOfFirst { it.level == puzzle.level }
             Level(
                 number = puzzle.level,
                 title = puzzle.title,
                 category = puzzle.category,
                 difficulty = puzzle.difficulty,
                 isSolved = puzzle.level in solved,
-                isUnlocked = ProgressionRules.isUnlocked(puzzle.level, solved + skipped),
+                isUnlocked = ProgressionRules.isUnlockedInCategory(inCategory.getOrNull(index - 1)?.level, passed),
                 points = preferences.takeIf { it.contains(pointsKey(puzzle.level)) }?.getInt(pointsKey(puzzle.level), 0),
                 difficultyRating = puzzle.difficultyRating,
                 isSkipped = puzzle.level in skipped && puzzle.level !in solved,
+                categoryLevel = index + 1,
             )
         }
     }

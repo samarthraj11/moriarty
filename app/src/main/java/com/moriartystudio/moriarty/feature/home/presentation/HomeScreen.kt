@@ -191,7 +191,7 @@ private fun StatPill(content: @Composable () -> Unit) {
 /** Frosted-glass card holding the next puzzle itself, so one tap starts playing. */
 @Composable
 private fun HeroCard(state: HomeState, onContinue: () -> Unit) {
-    val next = state.currentLevel?.number ?: 1
+    val next = state.currentLevel?.categoryLevel ?: 1
     val progress = if (state.totalLevels == 0) 0f else state.solvedCount / state.totalLevels.toFloat()
     Column(
         Modifier
@@ -339,7 +339,7 @@ private fun RecentSolves(levels: List<Level>, onLevel: (Int) -> Unit, onAllLevel
                 }
                 Spacer(Modifier.width(12.dp))
                 Column(Modifier.weight(1f)) {
-                    Text("Level ${level.number} · ${level.title}", style = MaterialTheme.typography.titleMedium, color = Night, maxLines = 1)
+                    Text("Level ${level.categoryLevel} · ${level.title}", style = MaterialTheme.typography.titleMedium, color = Night, maxLines = 1)
                     Text(level.category.label, style = MaterialTheme.typography.bodyMedium, color = Night.copy(alpha = 0.5f))
                 }
                 level.points?.let {

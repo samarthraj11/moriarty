@@ -92,8 +92,8 @@ fun PuzzleScreen(
     val puzzle = state.puzzle ?: return
 
     MoriartyPage(
-        title = "Level ${puzzle.level}",
-        subtitle = puzzle.title,
+        title = "Level ${state.categoryLevel}",
+        subtitle = "${puzzle.category.label}: ${puzzle.title}",
         leading = { GlassIconButton(Icons.AutoMirrored.Outlined.ArrowBack, viewModel::goBack, "Back") },
         trailing = {
             Row(verticalAlignment = Alignment.CenterVertically) {

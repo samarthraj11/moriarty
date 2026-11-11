@@ -51,6 +51,8 @@ data class Level(
     val points: Int? = null,
     val difficultyRating: Int = 1,
     val isSkipped: Boolean = false,
+    /** 1-based position among the levels of the same category; what players see as "Level N". */
+    val categoryLevel: Int = 1,
 )
 
 data class Puzzle(

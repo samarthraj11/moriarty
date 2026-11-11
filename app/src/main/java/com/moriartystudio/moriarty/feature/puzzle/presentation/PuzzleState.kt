@@ -12,6 +12,8 @@ data class PuzzleState(
     val elapsedSeconds: Int = 0,
     val showHint: Boolean = false,
     val totalPoints: Int = 0,
+    /** Position of this puzzle within its category, shown as "Level N". */
+    val categoryLevel: Int = 1,
     /** Points change from the answer just given: 10, -5, or 0 when the puzzle was already scored. */
     val lastDelta: Int? = null,
 )

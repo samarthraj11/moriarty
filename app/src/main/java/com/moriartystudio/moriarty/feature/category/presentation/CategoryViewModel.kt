@@ -3,7 +3,6 @@ package com.moriartystudio.moriarty.feature.category.presentation
 import androidx.lifecycle.ViewModel
 import com.moriartystudio.moriarty.core.model.Level
 import com.moriartystudio.moriarty.core.model.PuzzleCategory
-import com.moriartystudio.moriarty.domain.progression.ProgressionRules
 import com.moriartystudio.moriarty.domain.repository.GameRepository
 import com.moriartystudio.moriarty.domain.scoring.Scoring
 import org.orbitmvi.orbit.OrbitContainerHost
@@ -27,13 +26,12 @@ class CategoryViewModel(
             firstTryPercent = if (answered.isEmpty()) null else firstTry * 100 / answered.size,
             next = levels.firstOrNull { it.isUnlocked && !it.isSolved && !it.isSkipped }
                 ?: levels.firstOrNull { it.isUnlocked && !it.isSolved },
-            fallback = ProgressionRules.currentLevel(all),
         )
     }
 
     // The screen stays on the back stack under a puzzle, so re-read progress when it returns.
     fun refresh() = intent { reduce { buildState() } }
     fun openLevel(level: Level) = intent { if (level.isUnlocked) postSideEffect(CategorySideEffect.OpenPuzzle(level.number)) }
-    fun play() = intent { (state.next ?: state.fallback)?.let { postSideEffect(CategorySideEffect.OpenPuzzle(it.number)) } }
+    fun play() = intent { state.next?.let { postSideEffect(CategorySideEffect.OpenPuzzle(it.number)) } }
     fun goBack() = intent { postSideEffect(CategorySideEffect.GoBack) }
 }

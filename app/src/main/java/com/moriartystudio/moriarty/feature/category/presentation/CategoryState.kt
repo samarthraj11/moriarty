@@ -11,8 +11,6 @@ data class CategoryState(
     val firstTryPercent: Int? = null,
     /** First open puzzle in this category, if any. */
     val next: Level? = null,
-    /** Where the player is globally; used when nothing here is open yet. */
-    val fallback: Level? = null,
 ) {
     val solved: Int get() = levels.count(Level::isSolved)
     val total: Int get() = levels.size
