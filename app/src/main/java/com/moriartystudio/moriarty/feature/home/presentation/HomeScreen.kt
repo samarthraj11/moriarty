@@ -1,5 +1,14 @@
 package com.moriartystudio.moriarty.feature.home.presentation
 
+import kotlin.math.hypot
+import androidx.compose.ui.graphics.drawscope.rotate
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.LinearEasing
 import com.moriartystudio.moriarty.ui.theme.categoryColor
 import com.moriartystudio.moriarty.core.model.PuzzleCategory
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -210,11 +219,16 @@ private fun HeroCard(state: HomeState, onContinue: () -> Unit) {
             Text(state.currentPuzzle?.title ?: "Start playing", color = Color.White, style = MaterialTheme.typography.headlineMedium)
         }
         state.currentPuzzle?.let { puzzle ->
-            PuzzleContentRenderer(
-                content = puzzle.content,
-                compact = true,
-                modifier = Modifier.fillMaxWidth().height(150.dp).clip(RoundedCornerShape(20.dp)).clickable(onClick = onContinue),
-            )
+            MovingBorder(
+                color = categoryColor(puzzle.category),
+                modifier = Modifier.fillMaxWidth().clickable(onClick = onContinue),
+            ) {
+                PuzzleContentRenderer(
+                    content = puzzle.content,
+                    compact = true,
+                    modifier = Modifier.fillMaxWidth().height(150.dp),
+                )
+            }
         }
         Row(
             Modifier
@@ -240,6 +254,34 @@ private fun HeroCard(state: HomeState, onContinue: () -> Unit) {
                 Box(Modifier.fillMaxWidth(progress).height(5.dp).background(Gold, CircleShape))
             }
         }
+    }
+}
+
+/** An arc in [color] travels around the card's edge over a light track, so it reads on any section colour. */
+@Composable
+private fun MovingBorder(color: Color, modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+    val angle by rememberInfiniteTransition(label = "border").animateFloat(
+        initialValue = 0f,
+        targetValue = 360f,
+        animationSpec = infiniteRepeatable(tween(3200, easing = LinearEasing)),
+        label = "angle",
+    )
+    Box(
+        modifier
+            .clip(RoundedCornerShape(23.dp))
+            .drawBehind {
+                drawRect(Color.White.copy(alpha = 0.40f))
+                rotate(angle, pivot = center) {
+                    drawCircle(
+                        brush = Brush.sweepGradient(0f to Color.Transparent, 0.55f to Color.Transparent, 1f to color, center = center),
+                        radius = hypot(size.width, size.height) / 2,
+                        center = center,
+                    )
+                }
+            }
+            .padding(4.dp),
+    ) {
+        Box(Modifier.clip(RoundedCornerShape(19.dp))) { content() }
     }
 }
 
