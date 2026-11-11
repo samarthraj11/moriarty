@@ -1,10 +1,7 @@
 package com.moriartystudio.moriarty.core.designsystem
 
-import androidx.compose.ui.text.style.BaselineShift
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.SpanStyle
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -201,42 +198,66 @@ private fun ClueList(clues: List<String>, compact: Boolean, showLetters: Boolean
     }
 }
 
-// Shapes inside equations are text characters; each gets its own colour and is drawn twice as large.
-private fun shapeColor(char: Char): Color? = when (char) {
-    '●' -> Indigo
-    '▲' -> Peach
-    '■' -> Amber
-    '◆' -> Color(0xFF1BB3A0)
-    '★' -> Color(0xFF9B6BFF)
-    else -> null
+// An equation row mixes shapes and words ("● + ▲ = 11"). The shapes are drawn as real shapes rather than
+// text, so every row has even padding, and all rows take the width of the widest one.
+private val equationShapes = mapOf(
+    '●' to VisualToken(ShapeKind.Circle, accentIndex = 0),
+    '▲' to VisualToken(ShapeKind.Triangle, accentIndex = 1),
+    '■' to VisualToken(ShapeKind.Square, accentIndex = 2),
+    '◆' to VisualToken(ShapeKind.Diamond, accentIndex = 3),
+)
+
+private sealed interface EquationPart {
+    data class Shape(val token: VisualToken) : EquationPart
+    data class Words(val text: String) : EquationPart
+}
+
+private fun equationParts(row: String): List<EquationPart> {
+    val parts = mutableListOf<EquationPart>()
+    val buffer = StringBuilder()
+    fun flush() {
+        buffer.toString().trim().takeIf { it.isNotEmpty() }?.let { parts += EquationPart.Words(it) }
+        buffer.clear()
+    }
+    row.forEach { char ->
+        val token = equationShapes[char]
+        if (token != null) {
+            flush()
+            parts += EquationPart.Shape(token)
+        } else {
+            buffer.append(char)
+        }
+    }
+    flush()
+    return parts
 }
 
 @Composable
 private fun EquationList(rows: List<String>, compact: Boolean) {
     val style = if (compact) MaterialTheme.typography.titleMedium else MaterialTheme.typography.titleLarge
-    val shapeSize = style.fontSize * 2
+    val shapeSize = if (compact) 20.dp else 26.dp
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        // Every row stretches to the widest row.
+        modifier = Modifier.width(IntrinsicSize.Max),
         verticalArrangement = Arrangement.spacedBy(if (compact) 6.dp else 10.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        rows.forEachIndexed { index, row ->
-            val text = buildAnnotatedString {
-                row.forEach { char ->
-                    val color = shapeColor(char)
-                    if (color != null) withStyle(SpanStyle(color = color, fontSize = shapeSize, baselineShift = BaselineShift(-0.12f))) { append(char) } else append(char)
+        rows.forEach { row ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Ivory, RoundedCornerShape(14.dp))
+                    .padding(horizontal = 22.dp, vertical = if (compact) 8.dp else 12.dp)
+                    .heightIn(min = shapeSize),
+                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                equationParts(row).forEach { part ->
+                    when (part) {
+                        is EquationPart.Shape -> ShapeGlyph(part.token, Modifier.size(shapeSize))
+                        is EquationPart.Words -> Text(part.text, style = style, fontWeight = FontWeight.Bold)
+                    }
                 }
             }
-            Text(
-                text,
-                modifier = Modifier
-                    .background(if (index == rows.lastIndex) Frost else Ivory, RoundedCornerShape(14.dp))
-                    .padding(horizontal = 22.dp, vertical = if (compact) 6.dp else 8.dp),
-                // Let the line grow with the larger shapes instead of using the style's fixed height.
-                style = style.copy(lineHeight = TextUnit.Unspecified),
-                fontWeight = FontWeight.Bold,
-                softWrap = false,
-            )
         }
     }
 }
