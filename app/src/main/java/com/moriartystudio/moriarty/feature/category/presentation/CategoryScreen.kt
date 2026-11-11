@@ -1,5 +1,6 @@
 package com.moriartystudio.moriarty.feature.category.presentation
 
+import androidx.compose.foundation.layout.height
 import com.moriartystudio.moriarty.ui.theme.BitterFamily
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
@@ -265,41 +266,23 @@ private fun LevelCell(level: Level, isNext: Boolean, color: Color, onColor: Colo
 
 @Composable
 private fun PlayBar(state: CategoryState, color: Color, onColor: Color, onPlay: () -> Unit) {
-    val target = state.next ?: state.fallback
+    val target = state.next ?: state.fallback ?: return
     Surface(color = Color.White, shadowElevation = 12.dp, shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)) {
         Row(
-            Modifier.fillMaxWidth().navigationBarsPadding().padding(horizontal = 20.dp, vertical = 14.dp),
+            Modifier
+                .fillMaxWidth()
+                .navigationBarsPadding()
+                .padding(horizontal = 20.dp, vertical = 14.dp)
+                .height(64.dp)
+                .clip(RoundedCornerShape(32.dp))
+                .background(color)
+                .clickable(onClick = onPlay),
             verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
         ) {
-            Column(Modifier.weight(1f)) {
-                Text(
-                    when {
-                        state.next != null -> "Up next"
-                        target != null -> "Nothing open here yet"
-                        else -> "All done"
-                    },
-                    style = MaterialTheme.typography.labelMedium,
-                    color = InkMuted,
-                )
-                Text(
-                    when {
-                        target != null -> "Level ${target.number}"
-                        else -> "You found everything"
-                    },
-                    style = MaterialTheme.typography.titleMedium,
-                    color = Night,
-                )
-            }
-            if (target != null) {
-                Row(
-                    Modifier.clip(RoundedCornerShape(50)).background(color).clickable(onClick = onPlay).padding(horizontal = 22.dp, vertical = 13.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Icon(Icons.Outlined.PlayArrow, null, tint = onColor, modifier = Modifier.size(20.dp))
-                    Spacer(Modifier.width(6.dp))
-                    Text("Play", color = onColor, style = MaterialTheme.typography.titleMedium)
-                }
-            }
+            Icon(Icons.Outlined.PlayArrow, null, tint = onColor, modifier = Modifier.size(28.dp))
+            Spacer(Modifier.width(8.dp))
+            Text("Play level ${target.number}", color = onColor, style = MaterialTheme.typography.titleLarge)
         }
     }
 }
