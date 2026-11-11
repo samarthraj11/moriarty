@@ -1,5 +1,11 @@
 package com.moriartystudio.moriarty.feature.home.presentation
 
+import kotlinx.coroutines.delay
+import java.time.ZonedDateTime
+import com.moriartystudio.moriarty.domain.daily.DailyClock
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.setValue
 import kotlin.math.hypot
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.draw.drawBehind
@@ -155,7 +161,7 @@ internal fun HomeContent(
                 verticalArrangement = Arrangement.spacedBy(22.dp),
             ) {
                 ExploreSection(state, onCategory)
-                DailyCard(state.dailyReset, onDaily)
+                DailyCard(onDaily)
                 RecentSolves(state.nearbyLevels, onLevel, onAllLevels)
             }
             Spacer(Modifier.height(0.dp))
@@ -409,7 +415,16 @@ private fun RecentSolves(levels: List<Level>, onLevel: (Int) -> Unit, onAllLevel
 }
 
 @Composable
-private fun DailyCard(reset: String, onClick: () -> Unit) {
+private fun DailyCard(onClick: () -> Unit) {
+    // Ticks down to local midnight, when the daily challenge resets.
+    var secondsLeft by remember { mutableLongStateOf(DailyClock.secondsUntilReset(ZonedDateTime.now())) }
+    LaunchedEffect(Unit) {
+        while (true) {
+            secondsLeft = DailyClock.secondsUntilReset(ZonedDateTime.now())
+            delay(1_000)
+        }
+    }
+    val reset = DailyClock.format(secondsLeft)
     Surface(
         modifier = Modifier.fillMaxWidth().clickable(onClick = onClick),
         shape = RoundedCornerShape(24.dp),

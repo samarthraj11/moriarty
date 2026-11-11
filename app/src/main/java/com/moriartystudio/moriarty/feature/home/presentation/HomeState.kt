@@ -11,7 +11,6 @@ data class HomeState(
     val nearbyLevels: List<Level> = emptyList(),
     val solvedCount: Int = 0,
     val totalLevels: Int = 10,
-    val dailyReset: String = "08:24",
     val points: Int = 0,
     val categoryProgress: List<CategoryProgress> = emptyList(),
 )
