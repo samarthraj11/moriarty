@@ -6,6 +6,8 @@ import com.moriartystudio.moriarty.core.model.PuzzleCategory
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import android.widget.Toast
+import com.moriartystudio.moriarty.feature.welcome.presentation.WelcomeScreen
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.core.tween
@@ -68,6 +70,7 @@ private fun tabIndexOf(route: Any): Int? = when (route) {
 
 enum class RootDestination { Levels, Daily, Progress, Profile }
 
+private data object WelcomeRoute
 private data object HomeRoute
 private data object LevelsRoute
 private data class CategoryRoute(val category: PuzzleCategory)
@@ -80,7 +83,7 @@ private data class SolutionRoute(val level: Int, val seconds: Int)
 
 @Composable
 fun MoriartyApp() {
-    val backStack = remember { mutableStateListOf<Any>(HomeRoute) }
+    val backStack = remember { mutableStateListOf<Any>(if (AppContainer.hasOnboarded()) HomeRoute else WelcomeRoute) }
     var showExitDialog by remember { mutableStateOf(false) }
     val activity = LocalContext.current.findActivity()
     // +1 / -1 while switching to a bottom tab on the right / left of the current one, else 0.
@@ -101,6 +104,7 @@ fun MoriartyApp() {
     // Bottom-nav roots sit alone on the stack: back goes to Home, and back on Home asks to exit.
     BackHandler {
         if (backStack.size > 1) back()
+        else if (backStack.last() == WelcomeRoute) activity?.finish()
         else if (backStack.last() == HomeRoute) showExitDialog = true
         else openRoot(RootDestination.Levels)
     }
@@ -124,6 +128,15 @@ fun MoriartyApp() {
         predictivePopTransitionSpec = { if (tabDirection[0] != 0) tabSlide(tabDirection[0]) else backSlide() },
         entryDecorators = listOf(rememberSaveableStateHolderNavEntryDecorator(), rememberViewModelStoreNavEntryDecorator()),
         entryProvider = entryProvider {
+            entry<WelcomeRoute> {
+                val context = LocalContext.current
+                WelcomeScreen(
+                    // Sign-in isn't wired to a backend yet, so only guest play moves on.
+                    onGoogle = { Toast.makeText(context, "Google sign-in is coming soon", Toast.LENGTH_SHORT).show() },
+                    onEmail = { Toast.makeText(context, "Email sign-in is coming soon", Toast.LENGTH_SHORT).show() },
+                    onGuest = { AppContainer.completeOnboarding(); tabDirection[0] = 0; backStack.clear(); backStack.add(HomeRoute) },
+                )
+            }
             entry<HomeRoute> {
                 val vm = viewModel { HomeViewModel(AppContainer.gameRepository) }
                 HomeScreen(vm, { open(PuzzleRoute(it)) }, { open(LevelsRoute) }, ::openRoot, { openRoot(RootDestination.Profile) }, { open(CategoryRoute(it)) })
