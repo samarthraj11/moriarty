@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+  <title id="title">Moriarty puzzle icon</title>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#806EFF"/><stop offset="1" stop-color="#4D3B9B"/></linearGradient>
+    <linearGradient id="a" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#9686FF"/><stop offset="1" stop-color="#6F5AE4"/></linearGradient>
+    <linearGradient id="b" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#D6C9FF"/><stop offset="1" stop-color="#A997F7"/></linearGradient>
+    <linearGradient id="c" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#423177"/><stop offset="1" stop-color="#5B46A9"/></linearGradient>
+    <linearGradient id="d" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#7662DC"/><stop offset="1" stop-color="#4F398B"/></linearGradient>
+    <clipPath id="circ"><circle cx="256" cy="256" r="176"/></clipPath>
+  </defs>
+  <rect width="512" height="512" rx="110" fill="url(#bg)"/>
+  <g clip-path="url(#circ)">
+    <rect x="80" y="80" width="176" height="176" fill="url(#a)"/>
+    <rect x="256" y="80" width="176" height="176" fill="url(#b)"/>
+    <rect x="80" y="256" width="176" height="176" fill="url(#c)"/>
+    <rect x="256" y="256" width="176" height="176" fill="url(#d)"/>
+    <g fill="none" stroke="#FFFDF8" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M256 80 V145 C235 141 221 155 221 174 C221 192 235 205 256 201 V256"/>
+      <path d="M80 256 H154 C150 235 163 221 181 221 C200 221 212 236 208 256 H256"/>
+      <path d="M256 256 H304 C300 275 313 288 330 288 C348 288 361 275 357 256 H432"/>
+      <path d="M256 256 V317 C277 313 290 327 290 345 C290 363 277 376 256 372 V432"/>
+    </g>
+  </g>
+  <circle cx="256" cy="256" r="176" fill="none" stroke="#FFFDF8" stroke-width="4"/>
+  <rect x="204" y="214" width="104" height="84" rx="13" fill="#FFFDF8"/>
+  <text x="256" y="290" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="98.8" font-weight="850" letter-spacing="-5.2" fill="#35265E">M</text>
+</svg>

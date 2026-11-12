@@ -1,0 +1,1897 @@
+{
+  "schemaVersion": 1,
+  "puzzles": [
+    {
+      "level": 1,
+      "title": "Alternating shapes",
+      "prompt": "Which shape comes next?",
+      "category": "Pattern",
+      "difficulty": "Easy",
+      "content": {
+        "type": "shapeSequence",
+        "tokens": [
+          {
+            "shape": "Circle"
+          },
+          {
+            "shape": "Triangle",
+            "accentIndex": 1
+          },
+          {
+            "shape": "Circle"
+          },
+          {
+            "shape": "Triangle",
+            "accentIndex": 1
+          },
+          null
+        ]
+      },
+      "options": [
+        "Circle",
+        "Triangle",
+        "Square",
+        "Diamond"
+      ],
+      "correctOption": "Circle",
+      "hint": "Compare positions one, three and five.",
+      "explanation": "The sequence alternates circle, triangle, circle, triangle. The next item is a circle.",
+      "optionVisuals": {
+        "Circle": {
+          "type": "token",
+          "token": {
+            "shape": "Circle"
+          }
+        },
+        "Triangle": {
+          "type": "token",
+          "token": {
+            "shape": "Triangle",
+            "accentIndex": 1
+          }
+        },
+        "Square": {
+          "type": "token",
+          "token": {
+            "shape": "Square",
+            "accentIndex": 2
+          }
+        },
+        "Diamond": {
+          "type": "token",
+          "token": {
+            "shape": "Diamond",
+            "accentIndex": 3
+          }
+        }
+      },
+      "difficultyRating": 1
+    },
+    {
+      "level": 2,
+      "title": "Growing numbers",
+      "prompt": "What number completes the sequence?",
+      "category": "Pattern",
+      "difficulty": "Easy",
+      "content": {
+        "type": "numberSequence",
+        "values": [
+          "2",
+          "4",
+          "8",
+          "16",
+          "?"
+        ]
+      },
+      "options": [
+        "18",
+        "24",
+        "30",
+        "32"
+      ],
+      "correctOption": "32",
+      "hint": "Each number is created from the number immediately before it.",
+      "explanation": "Every value doubles: 2, 4, 8, 16, then 32.",
+      "difficultyRating": 1
+    },
+    {
+      "level": 3,
+      "title": "Missing grid",
+      "prompt": "Which shape belongs in the empty cell?",
+      "category": "Pattern",
+      "difficulty": "Easy",
+      "content": {
+        "type": "matrix",
+        "rows": 3,
+        "columns": 3,
+        "tokens": [
+          {
+            "shape": "Circle"
+          },
+          {
+            "shape": "Triangle",
+            "accentIndex": 1
+          },
+          {
+            "shape": "Square",
+            "accentIndex": 2
+          },
+          {
+            "shape": "Triangle",
+            "accentIndex": 1
+          },
+          {
+            "shape": "Square",
+            "accentIndex": 2
+          },
+          {
+            "shape": "Circle"
+          },
+          {
+            "shape": "Square",
+            "accentIndex": 2
+          },
+          {
+            "shape": "Circle"
+          },
+          null
+        ]
+      },
+      "options": [
+        "Circle",
+        "Triangle",
+        "Square",
+        "Diamond"
+      ],
+      "correctOption": "Triangle",
+      "hint": "Each row contains one of every shape.",
+      "explanation": "Every row and column contains one circle, one triangle and one square. The missing shape is a triangle.",
+      "optionVisuals": {
+        "Circle": {
+          "type": "token",
+          "token": {
+            "shape": "Circle"
+          }
+        },
+        "Triangle": {
+          "type": "token",
+          "token": {
+            "shape": "Triangle",
+            "accentIndex": 1
+          }
+        },
+        "Square": {
+          "type": "token",
+          "token": {
+            "shape": "Square",
+            "accentIndex": 2
+          }
+        },
+        "Diamond": {
+          "type": "token",
+          "token": {
+            "shape": "Diamond",
+            "accentIndex": 3
+          }
+        }
+      },
+      "difficultyRating": 1
+    },
+    {
+      "level": 4,
+      "title": "Quarter turn",
+      "prompt": "Which rotation comes next?",
+      "category": "Spatial",
+      "difficulty": "Easy",
+      "content": {
+        "type": "rotationSequence",
+        "rotations": [
+          0,
+          90,
+          180,
+          null
+        ]
+      },
+      "options": [
+        "0°",
+        "90°",
+        "180°",
+        "270°"
+      ],
+      "correctOption": "270°",
+      "hint": "The arrow turns by the same amount each time.",
+      "explanation": "The arrow rotates 90 degrees clockwise at every step, so the fourth position is 270 degrees.",
+      "optionVisuals": {
+        "0°": {
+          "type": "token",
+          "token": {
+            "shape": "Arrow",
+            "rotationDegrees": 0
+          }
+        },
+        "90°": {
+          "type": "token",
+          "token": {
+            "shape": "Arrow",
+            "rotationDegrees": 90
+          }
+        },
+        "180°": {
+          "type": "token",
+          "token": {
+            "shape": "Arrow",
+            "rotationDegrees": 180
+          }
+        },
+        "270°": {
+          "type": "token",
+          "token": {
+            "shape": "Arrow",
+            "rotationDegrees": 270
+          }
+        }
+      },
+      "difficultyRating": 1
+    },
+    {
+      "level": 5,
+      "title": "First in line",
+      "prompt": "Who must be first?",
+      "category": "Deduction",
+      "difficulty": "Easy",
+      "content": {
+        "type": "clueList",
+        "clues": [
+          "Leo is before Kai.",
+          "Kai is before Mira.",
+          "Noor is after Mira."
+        ]
+      },
+      "options": [
+        "Leo",
+        "Kai",
+        "Mira",
+        "Noor"
+      ],
+      "correctOption": "Leo",
+      "hint": "Connect the clues into one ordered chain.",
+      "explanation": "The clues form Leo → Kai → Mira → Noor. Leo must be first.",
+      "difficultyRating": 1
+    },
+    {
+      "level": 6,
+      "title": "Shape values",
+      "prompt": "What is the value of the triangle?",
+      "category": "Deduction",
+      "difficulty": "Easy",
+      "content": {
+        "type": "equations",
+        "rows": [
+          "● + ● = 8",
+          "● + ▲ = 11",
+          "▲ = ?"
+        ]
+      },
+      "options": [
+        "3",
+        "4",
+        "7",
+        "8"
+      ],
+      "correctOption": "7",
+      "hint": "Find the circle value before solving for the triangle.",
+      "explanation": "Two circles equal 8, so each circle is 4. Therefore the triangle is 11 − 4 = 7",
+      "difficultyRating": 2
+    },
+    {
+      "level": 7,
+      "title": "Broken group",
+      "prompt": "Which group breaks the rule?",
+      "category": "Pattern",
+      "difficulty": "Easy",
+      "content": {
+        "type": "oddOneOut",
+        "groups": [
+          [
+            {
+              "shape": "Circle"
+            },
+            {
+              "shape": "Triangle",
+              "accentIndex": 1
+            },
+            {
+              "shape": "Square",
+              "accentIndex": 2
+            }
+          ],
+          [
+            {
+              "shape": "Triangle",
+              "accentIndex": 1
+            },
+            {
+              "shape": "Square",
+              "accentIndex": 2
+            },
+            {
+              "shape": "Circle"
+            }
+          ],
+          [
+            {
+              "shape": "Square",
+              "accentIndex": 2
+            },
+            {
+              "shape": "Circle"
+            },
+            {
+              "shape": "Triangle",
+              "accentIndex": 1
+            }
+          ],
+          [
+            {
+              "shape": "Circle"
+            },
+            {
+              "shape": "Square",
+              "accentIndex": 2
+            },
+            {
+              "shape": "Square",
+              "accentIndex": 2
+            }
+          ]
+        ]
+      },
+      "options": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ],
+      "correctOption": "D",
+      "hint": "Count how many times each kind of shape appears in a group.",
+      "explanation": "Groups A, B and C each contain one circle, one triangle and one square. Group D repeats the square.",
+      "optionVisuals": {
+        "A": {
+          "type": "tokenGroup",
+          "tokens": [
+            {
+              "shape": "Circle",
+              "accentIndex": 0
+            },
+            {
+              "shape": "Triangle",
+              "accentIndex": 1
+            },
+            {
+              "shape": "Square",
+              "accentIndex": 2
+            }
+          ]
+        },
+        "B": {
+          "type": "tokenGroup",
+          "tokens": [
+            {
+              "shape": "Triangle",
+              "accentIndex": 0
+            },
+            {
+              "shape": "Square",
+              "accentIndex": 1
+            },
+            {
+              "shape": "Circle",
+              "accentIndex": 2
+            }
+          ]
+        },
+        "C": {
+          "type": "tokenGroup",
+          "tokens": [
+            {
+              "shape": "Square",
+              "accentIndex": 0
+            },
+            {
+              "shape": "Circle",
+              "accentIndex": 1
+            },
+            {
+              "shape": "Triangle",
+              "accentIndex": 2
+            }
+          ]
+        },
+        "D": {
+          "type": "tokenGroup",
+          "tokens": [
+            {
+              "shape": "Circle",
+              "accentIndex": 0
+            },
+            {
+              "shape": "Square",
+              "accentIndex": 1
+            },
+            {
+              "shape": "Square",
+              "accentIndex": 2
+            }
+          ]
+        }
+      },
+      "difficultyRating": 2
+    },
+    {
+      "level": 8,
+      "title": "Shortest route",
+      "prompt": "What is the fewest number of moves to reach the goal?",
+      "category": "Spatial",
+      "difficulty": "Easy",
+      "content": {
+        "type": "routeGrid",
+        "rows": 4,
+        "columns": 4,
+        "blockedCells": [
+          5,
+          6,
+          9
+        ],
+        "startCell": 12,
+        "endCell": 3
+      },
+      "options": [
+        "5",
+        "6",
+        "7",
+        "8"
+      ],
+      "correctOption": "6",
+      "hint": "A move can go one cell up, down, left or right.",
+      "explanation": "The shortest open route travels three cells up and three cells right, for 6 moves.",
+      "difficultyRating": 2
+    },
+    {
+      "level": 9,
+      "title": "Only one truth",
+      "prompt": "Exactly one statement is true. Which one?",
+      "category": "Logic",
+      "difficulty": "Easy",
+      "content": {
+        "type": "statements",
+        "statements": [
+          "A says: The answer is C.",
+          "B says: The answer is not A.",
+          "C says: B is false."
+        ]
+      },
+      "options": [
+        "A",
+        "B",
+        "C",
+        "Impossible"
+      ],
+      "correctOption": "B",
+      "hint": "Test each option and count how many statements become true.",
+      "explanation": "If B is the answer, A is false, B is true and C is false. That is the only case with exactly one truth.",
+      "difficultyRating": 2
+    },
+    {
+      "level": 10,
+      "title": "Turning matrix",
+      "prompt": "Which direction completes the matrix?",
+      "category": "Logic",
+      "difficulty": "Easy",
+      "content": {
+        "type": "matrix",
+        "rows": 3,
+        "columns": 3,
+        "tokens": [
+          {
+            "shape": "Arrow",
+            "rotationDegrees": 0
+          },
+          {
+            "shape": "Arrow",
+            "rotationDegrees": 90
+          },
+          {
+            "shape": "Arrow",
+            "rotationDegrees": 180
+          },
+          {
+            "shape": "Arrow",
+            "rotationDegrees": 90
+          },
+          {
+            "shape": "Arrow",
+            "rotationDegrees": 180
+          },
+          {
+            "shape": "Arrow",
+            "rotationDegrees": 270
+          },
+          {
+            "shape": "Arrow",
+            "rotationDegrees": 180
+          },
+          {
+            "shape": "Arrow",
+            "rotationDegrees": 270
+          },
+          null
+        ]
+      },
+      "options": [
+        "Up",
+        "Right",
+        "Down",
+        "Left"
+      ],
+      "correctOption": "Up",
+      "hint": "Moving right or down applies the same quarter turn.",
+      "explanation": "Every step right or down rotates the arrow 90 degrees clockwise. The missing arrow points up.",
+      "optionVisuals": {
+        "Up": {
+          "type": "token",
+          "token": {
+            "shape": "Arrow",
+            "rotationDegrees": 0
+          }
+        },
+        "Right": {
+          "type": "token",
+          "token": {
+            "shape": "Arrow",
+            "rotationDegrees": 90
+          }
+        },
+        "Down": {
+          "type": "token",
+          "token": {
+            "shape": "Arrow",
+            "rotationDegrees": 180
+          }
+        },
+        "Left": {
+          "type": "token",
+          "token": {
+            "shape": "Arrow",
+            "rotationDegrees": 270
+          }
+        }
+      },
+      "difficultyRating": 2
+    },
+    {
+      "level": 11,
+      "difficulty": "Easy",
+      "difficultyRating": 3,
+      "title": "Growing gaps 3",
+      "prompt": "What number comes next?",
+      "category": "Pattern",
+      "content": {
+        "type": "numberSequence",
+        "values": [
+          "3",
+          "6",
+          "12",
+          "21",
+          "33",
+          "?"
+        ]
+      },
+      "options": [
+        "47",
+        "48",
+        "49",
+        "50"
+      ],
+      "correctOption": "48",
+      "hint": "The gap grows by the same amount each time.",
+      "explanation": "The gaps are 3, 6, 9, 12, then 15. The answer is 48."
+    },
+    {
+      "level": 12,
+      "difficulty": "Easy",
+      "difficultyRating": 3,
+      "title": "Hidden streams 3",
+      "prompt": "Which number completes the sequence?",
+      "category": "Pattern",
+      "content": {
+        "type": "numberSequence",
+        "values": [
+          "3",
+          "15",
+          "5",
+          "12",
+          "7",
+          "9",
+          "?"
+        ]
+      },
+      "options": [
+        "8",
+        "9",
+        "10",
+        "11"
+      ],
+      "correctOption": "9",
+      "hint": "Read the odd and even positions as separate sequences.",
+      "explanation": "Odd positions increase by 2; even positions decrease by 3. The next odd-position value is 9."
+    },
+    {
+      "level": 13,
+      "difficulty": "Easy",
+      "difficultyRating": 3,
+      "title": "Linked values 3",
+      "prompt": "What is the value of Z?",
+      "category": "Deduction",
+      "content": {
+        "type": "equations",
+        "rows": [
+          "X + X = 12",
+          "X − Y = 4",
+          "Y + Z = 6",
+          "Z = ?"
+        ]
+      },
+      "options": [
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "correctOption": "4",
+      "hint": "Solve X first, then Y, then Z.",
+      "explanation": "X is 6. Therefore Y is 2, and Z is 6 − 2 = 4."
+    },
+    {
+      "level": 14,
+      "difficulty": "Easy",
+      "difficultyRating": 3,
+      "title": "Ordered clues 3",
+      "prompt": "Who is third?",
+      "category": "Logic",
+      "content": {
+        "type": "clueList",
+        "clues": [
+          "Ari is before Bo.",
+          "Cia is after Bo.",
+          "Dev is after Cia.",
+          "Eli is after Dev."
+        ]
+      },
+      "options": [
+        "Ari",
+        "Bo",
+        "Cia",
+        "Dev"
+      ],
+      "correctOption": "Cia",
+      "hint": "Connect every comparison into a single chain.",
+      "explanation": "The only order is Ari, Bo, Cia, Dev, Eli. Cia is third."
+    },
+    {
+      "level": 15,
+      "difficulty": "Easy",
+      "difficultyRating": 3,
+      "title": "Rotation rule 3",
+      "prompt": "Which rotation comes next?",
+      "category": "Spatial",
+      "content": {
+        "type": "rotationSequence",
+        "rotations": [
+          0,
+          45,
+          90,
+          135,
+          null
+        ]
+      },
+      "options": [
+        "0°",
+        "90°",
+        "180°",
+        "270°"
+      ],
+      "correctOption": "180°",
+      "hint": "Measure the equal turn from one arrow to the next.",
+      "explanation": "The arrow turns 45 degrees clockwise each time. The next rotation is 180 degrees.",
+      "optionVisuals": {
+        "0°": {
+          "type": "token",
+          "token": {
+            "shape": "Arrow",
+            "rotationDegrees": 0
+          }
+        },
+        "90°": {
+          "type": "token",
+          "token": {
+            "shape": "Arrow",
+            "rotationDegrees": 90
+          }
+        },
+        "180°": {
+          "type": "token",
+          "token": {
+            "shape": "Arrow",
+            "rotationDegrees": 180
+          }
+        },
+        "270°": {
+          "type": "token",
+          "token": {
+            "shape": "Arrow",
+            "rotationDegrees": 270
+          }
+        }
+      }
+    },
+    {
+      "level": 16,
+      "difficulty": "Medium",
+      "difficultyRating": 4,
+      "title": "Growing gaps 4",
+      "prompt": "What number comes next?",
+      "category": "Pattern",
+      "content": {
+        "type": "numberSequence",
+        "values": [
+          "4",
+          "8",
+          "16",
+          "28",
+          "44",
+          "?"
+        ]
+      },
+      "options": [
+        "62",
+        "64",
+        "66",
+        "68"
+      ],
+      "correctOption": "64",
+      "hint": "The gap grows by the same amount each time.",
+      "explanation": "The gaps are 4, 8, 12, 16, then 20. The answer is 64."
+    },
+    {
+      "level": 17,
+      "difficulty": "Medium",
+      "difficultyRating": 4,
+      "title": "Hidden streams 4",
+      "prompt": "Which number completes the sequence?",
+      "category": "Pattern",
+      "content": {
+        "type": "numberSequence",
+        "values": [
+          "4",
+          "20",
+          "7",
+          "16",
+          "10",
+          "12",
+          "?"
+        ]
+      },
+      "options": [
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "correctOption": "13",
+      "hint": "Read the odd and even positions as separate sequences.",
+      "explanation": "Odd positions increase by 3; even positions decrease by 4. The next odd-position value is 13."
+    },
+    {
+      "level": 18,
+      "difficulty": "Medium",
+      "difficultyRating": 4,
+      "title": "Linked values 4",
+      "prompt": "What is the value of Z?",
+      "category": "Deduction",
+      "content": {
+        "type": "equations",
+        "rows": [
+          "X + X = 14",
+          "X − Y = 4",
+          "Y + Z = 8",
+          "Z = ?"
+        ]
+      },
+      "options": [
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "correctOption": "5",
+      "hint": "Solve X first, then Y, then Z.",
+      "explanation": "X is 7. Therefore Y is 3, and Z is 8 − 3 = 5."
+    },
+    {
+      "level": 19,
+      "difficulty": "Medium",
+      "difficultyRating": 4,
+      "title": "Ordered clues 4",
+      "prompt": "Who is third?",
+      "category": "Logic",
+      "content": {
+        "type": "clueList",
+        "clues": [
+          "Bo is before Cia.",
+          "Dev is after Cia.",
+          "Eli is after Dev.",
+          "Ari is after Eli."
+        ]
+      },
+      "options": [
+        "Bo",
+        "Cia",
+        "Dev",
+        "Eli"
+      ],
+      "correctOption": "Dev",
+      "hint": "Connect every comparison into a single chain.",
+      "explanation": "The only order is Bo, Cia, Dev, Eli, Ari. Dev is third."
+    },
+    {
+      "level": 20,
+      "difficulty": "Medium",
+      "difficultyRating": 4,
+      "title": "Rotation rule 4",
+      "prompt": "Which rotation comes next?",
+      "category": "Spatial",
+      "content": {
+        "type": "rotationSequence",
+        "rotations": [
+          0,
+          90,
+          180,
+          270,
+          null
+        ]
+      },
+      "options": [
+        "0°",
+        "90°",
+        "180°",
+        "270°"
+      ],
+      "correctOption": "0°",
+      "hint": "Measure the equal turn from one arrow to the next.",
+      "explanation": "The arrow turns 90 degrees clockwise each time. The next rotation is 0 degrees.",
+      "optionVisuals": {
+        "0°": {
+          "type": "token",
+          "token": {
+            "shape": "Arrow",
+            "rotationDegrees": 0
+          }
+        },
+        "90°": {
+          "type": "token",
+          "token": {
+            "shape": "Arrow",
+            "rotationDegrees": 90
+          }
+        },
+        "180°": {
+          "type": "token",
+          "token": {
+            "shape": "Arrow",
+            "rotationDegrees": 180
+          }
+        },
+        "270°": {
+          "type": "token",
+          "token": {
+            "shape": "Arrow",
+            "rotationDegrees": 270
+          }
+        }
+      }
+    },
+    {
+      "level": 21,
+      "difficulty": "Medium",
+      "difficultyRating": 5,
+      "title": "Growing gaps 5",
+      "prompt": "What number comes next?",
+      "category": "Pattern",
+      "content": {
+        "type": "numberSequence",
+        "values": [
+          "3",
+          "6",
+          "11",
+          "18",
+          "27",
+          "?"
+        ]
+      },
+      "options": [
+        "35",
+        "38",
+        "41",
+        "44"
+      ],
+      "correctOption": "38",
+      "hint": "Remove the shared offset and inspect the remaining values.",
+      "explanation": "Subtracting 2 reveals 1, 4, 9, 16, 25: consecutive squares. The next value is 36 + 2 = 38."
+    },
+    {
+      "level": 22,
+      "difficulty": "Medium",
+      "difficultyRating": 5,
+      "title": "Hidden streams 5",
+      "prompt": "Which number completes the sequence?",
+      "category": "Pattern",
+      "content": {
+        "type": "numberSequence",
+        "values": [
+          "5",
+          "25",
+          "9",
+          "20",
+          "13",
+          "15",
+          "?"
+        ]
+      },
+      "options": [
+        "15",
+        "17",
+        "19",
+        "21"
+      ],
+      "correctOption": "17",
+      "hint": "Read the odd and even positions as separate sequences.",
+      "explanation": "Odd positions increase by 4; even positions decrease by 5. The next odd-position value is 17."
+    },
+    {
+      "level": 23,
+      "difficulty": "Medium",
+      "difficultyRating": 5,
+      "title": "Linked values 5",
+      "prompt": "What is the value of Z?",
+      "category": "Deduction",
+      "content": {
+        "type": "equations",
+        "rows": [
+          "X + X = 16",
+          "X − Y = 4",
+          "Y + Z = 10",
+          "Z = ?"
+        ]
+      },
+      "options": [
+        "5",
+        "6",
+        "7",
+        "8"
+      ],
+      "correctOption": "6",
+      "hint": "Solve X first, then Y, then Z.",
+      "explanation": "X is 8. Therefore Y is 4, and Z is 10 − 4 = 6."
+    },
+    {
+      "level": 24,
+      "difficulty": "Medium",
+      "difficultyRating": 5,
+      "title": "Ordered clues 5",
+      "prompt": "Who is third?",
+      "category": "Logic",
+      "content": {
+        "type": "clueList",
+        "clues": [
+          "Cia is before Dev.",
+          "Eli is after Dev.",
+          "Ari is after Eli.",
+          "Bo is after Ari."
+        ]
+      },
+      "options": [
+        "Cia",
+        "Dev",
+        "Eli",
+        "Ari"
+      ],
+      "correctOption": "Eli",
+      "hint": "Connect every comparison into a single chain.",
+      "explanation": "The only order is Cia, Dev, Eli, Ari, Bo. Eli is third."
+    },
+    {
+      "level": 25,
+      "difficulty": "Medium",
+      "difficultyRating": 5,
+      "title": "Rotation rule 5",
+      "prompt": "Which rotation comes next?",
+      "category": "Spatial",
+      "content": {
+        "type": "rotationSequence",
+        "rotations": [
+          0,
+          135,
+          270,
+          45,
+          null
+        ]
+      },
+      "options": [
+        "0°",
+        "90°",
+        "180°",
+        "270°"
+      ],
+      "correctOption": "180°",
+      "hint": "Measure the equal turn from one arrow to the next.",
+      "explanation": "The arrow turns 135 degrees clockwise each time. The next rotation is 180 degrees.",
+      "optionVisuals": {
+        "0°": {
+          "type": "token",
+          "token": {
+            "shape": "Arrow",
+            "rotationDegrees": 0
+          }
+        },
+        "90°": {
+          "type": "token",
+          "token": {
+            "shape": "Arrow",
+            "rotationDegrees": 90
+          }
+        },
+        "180°": {
+          "type": "token",
+          "token": {
+            "shape": "Arrow",
+            "rotationDegrees": 180
+          }
+        },
+        "270°": {
+          "type": "token",
+          "token": {
+            "shape": "Arrow",
+            "rotationDegrees": 270
+          }
+        }
+      }
+    },
+    {
+      "level": 26,
+      "difficulty": "Medium",
+      "difficultyRating": 6,
+      "title": "Growing gaps 6",
+      "prompt": "What number comes next?",
+      "category": "Pattern",
+      "content": {
+        "type": "numberSequence",
+        "values": [
+          "4",
+          "7",
+          "12",
+          "19",
+          "28",
+          "?"
+        ]
+      },
+      "options": [
+        "35",
+        "39",
+        "43",
+        "47"
+      ],
+      "correctOption": "39",
+      "hint": "Remove the shared offset and inspect the remaining values.",
+      "explanation": "Subtracting 3 reveals 1, 4, 9, 16, 25: consecutive squares. The next value is 36 + 3 = 39."
+    },
+    {
+      "level": 27,
+      "difficulty": "Medium",
+      "difficultyRating": 6,
+      "title": "Hidden streams 6",
+      "prompt": "Which number completes the sequence?",
+      "category": "Pattern",
+      "content": {
+        "type": "numberSequence",
+        "values": [
+          "6",
+          "30",
+          "11",
+          "24",
+          "16",
+          "18",
+          "?"
+        ]
+      },
+      "options": [
+        "18",
+        "21",
+        "24",
+        "27"
+      ],
+      "correctOption": "21",
+      "hint": "Read the odd and even positions as separate sequences.",
+      "explanation": "Odd positions increase by 5; even positions decrease by 6. The next odd-position value is 21."
+    },
+    {
+      "level": 28,
+      "difficulty": "Medium",
+      "difficultyRating": 6,
+      "title": "Linked values 6",
+      "prompt": "What is the value of Z?",
+      "category": "Deduction",
+      "content": {
+        "type": "equations",
+        "rows": [
+          "X + X = 18",
+          "X − Y = 4",
+          "Y + Z = 12",
+          "Z = ?"
+        ]
+      },
+      "options": [
+        "6",
+        "7",
+        "8",
+        "9"
+      ],
+      "correctOption": "7",
+      "hint": "Solve X first, then Y, then Z.",
+      "explanation": "X is 9. Therefore Y is 5, and Z is 12 − 5 = 7."
+    },
+    {
+      "level": 29,
+      "difficulty": "Medium",
+      "difficultyRating": 6,
+      "title": "Ordered clues 6",
+      "prompt": "Who is third?",
+      "category": "Logic",
+      "content": {
+        "type": "clueList",
+        "clues": [
+          "Dev is before Eli.",
+          "Ari is after Eli.",
+          "Bo is after Ari.",
+          "Cia is after Bo."
+        ]
+      },
+      "options": [
+        "Dev",
+        "Eli",
+        "Ari",
+        "Bo"
+      ],
+      "correctOption": "Ari",
+      "hint": "Connect every comparison into a single chain.",
+      "explanation": "The only order is Dev, Eli, Ari, Bo, Cia. Ari is third."
+    },
+    {
+      "level": 30,
+      "difficulty": "Medium",
+      "difficultyRating": 6,
+      "title": "Rotation rule 6",
+      "prompt": "Which rotation comes next?",
+      "category": "Spatial",
+      "content": {
+        "type": "rotationSequence",
+        "rotations": [
+          0,
+          180,
+          0,
+          180,
+          null
+        ]
+      },
+      "options": [
+        "0°",
+        "90°",
+        "180°",
+        "270°"
+      ],
+      "correctOption": "0°",
+      "hint": "Measure the equal turn from one arrow to the next.",
+      "explanation": "The arrow turns 180 degrees clockwise each time. The next rotation is 0 degrees.",
+      "optionVisuals": {
+        "0°": {
+          "type": "token",
+          "token": {
+            "shape": "Arrow",
+            "rotationDegrees": 0
+          }
+        },
+        "90°": {
+          "type": "token",
+          "token": {
+            "shape": "Arrow",
+            "rotationDegrees": 90
+          }
+        },
+        "180°": {
+          "type": "token",
+          "token": {
+            "shape": "Arrow",
+            "rotationDegrees": 180
+          }
+        },
+        "270°": {
+          "type": "token",
+          "token": {
+            "shape": "Arrow",
+            "rotationDegrees": 270
+          }
+        }
+      }
+    },
+    {
+      "level": 31,
+      "difficulty": "Medium",
+      "difficultyRating": 7,
+      "title": "Growing gaps 7",
+      "prompt": "What number comes next?",
+      "category": "Pattern",
+      "content": {
+        "type": "numberSequence",
+        "values": [
+          "5",
+          "8",
+          "13",
+          "20",
+          "29",
+          "?"
+        ]
+      },
+      "options": [
+        "35",
+        "40",
+        "45",
+        "50"
+      ],
+      "correctOption": "40",
+      "hint": "Remove the shared offset and inspect the remaining values.",
+      "explanation": "Subtracting 4 reveals 1, 4, 9, 16, 25: consecutive squares. The next value is 36 + 4 = 40."
+    },
+    {
+      "level": 32,
+      "difficulty": "Medium",
+      "difficultyRating": 7,
+      "title": "Hidden streams 7",
+      "prompt": "Which number completes the sequence?",
+      "category": "Pattern",
+      "content": {
+        "type": "numberSequence",
+        "values": [
+          "7",
+          "35",
+          "13",
+          "28",
+          "19",
+          "21",
+          "?"
+        ]
+      },
+      "options": [
+        "21",
+        "25",
+        "29",
+        "33"
+      ],
+      "correctOption": "25",
+      "hint": "Read the odd and even positions as separate sequences.",
+      "explanation": "Odd positions increase by 6; even positions decrease by 7. The next odd-position value is 25."
+    },
+    {
+      "level": 33,
+      "difficulty": "Medium",
+      "difficultyRating": 7,
+      "title": "Linked values 7",
+      "prompt": "What is the value of Z?",
+      "category": "Deduction",
+      "content": {
+        "type": "equations",
+        "rows": [
+          "X + X = 20",
+          "X − Y = 4",
+          "Y + Z = 14",
+          "Z = ?"
+        ]
+      },
+      "options": [
+        "7",
+        "8",
+        "9",
+        "10"
+      ],
+      "correctOption": "8",
+      "hint": "Solve X first, then Y, then Z.",
+      "explanation": "X is 10. Therefore Y is 6, and Z is 14 − 6 = 8."
+    },
+    {
+      "level": 34,
+      "difficulty": "Medium",
+      "difficultyRating": 7,
+      "title": "Ordered clues 7",
+      "prompt": "Who is third?",
+      "category": "Logic",
+      "content": {
+        "type": "clueList",
+        "clues": [
+          "Eli is before Ari.",
+          "Bo is after Ari.",
+          "Cia is after Bo.",
+          "Dev is after Cia."
+        ]
+      },
+      "options": [
+        "Eli",
+        "Ari",
+        "Bo",
+        "Cia"
+      ],
+      "correctOption": "Bo",
+      "hint": "Connect every comparison into a single chain.",
+      "explanation": "The only order is Eli, Ari, Bo, Cia, Dev. Bo is third."
+    },
+    {
+      "level": 35,
+      "difficulty": "Medium",
+      "difficultyRating": 7,
+      "title": "Rotation rule 7",
+      "prompt": "Which rotation comes next?",
+      "category": "Spatial",
+      "content": {
+        "type": "rotationSequence",
+        "rotations": [
+          0,
+          45,
+          90,
+          135,
+          null
+        ]
+      },
+      "options": [
+        "0°",
+        "90°",
+        "180°",
+        "270°"
+      ],
+      "correctOption": "180°",
+      "hint": "Measure the equal turn from one arrow to the next.",
+      "explanation": "The arrow turns 45 degrees clockwise each time. The next rotation is 180 degrees.",
+      "optionVisuals": {
+        "0°": {
+          "type": "token",
+          "token": {
+            "shape": "Arrow",
+            "rotationDegrees": 0
+          }
+        },
+        "90°": {
+          "type": "token",
+          "token": {
+            "shape": "Arrow",
+            "rotationDegrees": 90
+          }
+        },
+        "180°": {
+          "type": "token",
+          "token": {
+            "shape": "Arrow",
+            "rotationDegrees": 180
+          }
+        },
+        "270°": {
+          "type": "token",
+          "token": {
+            "shape": "Arrow",
+            "rotationDegrees": 270
+          }
+        }
+      }
+    },
+    {
+      "level": 36,
+      "difficulty": "Hard",
+      "difficultyRating": 8,
+      "title": "Growing gaps 8",
+      "prompt": "What number comes next?",
+      "category": "Pattern",
+      "content": {
+        "type": "numberSequence",
+        "values": [
+          "2",
+          "6",
+          "14",
+          "30",
+          "?"
+        ]
+      },
+      "options": [
+        "56",
+        "62",
+        "68",
+        "74"
+      ],
+      "correctOption": "62",
+      "hint": "Apply the same multiplication and addition at every step.",
+      "explanation": "Each term is the previous term × 2 + 2. The answer is 30 × 2 + 2 = 62."
+    },
+    {
+      "level": 37,
+      "difficulty": "Hard",
+      "difficultyRating": 8,
+      "title": "Hidden streams 8",
+      "prompt": "Which number completes the sequence?",
+      "category": "Pattern",
+      "content": {
+        "type": "numberSequence",
+        "values": [
+          "8",
+          "40",
+          "15",
+          "32",
+          "22",
+          "24",
+          "?"
+        ]
+      },
+      "options": [
+        "24",
+        "29",
+        "34",
+        "39"
+      ],
+      "correctOption": "29",
+      "hint": "Read the odd and even positions as separate sequences.",
+      "explanation": "Odd positions increase by 7; even positions decrease by 8. The next odd-position value is 29."
+    },
+    {
+      "level": 38,
+      "difficulty": "Hard",
+      "difficultyRating": 8,
+      "title": "Linked values 8",
+      "prompt": "What is the value of Z?",
+      "category": "Deduction",
+      "content": {
+        "type": "equations",
+        "rows": [
+          "X + X = 22",
+          "X − Y = 4",
+          "Y + Z = 16",
+          "Z = ?"
+        ]
+      },
+      "options": [
+        "8",
+        "9",
+        "10",
+        "11"
+      ],
+      "correctOption": "9",
+      "hint": "Solve X first, then Y, then Z.",
+      "explanation": "X is 11. Therefore Y is 7, and Z is 16 − 7 = 9."
+    },
+    {
+      "level": 39,
+      "difficulty": "Hard",
+      "difficultyRating": 8,
+      "title": "Ordered clues 8",
+      "prompt": "Who is third?",
+      "category": "Logic",
+      "content": {
+        "type": "clueList",
+        "clues": [
+          "Ari is before Bo.",
+          "Cia is after Bo.",
+          "Dev is after Cia.",
+          "Eli is after Dev."
+        ]
+      },
+      "options": [
+        "Ari",
+        "Bo",
+        "Cia",
+        "Dev"
+      ],
+      "correctOption": "Cia",
+      "hint": "Connect every comparison into a single chain.",
+      "explanation": "The only order is Ari, Bo, Cia, Dev, Eli. Cia is third."
+    },
+    {
+      "level": 40,
+      "difficulty": "Hard",
+      "difficultyRating": 8,
+      "title": "Rotation rule 8",
+      "prompt": "Which rotation comes next?",
+      "category": "Spatial",
+      "content": {
+        "type": "rotationSequence",
+        "rotations": [
+          0,
+          90,
+          180,
+          270,
+          null
+        ]
+      },
+      "options": [
+        "0°",
+        "90°",
+        "180°",
+        "270°"
+      ],
+      "correctOption": "0°",
+      "hint": "Measure the equal turn from one arrow to the next.",
+      "explanation": "The arrow turns 90 degrees clockwise each time. The next rotation is 0 degrees.",
+      "optionVisuals": {
+        "0°": {
+          "type": "token",
+          "token": {
+            "shape": "Arrow",
+            "rotationDegrees": 0
+          }
+        },
+        "90°": {
+          "type": "token",
+          "token": {
+            "shape": "Arrow",
+            "rotationDegrees": 90
+          }
+        },
+        "180°": {
+          "type": "token",
+          "token": {
+            "shape": "Arrow",
+            "rotationDegrees": 180
+          }
+        },
+        "270°": {
+          "type": "token",
+          "token": {
+            "shape": "Arrow",
+            "rotationDegrees": 270
+          }
+        }
+      }
+    },
+    {
+      "level": 41,
+      "difficulty": "Hard",
+      "difficultyRating": 9,
+      "title": "Growing gaps 9",
+      "prompt": "What number comes next?",
+      "category": "Pattern",
+      "content": {
+        "type": "numberSequence",
+        "values": [
+          "2",
+          "7",
+          "17",
+          "37",
+          "?"
+        ]
+      },
+      "options": [
+        "70",
+        "77",
+        "84",
+        "91"
+      ],
+      "correctOption": "77",
+      "hint": "Apply the same multiplication and addition at every step.",
+      "explanation": "Each term is the previous term × 2 + 3. The answer is 37 × 2 + 3 = 77."
+    },
+    {
+      "level": 42,
+      "difficulty": "Hard",
+      "difficultyRating": 9,
+      "title": "Hidden streams 9",
+      "prompt": "Which number completes the sequence?",
+      "category": "Pattern",
+      "content": {
+        "type": "numberSequence",
+        "values": [
+          "9",
+          "45",
+          "17",
+          "36",
+          "25",
+          "27",
+          "?"
+        ]
+      },
+      "options": [
+        "27",
+        "33",
+        "39",
+        "45"
+      ],
+      "correctOption": "33",
+      "hint": "Read the odd and even positions as separate sequences.",
+      "explanation": "Odd positions increase by 8; even positions decrease by 9. The next odd-position value is 33."
+    },
+    {
+      "level": 43,
+      "difficulty": "Hard",
+      "difficultyRating": 9,
+      "title": "Linked values 9",
+      "prompt": "What is the value of Z?",
+      "category": "Deduction",
+      "content": {
+        "type": "equations",
+        "rows": [
+          "X + X = 24",
+          "X − Y = 4",
+          "Y + Z = 18",
+          "Z = ?"
+        ]
+      },
+      "options": [
+        "9",
+        "10",
+        "11",
+        "12"
+      ],
+      "correctOption": "10",
+      "hint": "Solve X first, then Y, then Z.",
+      "explanation": "X is 12. Therefore Y is 8, and Z is 18 − 8 = 10."
+    },
+    {
+      "level": 44,
+      "difficulty": "Hard",
+      "difficultyRating": 9,
+      "title": "Ordered clues 9",
+      "prompt": "Who is third?",
+      "category": "Logic",
+      "content": {
+        "type": "clueList",
+        "clues": [
+          "Bo is before Cia.",
+          "Dev is after Cia.",
+          "Eli is after Dev.",
+          "Ari is after Eli."
+        ]
+      },
+      "options": [
+        "Bo",
+        "Cia",
+        "Dev",
+        "Eli"
+      ],
+      "correctOption": "Dev",
+      "hint": "Connect every comparison into a single chain.",
+      "explanation": "The only order is Bo, Cia, Dev, Eli, Ari. Dev is third."
+    },
+    {
+      "level": 45,
+      "difficulty": "Hard",
+      "difficultyRating": 9,
+      "title": "Rotation rule 9",
+      "prompt": "Which rotation comes next?",
+      "category": "Spatial",
+      "content": {
+        "type": "rotationSequence",
+        "rotations": [
+          0,
+          135,
+          270,
+          45,
+          null
+        ]
+      },
+      "options": [
+        "0°",
+        "90°",
+        "180°",
+        "270°"
+      ],
+      "correctOption": "180°",
+      "hint": "Measure the equal turn from one arrow to the next.",
+      "explanation": "The arrow turns 135 degrees clockwise each time. The next rotation is 180 degrees.",
+      "optionVisuals": {
+        "0°": {
+          "type": "token",
+          "token": {
+            "shape": "Arrow",
+            "rotationDegrees": 0
+          }
+        },
+        "90°": {
+          "type": "token",
+          "token": {
+            "shape": "Arrow",
+            "rotationDegrees": 90
+          }
+        },
+        "180°": {
+          "type": "token",
+          "token": {
+            "shape": "Arrow",
+            "rotationDegrees": 180
+          }
+        },
+        "270°": {
+          "type": "token",
+          "token": {
+            "shape": "Arrow",
+            "rotationDegrees": 270
+          }
+        }
+      }
+    },
+    {
+      "level": 46,
+      "difficulty": "Hard",
+      "difficultyRating": 10,
+      "title": "Growing gaps 10",
+      "prompt": "What number comes next?",
+      "category": "Pattern",
+      "content": {
+        "type": "numberSequence",
+        "values": [
+          "2",
+          "8",
+          "20",
+          "44",
+          "?"
+        ]
+      },
+      "options": [
+        "84",
+        "92",
+        "100",
+        "108"
+      ],
+      "correctOption": "92",
+      "hint": "Apply the same multiplication and addition at every step.",
+      "explanation": "Each term is the previous term × 2 + 4. The answer is 44 × 2 + 4 = 92."
+    },
+    {
+      "level": 47,
+      "difficulty": "Hard",
+      "difficultyRating": 10,
+      "title": "Hidden streams 10",
+      "prompt": "Which number completes the sequence?",
+      "category": "Pattern",
+      "content": {
+        "type": "numberSequence",
+        "values": [
+          "10",
+          "50",
+          "19",
+          "40",
+          "28",
+          "30",
+          "?"
+        ]
+      },
+      "options": [
+        "30",
+        "37",
+        "44",
+        "51"
+      ],
+      "correctOption": "37",
+      "hint": "Read the odd and even positions as separate sequences.",
+      "explanation": "Odd positions increase by 9; even positions decrease by 10. The next odd-position value is 37."
+    },
+    {
+      "level": 48,
+      "difficulty": "Hard",
+      "difficultyRating": 10,
+      "title": "Linked values 10",
+      "prompt": "What is the value of Z?",
+      "category": "Deduction",
+      "content": {
+        "type": "equations",
+        "rows": [
+          "X + X = 26",
+          "X − Y = 4",
+          "Y + Z = 20",
+          "Z = ?"
+        ]
+      },
+      "options": [
+        "10",
+        "11",
+        "12",
+        "13"
+      ],
+      "correctOption": "11",
+      "hint": "Solve X first, then Y, then Z.",
+      "explanation": "X is 13. Therefore Y is 9, and Z is 20 − 9 = 11."
+    },
+    {
+      "level": 49,
+      "difficulty": "Hard",
+      "difficultyRating": 10,
+      "title": "Ordered clues 10",
+      "prompt": "Who is third?",
+      "category": "Logic",
+      "content": {
+        "type": "clueList",
+        "clues": [
+          "Cia is before Dev.",
+          "Eli is after Dev.",
+          "Ari is after Eli.",
+          "Bo is after Ari."
+        ]
+      },
+      "options": [
+        "Cia",
+        "Dev",
+        "Eli",
+        "Ari"
+      ],
+      "correctOption": "Eli",
+      "hint": "Connect every comparison into a single chain.",
+      "explanation": "The only order is Cia, Dev, Eli, Ari, Bo. Eli is third."
+    },
+    {
+      "level": 50,
+      "difficulty": "Hard",
+      "difficultyRating": 10,
+      "title": "Rotation rule 10",
+      "prompt": "Which rotation comes next?",
+      "category": "Spatial",
+      "content": {
+        "type": "rotationSequence",
+        "rotations": [
+          0,
+          180,
+          0,
+          180,
+          null
+        ]
+      },
+      "options": [
+        "0°",
+        "90°",
+        "180°",
+        "270°"
+      ],
+      "correctOption": "0°",
+      "hint": "Measure the equal turn from one arrow to the next.",
+      "explanation": "The arrow turns 180 degrees clockwise each time. The next rotation is 0 degrees.",
+      "optionVisuals": {
+        "0°": {
+          "type": "token",
+          "token": {
+            "shape": "Arrow",
+            "rotationDegrees": 0
+          }
+        },
+        "90°": {
+          "type": "token",
+          "token": {
+            "shape": "Arrow",
+            "rotationDegrees": 90
+          }
+        },
+        "180°": {
+          "type": "token",
+          "token": {
+            "shape": "Arrow",
+            "rotationDegrees": 180
+          }
+        },
+        "270°": {
+          "type": "token",
+          "token": {
+            "shape": "Arrow",
+            "rotationDegrees": 270
+          }
+        }
+      }
+    }
+  ]
+}

@@ -3,12 +3,14 @@ package com.moriartystudio.moriarty.core.designsystem
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CalendarToday
-import androidx.compose.material.icons.outlined.EmojiEvents
+import androidx.compose.material.icons.outlined.WorkspacePremium
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material3.*
@@ -16,6 +18,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
@@ -25,7 +33,7 @@ import com.moriartystudio.moriarty.ui.theme.*
 
 @Composable
 fun MoriartyPrimaryButton(text: String, onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, trailing: @Composable (() -> Unit)? = null) {
-    Button(onClick = onClick, enabled = enabled, modifier = modifier.fillMaxWidth().height(58.dp), shape = RoundedCornerShape(22.dp), colors = ButtonDefaults.buttonColors(containerColor = Emerald, contentColor = Color.White, disabledContainerColor = Color(0xFFD9DDDA), disabledContentColor = Color(0xFF8D9892))) {
+    Button(onClick = onClick, enabled = enabled, modifier = modifier.fillMaxWidth().height(58.dp), shape = RoundedCornerShape(22.dp), colors = ButtonDefaults.buttonColors(containerColor = Indigo, contentColor = Color.White, disabledContainerColor = Color(0xFFD9DCEF), disabledContentColor = Color(0xFF8D91B5))) {
         Text(text, style = MaterialTheme.typography.titleMedium)
         if (trailing != null) { Spacer(Modifier.size(10.dp)); trailing() }
     }
@@ -33,7 +41,7 @@ fun MoriartyPrimaryButton(text: String, onClick: () -> Unit, modifier: Modifier 
 
 @Composable
 fun MoriartySecondaryButton(text: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
-    OutlinedButton(onClick = onClick, modifier = modifier.fillMaxWidth().height(54.dp), shape = RoundedCornerShape(20.dp), border = BorderStroke(1.dp, Emerald), colors = ButtonDefaults.outlinedButtonColors(contentColor = Emerald)) {
+    OutlinedButton(onClick = onClick, modifier = modifier.fillMaxWidth().height(54.dp), shape = RoundedCornerShape(20.dp), border = BorderStroke(1.dp, Indigo), colors = ButtonDefaults.outlinedButtonColors(contentColor = Indigo)) {
         Text(text, style = MaterialTheme.typography.titleMedium)
     }
 }
@@ -42,12 +50,12 @@ fun MoriartySecondaryButton(text: String, onClick: () -> Unit, modifier: Modifie
 fun SectionTitle(title: String, action: String? = null, onAction: (() -> Unit)? = null) {
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Text(title, style = MaterialTheme.typography.titleLarge, modifier = Modifier.weight(1f))
-        if (action != null && onAction != null) Text(action, style = MaterialTheme.typography.labelLarge, color = Emerald, modifier = Modifier.clip(RoundedCornerShape(10.dp)).clickable(onClick = onAction).padding(8.dp))
+        if (action != null && onAction != null) Text(action, style = MaterialTheme.typography.labelLarge, color = Indigo, modifier = Modifier.clip(RoundedCornerShape(10.dp)).clickable(onClick = onAction).padding(8.dp))
     }
 }
 
 @Composable
-fun DifficultyPill(text: String, color: Color = Mint, contentColor: Color = Emerald) {
+fun DifficultyPill(text: String, color: Color = Frost, contentColor: Color = Indigo) {
     Text(text, color = contentColor, style = MaterialTheme.typography.labelMedium, modifier = Modifier.background(color, RoundedCornerShape(50)).padding(horizontal = 14.dp, vertical = 7.dp))
 }
 
@@ -66,16 +74,31 @@ fun TopBar(title: String, subtitle: String? = null, leading: (@Composable () -> 
 @Composable
 fun MoriartyBottomBar(selected: RootDestination, onSelect: (RootDestination) -> Unit) {
     val items = listOf(
-        Triple(RootDestination.Levels, "Levels", Icons.Outlined.Home),
+        Triple(RootDestination.Levels, "Home", Icons.Outlined.Home),
         Triple(RootDestination.Daily, "Daily", Icons.Outlined.CalendarToday),
-        Triple(RootDestination.Leaderboard, "Leaderboard", Icons.Outlined.EmojiEvents),
+        Triple(RootDestination.Progress, "Progress", Icons.Outlined.WorkspacePremium),
         Triple(RootDestination.Profile, "Profile", Icons.Outlined.PersonOutline),
     )
-    Column(Modifier.background(Paper).navigationBarsPadding()) {
-        HorizontalDivider(color = Line)
-        NavigationBar(containerColor = Paper, tonalElevation = 0.dp) {
+    Surface(color = Color.White, shadowElevation = 12.dp, shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)) {
+        Row(
+            Modifier.fillMaxWidth().navigationBarsPadding().padding(horizontal = 18.dp, vertical = 12.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
             items.forEach { (destination, label, icon) ->
-                NavigationBarItem(selected = selected == destination, onClick = { onSelect(destination) }, icon = { Icon(icon, null) }, label = { Text(label, style = MaterialTheme.typography.labelMedium) }, colors = NavigationBarItemDefaults.colors(selectedIconColor = Emerald, selectedTextColor = Emerald, indicatorColor = Mint, unselectedIconColor = InkMuted, unselectedTextColor = InkMuted))
+                val isSelected = selected == destination
+                Box(
+                    Modifier
+                        .size(52.dp)
+                        .then(if (isSelected) Modifier.shadow(14.dp, CircleShape, ambientColor = Indigo, spotColor = Indigo) else Modifier)
+                        .clip(CircleShape)
+                        .background(if (isSelected) IndigoGradient else Brush.linearGradient(listOf(Color.Transparent, Color.Transparent)))
+                        .semantics { contentDescription = label }
+                        .clickable { onSelect(destination) },
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(icon, null, tint = if (isSelected) Color.White else Lavender, modifier = Modifier.size(25.dp))
+                }
             }
         }
     }
@@ -98,3 +121,70 @@ fun Metric(value: String, label: String, modifier: Modifier = Modifier) {
 
 @Composable
 fun ScreenBackground(content: @Composable () -> Unit) = Surface(color = Ivory, contentColor = Ink, content = content)
+
+/** Round translucent button for use on the indigo header. */
+@Composable
+fun GlassIconButton(icon: ImageVector, onClick: () -> Unit, contentDescription: String) {
+    Box(
+        Modifier.size(44.dp).clip(CircleShape).background(Color.White.copy(alpha = 0.22f)).clickable(onClick = onClick),
+        contentAlignment = Alignment.Center,
+    ) { Icon(icon, contentDescription, tint = Color.White, modifier = Modifier.size(21.dp)) }
+}
+
+/** White pill for stats on the indigo header. */
+@Composable
+fun HeaderPill(content: @Composable RowScope.() -> Unit) {
+    Row(
+        Modifier.background(Color.White, RoundedCornerShape(50)).padding(horizontal = 12.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        content = content,
+    )
+}
+
+/**
+ * Standard screen layout: indigo gradient header with a white sheet rising over it.
+ * Set [scrollable] to false when the content scrolls itself (lazy lists).
+ */
+@Composable
+fun MoriartyPage(
+    title: String,
+    subtitle: String? = null,
+    leading: (@Composable () -> Unit)? = null,
+    trailing: (@Composable () -> Unit)? = null,
+    bottomBar: @Composable () -> Unit = {},
+    scrollable: Boolean = true,
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    Scaffold(containerColor = Ivory, bottomBar = bottomBar) { padding ->
+        Column(
+            Modifier
+                .fillMaxSize()
+                .background(Ivory)
+                // Gradient only behind the header; the white sheet covers the rest, so the
+                // bottom bar's rounded corners never show indigo.
+                .drawBehind { drawRect(Brush.verticalGradient(listOf(Indigo, IndigoLight)), size = Size(size.width, 260.dp.toPx())) }
+                .padding(bottom = padding.calculateBottomPadding()),
+        ) {
+            Row(
+                Modifier.fillMaxWidth().statusBarsPadding().padding(start = 20.dp, end = 20.dp, top = 12.dp, bottom = 22.dp).heightIn(min = 44.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                if (leading != null) { leading(); Spacer(Modifier.width(12.dp)) }
+                Column(Modifier.weight(1f)) {
+                    Text(title, style = MaterialTheme.typography.headlineMedium, color = Color.White)
+                    if (subtitle != null) Text(subtitle, style = MaterialTheme.typography.bodyMedium, color = Color.White.copy(alpha = 0.8f))
+                }
+                trailing?.invoke()
+            }
+            Column(
+                Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp))
+                    .background(Ivory)
+                    .then(if (scrollable) Modifier.verticalScroll(rememberScrollState()) else Modifier),
+                content = content,
+            )
+        }
+    }
+}

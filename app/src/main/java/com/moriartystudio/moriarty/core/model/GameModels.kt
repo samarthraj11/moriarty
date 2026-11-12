@@ -48,7 +48,11 @@ data class Level(
     val difficulty: Difficulty,
     val isSolved: Boolean,
     val isUnlocked: Boolean,
-    val bestTimeSeconds: Int? = null,
+    val points: Int? = null,
+    val difficultyRating: Int = 1,
+    val isSkipped: Boolean = false,
+    /** 1-based position among the levels of the same category; what players see as "Level N". */
+    val categoryLevel: Int = 1,
 )
 
 data class Puzzle(
@@ -63,14 +67,7 @@ data class Puzzle(
     val hint: String,
     val explanation: String,
     val optionVisuals: Map<String, PuzzleAnswerVisual> = emptyMap(),
-)
-
-data class LeaderboardEntry(
-    val rank: Int,
-    val name: String,
-    val solved: Int,
-    val totalSeconds: Int,
-    val isCurrentUser: Boolean = false,
+    val difficultyRating: Int = 1,
 )
 
 data class PlayerProfile(
@@ -78,6 +75,6 @@ data class PlayerProfile(
     val handle: String,
     val solved: Int,
     val streak: Int,
-    val averageSeconds: Int,
+    val points: Int,
     val accuracy: Int,
 )

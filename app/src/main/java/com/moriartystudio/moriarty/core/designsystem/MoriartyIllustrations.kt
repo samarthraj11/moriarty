@@ -19,11 +19,11 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
 import com.moriartystudio.moriarty.ui.theme.Amber
-import com.moriartystudio.moriarty.ui.theme.Emerald
-import com.moriartystudio.moriarty.ui.theme.EmeraldDark
+import com.moriartystudio.moriarty.ui.theme.Indigo
+import com.moriartystudio.moriarty.ui.theme.IndigoDark
 import com.moriartystudio.moriarty.ui.theme.Ink
 import com.moriartystudio.moriarty.ui.theme.Ivory
-import com.moriartystudio.moriarty.ui.theme.Mint
+import com.moriartystudio.moriarty.ui.theme.Frost
 import com.moriartystudio.moriarty.ui.theme.Paper
 import com.moriartystudio.moriarty.ui.theme.Peach
 import com.moriartystudio.moriarty.ui.theme.SoftAmber
@@ -46,7 +46,7 @@ fun GeometricMirrorHero(modifier: Modifier = Modifier) {
         drawCircle(Peach.copy(alpha = .20f), w * .34f, Offset(w * .05f, h * .82f))
         drawOval(Ink.copy(alpha = .11f), Offset(w * .07f, h * .82f), Size(w * .82f, h * .11f))
 
-        drawIsoBlock(w * .10f, h * .52f, w * .26f, h * .32f, w * .055f, EmeraldDark)
+        drawIsoBlock(w * .10f, h * .52f, w * .26f, h * .32f, w * .055f, IndigoDark)
         drawIsoBlock(w * .37f, h * .57f, w * .17f, h * .25f, w * .04f, Peach)
 
         val stairWidth = w * .14f
@@ -58,7 +58,7 @@ fun GeometricMirrorHero(modifier: Modifier = Modifier) {
                 width = stairWidth,
                 height = h * (.10f + step * .011f),
                 depth = w * .025f,
-                front = if (index % 2 == 0) Emerald else Ivory,
+                front = if (index % 2 == 0) Indigo else Ivory,
             )
         }
 
@@ -71,7 +71,7 @@ fun GeometricMirrorHero(modifier: Modifier = Modifier) {
         )
         drawCircle(
             brush = Brush.radialGradient(
-                listOf(Color(0xFFA7D9C4), Emerald, EmeraldDark),
+                listOf(Color(0xFFC5CBFF), Indigo, IndigoDark),
                 center = Offset(w * .29f, h * .42f),
                 radius = w * .18f,
             ),
@@ -80,7 +80,7 @@ fun GeometricMirrorHero(modifier: Modifier = Modifier) {
         )
         drawCircle(Color.White.copy(alpha = .32f), w * .025f, Offset(w * .25f, h * .37f))
         drawCircle(
-            brush = Brush.radialGradient(listOf(Mint, Color(0xFF5AA58A), EmeraldDark)),
+            brush = Brush.radialGradient(listOf(Frost, Color(0xFF7985FF), IndigoDark)),
             radius = w * .066f,
             center = Offset(w * .79f, h * .57f),
         )
@@ -96,14 +96,14 @@ fun MirrorClockIllustration(modifier: Modifier = Modifier) {
         val clockRadius = w * .205f
 
         drawCircle(SoftAmber.copy(alpha = .78f), w * .38f, Offset(w * .12f, h * .13f))
-        drawCircle(Mint.copy(alpha = .70f), w * .30f, Offset(w * .93f, h * .78f))
+        drawCircle(Frost.copy(alpha = .70f), w * .30f, Offset(w * .93f, h * .78f))
         drawOval(Ink.copy(alpha = .10f), Offset(w * .16f, h * .79f), Size(w * .68f, h * .10f))
 
         drawMirror(w * .20f, h * .09f, w * .84f, h * .82f, w * .022f)
 
-        drawCircle(EmeraldDark.copy(alpha = .16f), clockRadius * 1.08f, clockCenter + Offset(w * .014f, h * .014f))
+        drawCircle(IndigoDark.copy(alpha = .16f), clockRadius * 1.08f, clockCenter + Offset(w * .014f, h * .014f))
         drawCircle(Ivory, clockRadius, clockCenter)
-        drawCircle(EmeraldDark, clockRadius, clockCenter, style = Stroke(w * .017f))
+        drawCircle(IndigoDark, clockRadius, clockCenter, style = Stroke(w * .017f))
         drawCircle(Amber.copy(alpha = .36f), clockRadius * .83f, clockCenter, style = Stroke(w * .006f))
 
         repeat(12) { index ->
@@ -118,7 +118,7 @@ fun MirrorClockIllustration(modifier: Modifier = Modifier) {
                 clockCenter.y + sin(angle).toFloat() * clockRadius * innerScale,
             )
             drawLine(
-                color = if (index % 3 == 0) EmeraldDark else Emerald.copy(alpha = .58f),
+                color = if (index % 3 == 0) IndigoDark else Indigo.copy(alpha = .58f),
                 start = inner,
                 end = outer,
                 strokeWidth = if (index % 3 == 0) w * .011f else w * .006f,
@@ -127,14 +127,14 @@ fun MirrorClockIllustration(modifier: Modifier = Modifier) {
         }
 
         // The reflected clock displays 08:20. The player must infer the real time: 03:40.
-        drawClockHand(clockCenter, clockRadius * .50f, 250f, w * .020f, EmeraldDark)
+        drawClockHand(clockCenter, clockRadius * .50f, 250f, w * .020f, IndigoDark)
         drawClockHand(clockCenter, clockRadius * .68f, 120f, w * .012f, Peach)
-        drawCircle(EmeraldDark, w * .026f, clockCenter)
+        drawCircle(IndigoDark, w * .026f, clockCenter)
         drawCircle(Ivory, w * .009f, clockCenter)
 
-        drawIsoBlock(w * .08f, h * .66f, w * .20f, h * .20f, w * .04f, Emerald)
+        drawIsoBlock(w * .08f, h * .66f, w * .20f, h * .20f, w * .04f, Indigo)
         drawCircle(
-            brush = Brush.radialGradient(listOf(Mint, Color(0xFF62AA90), EmeraldDark)),
+            brush = Brush.radialGradient(listOf(Frost, Color(0xFF7985FF), IndigoDark)),
             radius = w * .07f,
             center = Offset(w * .18f, h * .63f),
         )
@@ -166,12 +166,12 @@ fun SignalIllustration(modifier: Modifier = Modifier) {
             drawCircle(Ivory.copy(alpha = .72f), w * .013f, center - Offset(w * .012f, h * .010f))
         }
 
-        drawIsoBlock(w * .10f, h * .61f, w * .20f, h * .23f, w * .045f, EmeraldDark)
+        drawIsoBlock(w * .10f, h * .61f, w * .20f, h * .23f, w * .045f, IndigoDark)
         drawIsoBlock(w * .32f, h * .52f, w * .18f, h * .31f, w * .045f, Peach)
         drawIsoBlock(w * .54f, h * .64f, w * .15f, h * .19f, w * .035f, Ivory)
-        drawIsoBlock(w * .72f, h * .55f, w * .17f, h * .28f, w * .04f, Emerald)
+        drawIsoBlock(w * .72f, h * .55f, w * .17f, h * .28f, w * .04f, Indigo)
         drawCircle(
-            brush = Brush.radialGradient(listOf(Mint, Color(0xFF5EA98E), EmeraldDark)),
+            brush = Brush.radialGradient(listOf(Frost, Color(0xFF7985FF), IndigoDark)),
             radius = w * .085f,
             center = Offset(w * .59f, h * .57f),
         )
@@ -181,10 +181,10 @@ fun SignalIllustration(modifier: Modifier = Modifier) {
 @Composable
 fun SmallGeometryThumbnail(modifier: Modifier = Modifier, accent: Color = Peach) {
     Canvas(modifier) {
-        drawRoundRect(Color(0xFFF8E9CE), cornerRadius = CornerRadius(18f, 18f))
-        drawIsoBlock(size.width * .13f, size.height * .55f, size.width * .29f, size.height * .28f, size.width * .05f, Emerald)
+        drawRoundRect(Color(0xFFE9EBFA), cornerRadius = CornerRadius(18f, 18f))
+        drawIsoBlock(size.width * .13f, size.height * .55f, size.width * .29f, size.height * .28f, size.width * .05f, Indigo)
         drawIsoBlock(size.width * .47f, size.height * .37f, size.width * .30f, size.height * .46f, size.width * .05f, accent)
-        drawCircle(Mint, size.width * .13f, Offset(size.width * .47f, size.height * .34f))
+        drawCircle(Frost, size.width * .13f, Offset(size.width * .47f, size.height * .34f))
     }
 }
 
@@ -198,7 +198,7 @@ private fun IllustrationSurface(
             .clip(RoundedCornerShape(30.dp))
             .background(
                 Brush.linearGradient(
-                    listOf(Paper, Color(0xFFFFF1D5), Color(0xFFF8E8CC)),
+                    listOf(Paper, Color(0xFFF4F5FD), Color(0xFFE9EBFA)),
                 ),
             ),
     ) {
@@ -224,12 +224,12 @@ private fun DrawScope.drawMirror(
     drawPath(
         mirror,
         Brush.linearGradient(
-            listOf(Color(0xFFE8F0EE), Color(0xFFBDD4D2), Color(0xFFF7EFE2)),
+            listOf(Color(0xFFEEF0FB), Color(0xFFC9CEF5), Color(0xFFF6F7FE)),
             start = Offset(left, top),
             end = Offset(right, bottom),
         ),
     )
-    drawPath(mirror, EmeraldDark, style = Stroke(frameWidth, cap = StrokeCap.Round))
+    drawPath(mirror, IndigoDark, style = Stroke(frameWidth, cap = StrokeCap.Round))
     drawLine(
         Color.White.copy(alpha = .58f),
         Offset(left + radius * .32f, top + radius * .46f),
