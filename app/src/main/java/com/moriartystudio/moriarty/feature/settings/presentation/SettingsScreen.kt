@@ -37,7 +37,7 @@ fun SettingsScreen(viewModel: SettingsViewModel, onBack: () -> Unit) {
             TextButton(onClick = viewModel::signOut, modifier = Modifier.fillMaxWidth()) { Text("Sign out", color = ErrorCoral, style = MaterialTheme.typography.titleMedium) }
             Column(Modifier.align(Alignment.CenterHorizontally), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 MoriartyLogo(markSize = 64.dp)
-                Text("Version 0.1.0", style = MaterialTheme.typography.bodyMedium, color = InkMuted)
+                Text("Version ${com.moriartystudio.moriarty.core.designsystem.rememberAppVersion()}", style = MaterialTheme.typography.bodyMedium, color = InkMuted)
             }
         }
     }

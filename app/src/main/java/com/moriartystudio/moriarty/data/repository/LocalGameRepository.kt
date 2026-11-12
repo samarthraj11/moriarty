@@ -147,6 +147,10 @@ class LocalGameRepository(
         return PlayerProfile("Moriarty", "Quiet Observer", levels.count(Level::isSolved), DailyStreak.current(dailyPlayedDays(), LocalDate.now()), totalPoints(), accuracy)
     }
 
+    override fun resetProgress() {
+        preferences.edit().clear().apply()
+    }
+
     private fun solvedLevels(): Set<Int> = preferences.getStringSet(SOLVED_LEVELS, emptySet())
         .orEmpty()
         .mapNotNull(String::toIntOrNull)

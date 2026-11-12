@@ -23,4 +23,6 @@ interface GameRepository {
     /** Rank, badge and chart inputs, computed from this device's play history. */
     fun progress(today: LocalDate): ProgressSummary
     fun profile(): PlayerProfile
+    /** Wipes every solve, score, daily record and streak stored on this device. */
+    fun resetProgress()
 }
