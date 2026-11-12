@@ -1,15 +1,19 @@
 package com.moriartystudio.moriarty.data.repository
 
+import java.time.DayOfWeek
 import java.time.LocalDate
 import com.moriartystudio.moriarty.domain.daily.DailyStreak
 import com.moriartystudio.moriarty.domain.daily.DailyPuzzlePicker
 import android.content.Context
-import com.moriartystudio.moriarty.core.model.LeaderboardEntry
 import com.moriartystudio.moriarty.core.model.Level
 import com.moriartystudio.moriarty.core.model.PlayerProfile
 import com.moriartystudio.moriarty.core.model.Puzzle
+import com.moriartystudio.moriarty.core.model.PuzzleCategory
 import com.moriartystudio.moriarty.data.local.AssetPuzzleLocalDataSource
 import com.moriartystudio.moriarty.data.local.PuzzleLocalDataSource
+import com.moriartystudio.moriarty.domain.progress.DayActivity
+import com.moriartystudio.moriarty.domain.progress.ProgressSummary
+import com.moriartystudio.moriarty.domain.progress.SectionProgress
 import com.moriartystudio.moriarty.domain.progression.ProgressionRules
 import com.moriartystudio.moriarty.domain.repository.GameRepository
 import com.moriartystudio.moriarty.domain.scoring.Scoring
@@ -55,7 +59,15 @@ class LocalGameRepository(
     override fun recordFirstAnswer(level: Int, correct: Boolean): Int {
         if (preferences.contains(pointsKey(level))) return 0
         val points = Scoring.pointsForFirstAnswer(correct)
-        preferences.edit().putInt(pointsKey(level), points).apply()
+        val today = LocalDate.now().toString()
+        val run = if (correct) preferences.getInt(CORRECT_RUN, 0) + 1 else 0
+        preferences.edit()
+            .putInt(pointsKey(level), points)
+            .putInt(CORRECT_RUN, run)
+            .putInt(BEST_CORRECT_RUN, maxOf(run, preferences.getInt(BEST_CORRECT_RUN, 0)))
+            .putInt("$DAY_POINTS$today", preferences.getInt("$DAY_POINTS$today", 0) + points)
+            .putInt("$DAY_PLAYED$today", preferences.getInt("$DAY_PLAYED$today", 0) + 1)
+            .apply()
         return points
     }
 
@@ -91,13 +103,41 @@ class LocalGameRepository(
         return today
     }
 
-    override fun leaderboard(): List<LeaderboardEntry> = listOf(
-        LeaderboardEntry(1, "Anika", 50, 500), LeaderboardEntry(2, "Ravi", 48, 480),
-        LeaderboardEntry(3, "Mira", 47, 465), LeaderboardEntry(4, "Leo", 45, 440),
-        LeaderboardEntry(5, "Sofia", 44, 430), LeaderboardEntry(6, "Kai", 42, 410),
-        LeaderboardEntry(7, "Noah", 40, 395), LeaderboardEntry(8, "Priya", 38, 370),
-        LeaderboardEntry(428, "You", levels().count(Level::isSolved), totalPoints(), true),
-    )
+    override fun progress(today: LocalDate): ProgressSummary {
+        val levels = levels()
+        val answered = levels.filter { it.points != null }
+        val played = dailyPlayedDays()
+        val sections = PuzzleCategory.entries.map { category ->
+            val inCategory = levels.filter { it.category == category }
+            val answeredHere = inCategory.filter { it.points != null }
+            SectionProgress(
+                category = category,
+                total = inCategory.size,
+                solved = inCategory.count(Level::isSolved),
+                answered = answeredHere.size,
+                firstTryCorrect = answeredHere.count { it.points == Scoring.CORRECT_POINTS },
+            )
+        }
+        val week = (6 downTo 0).map { back ->
+            val day = today.minusDays(back.toLong())
+            DayActivity(day, preferences.getInt("$DAY_POINTS$day", 0), preferences.getInt("$DAY_PLAYED$day", 0))
+        }
+        val monday = today.with(DayOfWeek.MONDAY)
+        val playedThisWeek = (0..6).sumOf { preferences.getInt("$DAY_PLAYED${monday.plusDays(it.toLong())}", 0) }
+        return ProgressSummary(
+            points = totalPoints(),
+            solved = levels.count(Level::isSolved),
+            totalPuzzles = levels.size,
+            answered = answered.size,
+            firstTryCorrect = answered.count { it.points == Scoring.CORRECT_POINTS },
+            bestDailyStreak = DailyStreak.best(played),
+            bestCorrectRun = preferences.getInt(BEST_CORRECT_RUN, 0),
+            dailiesPlayed = played.size,
+            sections = sections,
+            lastSevenDays = week,
+            playedThisWeek = playedThisWeek,
+        )
+    }
 
     override fun profile(): PlayerProfile {
         val levels = levels()
@@ -124,5 +164,9 @@ class LocalGameRepository(
         const val SKIPPED_LEVELS = "skipped_levels"
         const val DAILY_PLAYED = "daily_played_days"
         const val DAILY_START = "daily_start_date"
+        const val CORRECT_RUN = "correct_run"
+        const val BEST_CORRECT_RUN = "best_correct_run"
+        const val DAY_POINTS = "day_points_"
+        const val DAY_PLAYED = "day_played_"
     }
 }

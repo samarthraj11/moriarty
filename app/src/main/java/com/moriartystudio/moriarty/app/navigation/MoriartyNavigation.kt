@@ -32,8 +32,8 @@ import com.moriartystudio.moriarty.feature.daily.presentation.DailyScreen
 import com.moriartystudio.moriarty.feature.daily.presentation.DailyViewModel
 import com.moriartystudio.moriarty.feature.home.presentation.HomeScreen
 import com.moriartystudio.moriarty.feature.home.presentation.HomeViewModel
-import com.moriartystudio.moriarty.feature.leaderboard.presentation.LeaderboardScreen
-import com.moriartystudio.moriarty.feature.leaderboard.presentation.LeaderboardViewModel
+import com.moriartystudio.moriarty.feature.progress.presentation.ProgressScreen
+import com.moriartystudio.moriarty.feature.progress.presentation.ProgressViewModel
 import com.moriartystudio.moriarty.feature.levels.presentation.LevelsScreen
 import com.moriartystudio.moriarty.feature.levels.presentation.LevelsViewModel
 import com.moriartystudio.moriarty.feature.profile.presentation.ProfileScreen
@@ -61,18 +61,18 @@ private fun tabSlide(direction: Int): ContentTransform =
 private fun tabIndexOf(route: Any): Int? = when (route) {
     HomeRoute -> RootDestination.Levels.ordinal
     DailyRoute -> RootDestination.Daily.ordinal
-    LeaderboardRoute -> RootDestination.Leaderboard.ordinal
+    ProgressRoute -> RootDestination.Progress.ordinal
     ProfileRoute -> RootDestination.Profile.ordinal
     else -> null
 }
 
-enum class RootDestination { Levels, Daily, Leaderboard, Profile }
+enum class RootDestination { Levels, Daily, Progress, Profile }
 
 private data object HomeRoute
 private data object LevelsRoute
 private data class CategoryRoute(val category: PuzzleCategory)
 private data object DailyRoute
-private data object LeaderboardRoute
+private data object ProgressRoute
 private data object ProfileRoute
 private data object SettingsRoute
 private data class PuzzleRoute(val level: Int, val daily: Boolean = false)
@@ -88,7 +88,7 @@ fun MoriartyApp() {
     fun back() { tabDirection[0] = 0; if (backStack.size > 1) backStack.removeAt(backStack.lastIndex) }
     fun open(route: Any) { tabDirection[0] = 0; backStack.add(route) }
     fun openRoot(destination: RootDestination) {
-        val route = when (destination) { RootDestination.Levels -> HomeRoute; RootDestination.Daily -> DailyRoute; RootDestination.Leaderboard -> LeaderboardRoute; RootDestination.Profile -> ProfileRoute }
+        val route = when (destination) { RootDestination.Levels -> HomeRoute; RootDestination.Daily -> DailyRoute; RootDestination.Progress -> ProgressRoute; RootDestination.Profile -> ProfileRoute }
         val currentTab = backStack.lastOrNull()?.let(::tabIndexOf)
         tabDirection[0] = when {
             currentTab == null || currentTab == destination.ordinal -> 0
@@ -164,16 +164,16 @@ fun MoriartyApp() {
                         backStack.add(PuzzleRoute(next))
                     },
                     onComplete = { openRoot(RootDestination.Levels) },
-                    onLeaderboard = { openRoot(RootDestination.Leaderboard) },
+                    onLeaderboard = { openRoot(RootDestination.Progress) },
                 )
             }
             entry<DailyRoute> {
                 val vm = viewModel { DailyViewModel(AppContainer.gameRepository) }
                 DailyScreen(vm, { level -> open(PuzzleRoute(level, daily = true)) }, ::openRoot)
             }
-            entry<LeaderboardRoute> {
-                val vm = viewModel { LeaderboardViewModel(AppContainer.gameRepository) }
-                LeaderboardScreen(vm, ::openRoot)
+            entry<ProgressRoute> {
+                val vm = viewModel { ProgressViewModel(AppContainer.gameRepository) }
+                ProgressScreen(vm, ::openRoot)
             }
             entry<ProfileRoute> {
                 val vm = viewModel { ProfileViewModel(AppContainer.gameRepository) }

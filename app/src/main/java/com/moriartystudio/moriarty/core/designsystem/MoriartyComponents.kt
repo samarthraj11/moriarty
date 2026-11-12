@@ -10,7 +10,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CalendarToday
-import androidx.compose.material.icons.outlined.EmojiEvents
+import androidx.compose.material.icons.outlined.WorkspacePremium
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material3.*
@@ -76,7 +76,7 @@ fun MoriartyBottomBar(selected: RootDestination, onSelect: (RootDestination) -> 
     val items = listOf(
         Triple(RootDestination.Levels, "Home", Icons.Outlined.Home),
         Triple(RootDestination.Daily, "Daily", Icons.Outlined.CalendarToday),
-        Triple(RootDestination.Leaderboard, "Leaderboard", Icons.Outlined.EmojiEvents),
+        Triple(RootDestination.Progress, "Progress", Icons.Outlined.WorkspacePremium),
         Triple(RootDestination.Profile, "Profile", Icons.Outlined.PersonOutline),
     )
     Surface(color = Color.White, shadowElevation = 12.dp, shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)) {

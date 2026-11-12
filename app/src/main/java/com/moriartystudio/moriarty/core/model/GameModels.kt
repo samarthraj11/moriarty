@@ -70,14 +70,6 @@ data class Puzzle(
     val difficultyRating: Int = 1,
 )
 
-data class LeaderboardEntry(
-    val rank: Int,
-    val name: String,
-    val solved: Int,
-    val points: Int,
-    val isCurrentUser: Boolean = false,
-)
-
 data class PlayerProfile(
     val name: String,
     val handle: String,
